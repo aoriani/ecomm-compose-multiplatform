@@ -72,6 +72,7 @@ kotlin {
             implementation(libs.apollo.kotlin)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.collections.immutable)
+            implementation(libs.kotlinx.serialization.json)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -114,6 +115,9 @@ dependencies {
 apollo {
     service("platzi") {
         packageName.set("io.aoriani.ecomm.data.graphql.platzi")
+        introspection {
+            endpointUrl.set("https://api.escuelajs.co/graphql")
+        }
     }
 }
 
