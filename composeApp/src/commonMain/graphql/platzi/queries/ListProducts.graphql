@@ -1,0 +1,14 @@
+query ListProducts {
+    products {
+        id
+        title
+        price
+        description
+        images
+        category {
+            id
+            name
+            image
+        }
+    }
+}

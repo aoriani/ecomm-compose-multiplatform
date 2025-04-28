@@ -1,0 +1,14 @@
+query FetchProduct($productId: ID!) {
+    product(id: $productId){
+        id
+        title
+        price
+        description
+        images
+        category {
+            id
+            name
+            image
+        }
+    }
+}
