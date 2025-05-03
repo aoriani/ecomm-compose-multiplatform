@@ -1,4 +1,4 @@
-package io.aoriani
+package dev.aoriani.ecomm
 
 import com.expediagroup.graphql.server.ktor.graphQLGetRoute
 import com.expediagroup.graphql.server.ktor.graphQLPostRoute

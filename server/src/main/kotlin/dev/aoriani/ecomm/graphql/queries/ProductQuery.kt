@@ -1,8 +1,8 @@
-package io.aoriani.io.aoriani.ecomm.graphql.queries
+package dev.aoriani.ecomm.graphql.queries
 
 import com.expediagroup.graphql.server.operations.Query
-import io.aoriani.ecomm.graphql.models.Product
-import io.aoriani.io.aoriani.ecomm.graphql.repository.ProductRepository
+import dev.aoriani.ecomm.graphql.repository.ProductRepository
+import dev.aoriani.ecomm.graphql.models.Product
 
 class ProductQuery: Query {
     fun products(): List<Product> = ProductRepository.getAll()

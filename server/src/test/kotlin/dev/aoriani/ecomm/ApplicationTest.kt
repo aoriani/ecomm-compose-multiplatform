@@ -1,8 +1,8 @@
-package io.aoriani
+package dev.aoriani.ecomm
 
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
+import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.testApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,7 +14,7 @@ class ApplicationTest {
             module()
         }
         client.get("/").apply {
-            assertEquals(HttpStatusCode.OK, status)
+            assertEquals(HttpStatusCode.Companion.OK, status)
         }
     }
 

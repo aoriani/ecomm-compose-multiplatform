@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.ktor)
 }
 
-group = "io.aoriani"
+group = "dev.aoriani"
 version = "0.0.1"
 
 application {
