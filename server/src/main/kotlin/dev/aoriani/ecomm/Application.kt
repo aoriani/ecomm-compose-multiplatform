@@ -8,13 +8,14 @@ import io.ktor.server.netty.EngineMain
 import io.ktor.server.plugins.statuspages.StatusPages
 
 fun main(args: Array<String>) {
+    println("🚀 Dumping environment variables before starting Ktor:")
+    System.getenv().forEach { (key, value) ->
+        println("$key = ${if (value.isBlank()) "<empty>" else value}")
+    }
     EngineMain.main(args)
 }
 
 fun Application.module() {
-    environment.config.toMap().forEach { (key, value) ->
-        println("$key = $value")
-    }
     install(GraphQL) {
         schema {
             packages = listOf("dev.aoriani.ecomm.graphql.models")
