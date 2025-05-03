@@ -20,5 +20,5 @@ RUN gradle buildFatJar --no-daemon
 FROM amazoncorretto:22 AS runtime
 EXPOSE 8080
 RUN mkdir /app
-COPY --from=build /home/gradle/src/build/libs/ecomm-0.0.1.jar /app/ecomm-0.0.1.jar
-ENTRYPOINT ["java","-jar","/app/ecomm-0.0.1.jar"]
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/ecomm.jar
+ENTRYPOINT ["java","-jar","/app/ecomm.jar"]
