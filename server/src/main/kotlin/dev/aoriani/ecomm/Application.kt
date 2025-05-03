@@ -11,10 +11,6 @@ import io.ktor.util.logging.KtorSimpleLogger
 internal val LOGGER = KtorSimpleLogger("com.example.RequestTracePlugin")
 
 fun main(args: Array<String>) {
-    println("🚀 Dumping environment variables before starting Ktor:")
-    System.getenv().forEach { (key, value) ->
-        LOGGER.info("$key = ${if (value.isBlank()) "<empty>" else value}")
-    }
     EngineMain.main(args)
 }
 
