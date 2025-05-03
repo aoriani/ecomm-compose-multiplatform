@@ -12,6 +12,9 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    environment.config.toMap().forEach { (key, value) ->
+        println("$key = $value")
+    }
     install(GraphQL) {
         schema {
             packages = listOf("dev.aoriani.ecomm.graphql.models")
