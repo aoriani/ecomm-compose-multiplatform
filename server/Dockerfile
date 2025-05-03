@@ -17,4 +17,4 @@ COPY --from=builder /app/build/install /app/build/install
 ENV PORT=8080
 EXPOSE 8080
 
-CMD ["/app/build/install/server/bin/server"]
+CMD ["/app/build/install/ecomm/bin/ecomm"]
