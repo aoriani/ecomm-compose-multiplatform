@@ -1,0 +1,12 @@
+query FetchProduct($productId: String!) {
+    product(id: $productId){
+        id
+        name
+        price
+        description
+        images
+        material
+        countryOfOrigin
+        inStock
+    }
+}

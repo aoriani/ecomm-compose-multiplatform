@@ -128,10 +128,10 @@ dependencies {
 }
 
 apollo {
-    service("platzi") {
-        packageName.set("io.aoriani.ecomm.data.graphql.platzi")
+    service("aoriani") {
+        packageName.set("io.aoriani.ecomm.data.graphql")
         introspection {
-            endpointUrl.set("https://api.escuelajs.co/graphql")
+            endpointUrl.set("https://aoriani.dev/graphql")
         }
     }
 }

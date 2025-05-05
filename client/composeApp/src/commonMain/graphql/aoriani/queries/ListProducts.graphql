@@ -1,14 +1,12 @@
 query ListProducts {
     products {
         id
-        title
+        name
         price
         description
         images
-        category {
-            id
-            name
-            image
-        }
+        material
+        countryOfOrigin
+        inStock
     }
 }

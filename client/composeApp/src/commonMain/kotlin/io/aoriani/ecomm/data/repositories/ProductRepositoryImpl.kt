@@ -3,8 +3,8 @@ package io.aoriani.ecomm.data.repositories
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.exception.ApolloException
-import io.aoriani.ecomm.data.graphql.platzi.FetchProductQuery
-import io.aoriani.ecomm.data.graphql.platzi.ListProductsQuery
+import io.aoriani.ecomm.data.graphql.FetchProductQuery
+import io.aoriani.ecomm.data.graphql.ListProductsQuery
 import io.aoriani.ecomm.data.model.Product
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -28,11 +28,10 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
             return response.data?.products?.map { product ->
                 Product(
                     id = product.id,
-                    title = product.title,
+                    name = product.name,
                     price = product.price,
                     description = product.description,
                     images = product.images.toImmutableList(),
-                    categoryName = product.category.name
                 )
             }?.toImmutableList() ?: persistentListOf()
         }
@@ -55,11 +54,10 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
         } else if (product != null) {
             Product(
                 id = product.id,
-                title = product.title,
+                name = product.name,
                 price = product.price,
                 description = product.description,
                 images = product.images.toImmutableList(),
-                categoryName = product.category.name
             )
         } else {
             throw ProductRepository.GraphQlException(

@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
+    alias(libs.plugins.expediagroup.graphql)
 }
 
 group = "dev.aoriani"
@@ -12,6 +13,12 @@ application {
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+}
+
+graphql {
+    schema {
+        packages = listOf("dev.aoriani.ecomm.graphql")
+    }
 }
 
 repositories {

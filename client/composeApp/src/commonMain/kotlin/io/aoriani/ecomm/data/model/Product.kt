@@ -4,9 +4,8 @@ import kotlinx.collections.immutable.ImmutableList
 
 data class Product(
     val id: String,
-    val title: String,
+    val name: String,
     val price: Double,
     val description: String,
     val images: ImmutableList<String>,
-    val categoryName: String
 )
