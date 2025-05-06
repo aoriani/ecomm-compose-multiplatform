@@ -25,6 +25,7 @@ fun Navigation() {
             )
             val state by viewModel.state.collectAsState()
             ProductListScreen(
+                state = state,
                 navigateToCart = { navController.navigate(Routes.Cart) }
             )
         }
