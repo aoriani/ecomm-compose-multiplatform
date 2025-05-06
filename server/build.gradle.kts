@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.host.common)
     implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.cors)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
     implementation(libs.expedia.ktor.server.graphql)

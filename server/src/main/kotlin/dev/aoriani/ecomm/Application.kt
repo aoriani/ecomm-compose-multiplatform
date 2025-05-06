@@ -5,6 +5,7 @@ import com.expediagroup.graphql.server.ktor.defaultGraphQLStatusPages
 import dev.aoriani.ecomm.graphql.queries.ProductQuery
 import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.util.logging.KtorSimpleLogger
 
@@ -15,6 +16,11 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    install(CORS) {
+        anyHost()
+        allowHeaders { true }
+        anyMethod()
+    }
     install(GraphQL) {
         schema {
             packages = listOf("dev.aoriani.ecomm.graphql.models")
