@@ -24,7 +24,9 @@ fun Navigation() {
                 )
             )
             val state by viewModel.state.collectAsState()
-            ProductListScreen()
+            ProductListScreen(
+                navigateToCart = { navController.navigate(Routes.Cart) }
+            )
         }
 
         composable<Routes.ProductDetails> {
