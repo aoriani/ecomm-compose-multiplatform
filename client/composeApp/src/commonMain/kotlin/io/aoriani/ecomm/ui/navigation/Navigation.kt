@@ -7,6 +7,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.di.Deps
 import io.aoriani.ecomm.ui.screens.cart.CartScreen
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsScreen
@@ -30,12 +32,13 @@ fun Navigation() {
             )
         }
 
-        composable<Routes.ProductDetails> {
-            ProductDetailsScreen()
+        composable<Routes.ProductDetails> { backStackEntry ->
+            val product = backStackEntry.toRoute<Routes.ProductDetails>().product
+            ProductDetailsScreen(product, navigateBack = { navController.popBackStack() })
         }
 
         composable<Routes.Cart> {
-            CartScreen()
+            CartScreen(navigateBack = { navController.popBackStack() })
         }
     }
 

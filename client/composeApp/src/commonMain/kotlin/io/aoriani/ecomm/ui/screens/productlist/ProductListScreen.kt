@@ -1,5 +1,6 @@
 package io.aoriani.ecomm.ui.screens.productlist
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.product_list_title
@@ -46,7 +48,7 @@ fun ProductListScreen(state: ProductListUiState, navigateToCart: () -> Unit = {}
                 if (state is ProductListUiState.Success) {
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(minSize = 150.dp),
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize().background(Color(0xFFEEEEEE))
                     ) {
                         items(state.products) { item ->
                             ProductTile(item)
@@ -62,6 +64,6 @@ fun ProductListScreen(state: ProductListUiState, navigateToCart: () -> Unit = {}
 @Composable
 fun ProductListScreenPreview() {
     MaterialTheme {
-        ProductDetailsScreen()
+        ProductListScreen(state = ProductListUiState.Loading)
     }
 }
