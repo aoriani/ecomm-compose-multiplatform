@@ -1,21 +1,24 @@
 package io.aoriani.ecomm.ui.screens.productlist.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ecommerceapp.composeapp.generated.resources.Res
@@ -27,31 +30,61 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ProductTile(product: Product, modifier: Modifier = Modifier) {
-    Card(modifier = modifier) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            val isPreview = LocalInspectionMode.current
-            if (!isPreview) {
-                AsyncImage(
-                    model = product.images.first(),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = product.name,
-                    modifier = Modifier.size(100.dp)
-                )
-            } else {
-                Image(
-                    painterResource(Res.drawable.compose_multiplatform),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = product.name,
-                    modifier = Modifier.size(100.dp)
-                )
-            }
-
-            Text(text = product.name)
+    Card(modifier = modifier.padding(8.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ProductImage(product = product)
             Text(
-                text = product.price.toString(),
-                modifier = modifier.align(Alignment.End),
+                text = product.name,
+                style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+
             )
+            ProductPrice(price = product.price)
         }
+    }
+}
+
+@Composable
+fun ProductImage(product: Product) {
+    val isPreview = LocalInspectionMode.current
+    if (!isPreview) {
+        AsyncImage(
+            model = product.images.firstOrNull(),
+            contentScale = ContentScale.Crop,
+            contentDescription = product.name,
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+        )
+    } else {
+        Image(
+            painter = painterResource(Res.drawable.compose_multiplatform),
+            contentScale = ContentScale.Crop,
+            contentDescription = product.name,
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+        )
+    }
+}
+
+@Composable
+fun ProductPrice(price: Double) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ){
+        Text(
+            text = "$$price", // Add currency symbol
+            style = MaterialTheme.typography.body2 // Smaller price
+        )
     }
 }
 
@@ -67,7 +100,6 @@ fun ProductTilePreview() {
                 price = 10.0,
                 description = "Product Description",
                 images = persistentListOf("https://picsum.photos/200/300")
-
             )
         )
     }
