@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -28,9 +29,10 @@ import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ProductTile(product: Product, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.padding(8.dp)) {
+fun ProductTile(product: Product, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+    Card(modifier = modifier.padding(8.dp), onClick = onClick) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -80,7 +82,7 @@ fun ProductPrice(price: Double) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
-    ){
+    ) {
         Text(
             text = "$$price", // Add currency symbol
             style = MaterialTheme.typography.body2 // Smaller price

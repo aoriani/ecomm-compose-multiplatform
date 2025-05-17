@@ -11,17 +11,18 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_back
-import io.aoriani.ecomm.data.model.Product
-import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ProductDetailsScreen(product: String, navigateBack: () -> Unit = {}) {
+fun ProductDetailsScreen(
+    state: ProductDetailsUiState,
+    navigateBack: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = product) },
+                title = { Text(text = state.title) },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
@@ -44,14 +45,6 @@ fun ProductDetailsScreen(product: String, navigateBack: () -> Unit = {}) {
 @Composable
 fun ProductListScreenPreview() {
     MaterialTheme {
-        ProductDetailsScreen("ty"
-//            Product(
-//                id = "1",
-//                name = "Product 1",
-//                price = 10.0,
-//                description = "Description 1",
-//                images = persistentListOf("https://picsum.photos/200/300")
-//            )
-        )
+        ProductDetailsScreen(state = ProductDetailsUiState.Loading("Product Name"))
     }
 }

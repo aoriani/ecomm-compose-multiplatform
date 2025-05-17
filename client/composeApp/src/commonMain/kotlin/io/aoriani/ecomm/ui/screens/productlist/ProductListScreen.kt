@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.product_list_title
+import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsScreen
 import io.aoriani.ecomm.ui.screens.productlist.components.LoadingOverlay
 import io.aoriani.ecomm.ui.screens.productlist.components.ProductTile
@@ -27,7 +28,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ProductListScreen(state: ProductListUiState, navigateToCart: () -> Unit = {}) {
+fun ProductListScreen(
+    state: ProductListUiState,
+    navigateToCart: () -> Unit = {},
+    navigateToProductDetails: (Product) -> Unit = {}
+) {
     LoadingOverlay(false) {
         Scaffold(
             topBar = {
@@ -51,7 +56,9 @@ fun ProductListScreen(state: ProductListUiState, navigateToCart: () -> Unit = {}
                         modifier = Modifier.fillMaxSize().background(Color(0xFFEEEEEE))
                     ) {
                         items(state.products) { item ->
-                            ProductTile(item)
+                            ProductTile(
+                                product = item,
+                                onClick = { navigateToProductDetails(item) })
                         }
                     }
                 }
