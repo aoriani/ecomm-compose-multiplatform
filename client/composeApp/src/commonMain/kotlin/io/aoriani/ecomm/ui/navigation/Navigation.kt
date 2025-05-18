@@ -44,9 +44,8 @@ fun Navigation() {
 
         composable<Routes.ProductDetails> { backStackEntry ->
             val viewModel: ProductDetailsViewModel = viewModel(
-                factory = ProductDetailsViewModel.provideFactory(
+                factory = ProductDetailsViewModel.Companion.Factory(
                     Deps.productRepository,
-                    backStackEntry
                 )
             )
             val state: ProductDetailsUiState by viewModel.state.collectAsState()

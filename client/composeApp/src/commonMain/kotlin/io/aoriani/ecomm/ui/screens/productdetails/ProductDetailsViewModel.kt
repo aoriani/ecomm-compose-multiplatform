@@ -1,11 +1,11 @@
 package io.aoriani.ecomm.ui.screens.productdetails
 
-import androidx.core.bundle.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.toRoute
-import androidx.savedstate.SavedStateRegistryOwner
 import io.aoriani.ecomm.data.repositories.ProductRepository
 import io.aoriani.ecomm.ui.navigation.Routes
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,19 +27,14 @@ class ProductDetailsViewModel(
         )
 
     companion object {
-        fun provideFactory(
-            productRepository: ProductRepository, owner: SavedStateRegistryOwner,
-            defaultArgs: Bundle? = null,
-        ): AbstractSavedStateViewModelFactory {
-            return object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-                override fun <T : ViewModel> create(
-                    key: String,
-                    modelClass: KClass<T>,
-                    handle: SavedStateHandle
-                ): T {
-                    @Suppress("UNCHECKED_CAST")
-                    return ProductDetailsViewModel(productRepository, handle) as T
-                }
+        class Factory(private val productRepository: ProductRepository) :
+            ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
+                @Suppress("UNCHECKED_CAST")
+                return ProductDetailsViewModel(
+                    productRepository,
+                    extras.createSavedStateHandle()
+                ) as T
             }
         }
     }
