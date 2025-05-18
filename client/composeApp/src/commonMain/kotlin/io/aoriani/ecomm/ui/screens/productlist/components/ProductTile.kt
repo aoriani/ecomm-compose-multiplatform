@@ -24,14 +24,13 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.compose_multiplatform
-import io.aoriani.ecomm.data.model.Product
-import kotlinx.collections.immutable.persistentListOf
+import io.aoriani.ecomm.data.model.ProductPreview
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ProductTile(product: Product, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+fun ProductTile(product: ProductPreview, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Card(modifier = modifier.padding(8.dp), onClick = onClick) {
         Column(
             modifier = Modifier
@@ -54,11 +53,11 @@ fun ProductTile(product: Product, modifier: Modifier = Modifier, onClick: () -> 
 }
 
 @Composable
-fun ProductImage(product: Product) {
+fun ProductImage(product: ProductPreview) {
     val isPreview = LocalInspectionMode.current
     if (!isPreview) {
         AsyncImage(
-            model = product.images.firstOrNull(),
+            model = product.thumbnail,
             contentScale = ContentScale.Crop,
             contentDescription = product.name,
             modifier = Modifier
@@ -96,12 +95,11 @@ fun ProductPrice(price: Double) {
 fun ProductTilePreview() {
     MaterialTheme {
         ProductTile(
-            Product(
+            ProductPreview(
                 id = "id",
                 name = "Product Name",
                 price = 10.0,
-                description = "Product Description",
-                images = persistentListOf("https://picsum.photos/200/300")
+                thumbnail = "https://picsum.photos/200/300"
             )
         )
     }

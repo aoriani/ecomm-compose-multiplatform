@@ -7,7 +7,7 @@ sealed interface Routes {
     object ProductList : Routes
 
     @Serializable
-    data class ProductDetails(val id: String, val name: String, val imageUrl: String) : Routes
+    data class ProductDetails(val id: String, val name: String, val imageUrl: String?) : Routes
 
     @Serializable
     object Cart : Routes

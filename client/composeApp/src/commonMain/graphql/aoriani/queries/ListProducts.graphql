@@ -3,10 +3,6 @@ query ListProducts {
         id
         name
         price
-        description
         images
-        material
-        countryOfOrigin
-        inStock
     }
 }

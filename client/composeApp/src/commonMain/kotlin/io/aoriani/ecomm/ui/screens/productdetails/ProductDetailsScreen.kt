@@ -1,7 +1,11 @@
 package io.aoriani.ecomm.ui.screens.productdetails
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -14,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_back
+import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.ui.screens.productdetails.components.ProductImage
+import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -40,11 +46,22 @@ fun ProductDetailsScreen(
             )
         }
     ) { paddingValues ->
-        ProductImage(
-            state.imageUrl,
-            state.title,
-            modifier = Modifier.padding(paddingValues).fillMaxWidth()
-        )
+        val scrollableState = rememberScrollState()
+        Column(
+            modifier = Modifier.padding(paddingValues)
+                .scrollable(scrollableState, Orientation.Vertical)
+        ) {
+            ProductImage(
+                //TODO: Handle missing image better
+                imageUrl = state.imageUrl.orEmpty(),
+                contentDescription = state.title,
+                modifier = Modifier.padding(paddingValues).fillMaxWidth()
+            )
+            if (state is ProductDetailsUiState.Loaded) {
+                Text(text = state.product.name)
+                Text(text = state.product.description)
+            }
+        }
     }
 }
 
@@ -54,9 +71,14 @@ fun ProductDetailsScreen(
 fun ProductListScreenPreview() {
     MaterialTheme {
         ProductDetailsScreen(
-            state = ProductDetailsUiState.Loading(
-                title = "Product Name",
-                imageUrl = ""
+            state = ProductDetailsUiState.Loaded(
+                product = Product(
+                    id = "id",
+                    name = "Product Name",
+                    price = 10.0,
+                    description = "Product Description",
+                    images = persistentListOf("")
+                )
             )
         )
     }

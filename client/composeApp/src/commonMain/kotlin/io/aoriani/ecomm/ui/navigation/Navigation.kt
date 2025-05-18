@@ -7,7 +7,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import io.aoriani.ecomm.di.Deps
 import io.aoriani.ecomm.ui.screens.cart.CartScreen
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsScreen
@@ -35,7 +34,7 @@ fun Navigation() {
                         Routes.ProductDetails(
                             id = product.id,
                             name = product.name,
-                            imageUrl = product.images.firstOrNull().orEmpty()
+                            imageUrl = product.thumbnail
                         )
                     )
                 }
