@@ -15,15 +15,23 @@ import kotlin.reflect.KClass
 class ProductDetailsViewModel(
     private val productRepository: ProductRepository,
     private val savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
     private val route: Routes.ProductDetails = savedStateHandle.toRoute()
     val state: StateFlow<ProductDetailsUiState>
-        field = MutableStateFlow(ProductDetailsUiState.Loading(route.name))
+        field = MutableStateFlow(
+            ProductDetailsUiState.Loading(
+                title = route.name,
+                imageUrl = route.imageUrl
+            )
+        )
+
     companion object {
-        fun provideFactory(productRepository: ProductRepository, owner: SavedStateRegistryOwner,
-                           defaultArgs: Bundle? = null,): AbstractSavedStateViewModelFactory {
-            return object: AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+        fun provideFactory(
+            productRepository: ProductRepository, owner: SavedStateRegistryOwner,
+            defaultArgs: Bundle? = null,
+        ): AbstractSavedStateViewModelFactory {
+            return object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
                 override fun <T : ViewModel> create(
                     key: String,
                     modelClass: KClass<T>,

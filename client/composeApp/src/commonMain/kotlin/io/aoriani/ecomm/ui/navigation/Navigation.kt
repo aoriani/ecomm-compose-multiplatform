@@ -34,7 +34,8 @@ fun Navigation() {
                     navController.navigate(
                         Routes.ProductDetails(
                             id = product.id,
-                            name = product.name
+                            name = product.name,
+                            imageUrl = product.images.firstOrNull().orEmpty()
                         )
                     )
                 }
@@ -42,7 +43,6 @@ fun Navigation() {
         }
 
         composable<Routes.ProductDetails> { backStackEntry ->
-            val title = backStackEntry.toRoute<Routes.ProductDetails>().name
             val viewModel: ProductDetailsViewModel = viewModel(
                 factory = ProductDetailsViewModel.provideFactory(
                     Deps.productRepository,

@@ -4,11 +4,11 @@ import kotlinx.serialization.Serializable
 
 sealed interface Routes {
     @Serializable
-    object ProductList: Routes
+    object ProductList : Routes
 
     @Serializable
-    data class ProductDetails(val id: String, val name: String): Routes
+    data class ProductDetails(val id: String, val name: String, val imageUrl: String) : Routes
 
     @Serializable
-    object Cart: Routes
+    object Cart : Routes
 }
