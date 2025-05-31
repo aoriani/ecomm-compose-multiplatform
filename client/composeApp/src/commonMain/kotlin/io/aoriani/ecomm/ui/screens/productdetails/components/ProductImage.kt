@@ -16,7 +16,7 @@ fun ProductImage(imageUrl: String, contentDescription: String, modifier: Modifie
     if (!isPreview) {
         AsyncImage(
             model = imageUrl,
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.FillWidth,
             contentDescription = contentDescription,
             modifier = modifier
 
@@ -27,7 +27,6 @@ fun ProductImage(imageUrl: String, contentDescription: String, modifier: Modifie
             contentScale = ContentScale.Fit,
             contentDescription = contentDescription,
             modifier = modifier
-
         )
     }
 }
