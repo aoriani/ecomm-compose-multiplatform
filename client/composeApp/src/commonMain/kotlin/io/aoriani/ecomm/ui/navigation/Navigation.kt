@@ -1,9 +1,12 @@
 package io.aoriani.ecomm.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,7 +19,9 @@ import io.aoriani.ecomm.ui.screens.productlist.ProductListScreen
 import io.aoriani.ecomm.ui.screens.productlist.ProductListViewModel
 
 @Composable
-fun Navigation() {
+fun Navigation(
+    onNavHostReady: suspend (NavController) -> Unit = {}
+) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.ProductList) {
         composable<Routes.ProductList> {
@@ -25,7 +30,7 @@ fun Navigation() {
                     Deps.productRepository
                 )
             )
-            val state by viewModel.state.collectAsState()
+            val state by viewModel.state.collectAsStateWithLifecycle()
             ProductListScreen(
                 state = state,
                 navigateToCart = { navController.navigate(Routes.Cart) },
@@ -47,13 +52,17 @@ fun Navigation() {
                     Deps.productRepository,
                 )
             )
-            val state: ProductDetailsUiState by viewModel.state.collectAsState()
+            val state: ProductDetailsUiState by viewModel.state.collectAsStateWithLifecycle()
             ProductDetailsScreen(state, navigateBack = { navController.popBackStack() })
         }
 
         composable<Routes.Cart> {
             CartScreen(navigateBack = { navController.popBackStack() })
         }
+    }
+
+    LaunchedEffect(navController) {
+        onNavHostReady(navController)
     }
 
 }
