@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -66,6 +67,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.sqldelight.android.driver)
         }
         commonMain.dependencies {
 //            implementation(libs.kermit.koin)
@@ -101,6 +103,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.ktor.client.java)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.sqldelight.jvm.driver)
         }
         val desktopTest by getting {
             dependencies {
@@ -109,10 +112,19 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.native.driver)
         }
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(npm("big.js", "7.0.1"))
+            //TODO
+            // Reference for sqldelight wasm setup
+            // https://github.com/DrUlysses/Kristine/blob/main/composeApp/build.gradle.kts
+            // https://kotlinlang.slack.com/archives/C5HT9AL7Q/p1748911587936999
+            // https://kotlinlang.slack.com/archives/C5HT9AL7Q/p1749181253399889
+            // https://github.com/dellisd/sqldelight-sqlite-wasm
+            // It seems that DB will be in memory, which is useless for my purpose
+            // Research suggest using IndexDB or OPFS (https://webkit.org/blog/12257/the-file-system-access-api-with-origin-private-file-system/)
         }
     }
 }
