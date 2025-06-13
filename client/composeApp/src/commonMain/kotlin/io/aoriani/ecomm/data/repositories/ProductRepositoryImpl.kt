@@ -64,5 +64,8 @@ private fun FetchProductQuery.Product.toProductModel(): Product = Product(
     name = name,
     price = price,
     description = description,
+    countryOfOrigin = countryOfOrigin,
+    material = material,
+    inStock = inStock,
     images = images.toImmutableList(),
 )

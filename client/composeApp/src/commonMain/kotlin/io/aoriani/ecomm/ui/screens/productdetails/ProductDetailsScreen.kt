@@ -76,6 +76,9 @@ fun ProductListScreenPreview() {
                     name = "Product Name",
                     price = 10.0,
                     description = "Product Description",
+                    countryOfOrigin = "Country",
+                    material = "Material",
+                    inStock = true,
                     images = persistentListOf("")
                 )
             )
