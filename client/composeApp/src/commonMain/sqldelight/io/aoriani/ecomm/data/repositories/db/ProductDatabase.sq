@@ -1,0 +1,60 @@
+import kotlin.Boolean;
+
+CREATE TABLE IF NOT EXISTS product_basic (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    price REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS product_extra (
+    id TEXT PRIMARY KEY NOT NULL,
+    description TEXT,
+    countryOfOrigin TEXT,
+    material TEXT,
+    inStock INTEGER AS Boolean NOT NULL,
+    FOREIGN KEY (id) REFERENCES product_basic(id)
+
+);
+
+CREATE TABLE IF NOT EXISTS product_image (
+    id TEXT NOT NULL,
+    image TEXT NOT NULL,
+    FOREIGN KEY (id) REFERENCES product_basic(id),
+    PRIMARY KEY (id, image)
+);
+
+getProductPreviews:
+SELECT
+    pb.id AS id,
+    pb.name AS name,
+    pb.price AS price,
+    (SELECT image FROM product_image WHERE product_image.id = pb.id LIMIT 1) AS thumbnail
+FROM product_basic AS pb;
+
+getProductById:
+SELECT
+    pb.id AS id,
+    pb.name AS name,
+    pb.price AS price,
+    COALESCE(pe.description, '') AS description,
+    COALESCE(pe.countryOfOrigin, '') AS countryOfOrigin,
+    COALESCE(pe.material, '') AS material,
+    COALESCE(pe.inStock, 0) AS inStock,
+    (SELECT GROUP_CONCAT(image) FROM product_image WHERE product_image.id = pb.id) AS images
+FROM product_basic AS pb
+INNER JOIN product_extra AS pe
+WHERE pb.id = :id;
+
+insertProductBasic:
+INSERT OR REPLACE INTO product_basic(id, name, price)
+VALUES (:id, :name, :price);
+
+insertProductExtra:
+INSERT OR REPLACE INTO product_extra(id, description, countryOfOrigin, material, inStock)
+VALUES (:id, :description, :countryOfOrigin, :material, :inStock);
+
+insertProductImage:
+INSERT OR REPLACE INTO  product_image(id, image)
+VALUES (:id, :image);
+
+
