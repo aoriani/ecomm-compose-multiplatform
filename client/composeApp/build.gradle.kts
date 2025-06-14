@@ -122,9 +122,9 @@ kotlin {
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(npm("big.js", "7.0.1"))
-            implementation(libs.sqldelight.sqljs.driver)
             implementation(libs.sqldelight.webworker.driver)
             implementation(libs.sqldelight.runtime.wasmjs)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
             implementation(npm("sql.js", "1.12.0")) // Ensure this version is compatible or newer
             implementation(devNpm("copy-webpack-plugin", "9.1.0")) // For copying the .wasm file
             //TODO
