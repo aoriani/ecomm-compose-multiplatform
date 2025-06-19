@@ -2,8 +2,14 @@ package dev.aoriani.ecomm.graphql.repository
 
 import dev.aoriani.ecomm.graphql.models.Product
 
+// IMPORTANT:
+// The ProductRepository currently uses an in-memory list of products.
+// This is suitable for demonstration and initial development purposes only.
+// For a production environment, or any scenario requiring data persistence,
+// this should be replaced with a proper database solution (e.g., PostgreSQL, MongoDB, etc.).
 object ProductRepository {
 
+    // Hardcoded sample product data.
     val products = listOf(
         Product(
             id = "elon_musk_plush",
