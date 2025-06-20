@@ -23,7 +23,8 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
             )
         }
         if (response.hasErrors()) {
-            throw ProductRepository.GraphQlException(response.errors?.map { it.message }.toString())
+            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message } ?: "Unknown GraphQL error"
+            throw ProductRepository.GraphQlException(errorMessages)
         } else {
             return response.data?.products?.map { product ->
                 product.toProductPreviewModel()
@@ -43,7 +44,8 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
 
         val product = response.data?.product
         return if (response.hasErrors()) {
-            throw ProductRepository.GraphQlException(response.errors?.map { it.message }.toString())
+            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message } ?: "Unknown GraphQL error"
+            throw ProductRepository.GraphQlException(errorMessages)
         } else {
             product?.toProductModel() ?: throw ProductRepository.GraphQlException(
                 "Product not found or missing data for id: $id"

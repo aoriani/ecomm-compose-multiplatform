@@ -9,9 +9,6 @@ import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.util.logging.KtorSimpleLogger
-
-internal val LOGGER = KtorSimpleLogger("com.example.RequestTracePlugin")
 
 fun main(args: Array<String>) {
     EngineMain.main(args)
