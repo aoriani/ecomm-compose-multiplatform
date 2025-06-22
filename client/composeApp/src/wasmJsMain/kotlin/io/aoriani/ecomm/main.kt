@@ -4,6 +4,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import androidx.navigation.ExperimentalBrowserHistoryApi
 import androidx.navigation.bindToNavigation
+import io.aoriani.ecomm.ui.navigation.getBackStackEntryRoute
 import kotlinx.browser.document
 import kotlinx.browser.window
 
@@ -12,6 +13,11 @@ import kotlinx.browser.window
 fun main() {
     val body = document.body ?: error("Missing body tag")
     ComposeViewport(body) {
-        App( onNavHostReady = { window.bindToNavigation(it) })
+        App(onNavHostReady = {
+            window.bindToNavigation(
+                navController = it,
+                getBackStackEntryRoute = ::getBackStackEntryRoute
+            )
+        })
     }
 }
