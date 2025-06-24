@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.product_list_title
 import io.aoriani.ecomm.data.model.ProductPreview
-import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollBarIfSupported
+import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollbarIfSupported
 import io.aoriani.ecomm.ui.screens.productlist.components.LoadingOverlay
 import io.aoriani.ecomm.ui.screens.productlist.components.ProductTile
 import org.jetbrains.compose.resources.stringResource
@@ -67,7 +66,7 @@ fun ProductListScreen(
                                     onClick = { navigateToProductDetails(item) })
                             }
                         }
-                        VerticalScrollBarIfSupported(scrollState)
+                        VerticalScrollbarIfSupported(scrollState)
                     }
                 }
             }
