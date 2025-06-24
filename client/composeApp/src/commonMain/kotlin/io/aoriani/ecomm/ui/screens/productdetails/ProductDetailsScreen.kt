@@ -1,6 +1,8 @@
 package io.aoriani.ecomm.ui.screens.productdetails
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_back
 import io.aoriani.ecomm.data.model.Product
+import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollBarIfSupported
 import io.aoriani.ecomm.ui.screens.productdetails.components.ProductImage
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
@@ -45,21 +48,25 @@ fun ProductDetailsScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-        ) {
-            ProductImage(
-                //TODO: Handle missing image better
-                imageUrl = state.imageUrl.orEmpty(),
-                contentDescription = state.title,
-                modifier = Modifier.fillMaxWidth()
-            )
-            if (state is ProductDetailsUiState.Loaded) {
-                Text(text = state.product.name)
-                Text(text = state.product.description)
+        Box(modifier = Modifier.padding(paddingValues)) {
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            ) {
+                ProductImage(
+                    //TODO: Handle missing image better
+                    imageUrl = state.imageUrl.orEmpty(),
+                    contentDescription = state.title,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (state is ProductDetailsUiState.Loaded) {
+                    Text(text = state.product.name)
+                    Text(text = state.product.description)
+                }
             }
+            VerticalScrollBarIfSupported(scrollState)
         }
     }
 }
