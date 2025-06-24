@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_back
 import io.aoriani.ecomm.data.model.Product
-import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollBarIfSupported
+import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollbarIfSupported
 import io.aoriani.ecomm.ui.screens.productdetails.components.ProductImage
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
@@ -66,7 +66,7 @@ fun ProductDetailsScreen(
                     Text(text = state.product.description)
                 }
             }
-            VerticalScrollBarIfSupported(scrollState)
+            VerticalScrollbarIfSupported(scrollState)
         }
     }
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.viewModelFactory
 import co.touchlab.kermit.Logger
 import io.aoriani.ecomm.data.repositories.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
