@@ -5,6 +5,7 @@ Welcome to the E-Commerce Full-Stack Application! This project demonstrates a mo
 ## Table of Contents
 
 - [Overview](#overview)
+- [Documentation](#documentation)
 - [Technologies Used](#technologies-used)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
@@ -29,6 +30,10 @@ The project consists of two main components:
 
 *   **Backend Server:** A robust backend built with [Ktor](https://ktor.io/), a framework for building asynchronous servers and clients in Kotlin. It exposes a GraphQL API for managing products, orders, and other e-commerce functionalities.
 *   **Client Application:** A [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/) application targeting Android, iOS, Desktop (Windows, macOS, Linux), and Web (via Kotlin/Wasm). The UI is built using [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/), allowing for a shared codebase across platforms while delivering native performance and look-and-feel.
+
+## Documentation
+
+Comprehensive documentation for this project, including detailed explanations of the architecture, modules, and setup, is available on [DeepWiki](https://deepwiki.com/aoriani/ecomm-compose-multiplatform).
 
 ## Technologies Used
 
