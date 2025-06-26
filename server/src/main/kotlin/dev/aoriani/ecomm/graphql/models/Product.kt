@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm.graphql.models
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
+import java.math.BigDecimal
 
 @GraphQLDescription("Represents a product available in the e-commerce catalog")
 data class Product(
@@ -11,7 +12,7 @@ data class Product(
     val name: String,
 
     @GraphQLDescription("Price of the product in USD")
-    val price: Double,
+    val price: BigDecimal,
 
     @GraphQLDescription("Detailed description of the product")
     val description: String,
