@@ -1,14 +1,19 @@
-
 [versions]
 kotlin-version = "2.1.21"
 logback-version = "1.5.18"
 expediagroup-graphql = "9.0.0-alpha.8"
+exposed = "1.0.0-beta-2"
+sqlite = "3.50.1.0"
 
 [libraries]
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
-expedia-ktor-server-graphql = {group = "com.expediagroup", name = "graphql-kotlin-ktor-server", version.ref="expediagroup-graphql"}
+expedia-ktor-server-graphql = { group = "com.expediagroup", name = "graphql-kotlin-ktor-server", version.ref = "expediagroup-graphql" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
-expediagroup-graphql = {id = "com.expediagroup.graphql", version.ref = "expediagroup-graphql"}
+expediagroup-graphql = { id = "com.expediagroup.graphql", version.ref = "expediagroup-graphql" }

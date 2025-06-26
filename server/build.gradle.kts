@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     implementation(ktorLibs.server.core)
-//    implementation(libs.ktor.server.host.common)
+    implementation(ktorLibs.server.callLogging)
     implementation(ktorLibs.server.netty)
     implementation(ktorLibs.server.cors)
     implementation(ktorLibs.server.config.yaml)
