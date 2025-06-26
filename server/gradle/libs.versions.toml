@@ -1,19 +1,24 @@
 [versions]
-kotlin-version = "2.1.21"
+kotlin-version = "2.2.0"
 logback-version = "1.5.18"
 expediagroup-graphql = "9.0.0-alpha.8"
 exposed = "1.0.0-beta-2"
 sqlite = "3.50.1.0"
+kotlinx-serialization = "1.8.1"
 
 [libraries]
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 expedia-ktor-server-graphql = { group = "com.expediagroup", name = "graphql-kotlin-ktor-server", version.ref = "expediagroup-graphql" }
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
 
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 expediagroup-graphql = { id = "com.expediagroup.graphql", version.ref = "expediagroup-graphql" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }

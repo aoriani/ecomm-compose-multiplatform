@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(ktorLibs.plugins.ktor)
     alias(libs.plugins.expediagroup.graphql)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 group = "dev.aoriani"
@@ -33,6 +34,12 @@ dependencies {
     implementation(ktorLibs.server.config.yaml)
     implementation(libs.logback.classic)
     implementation(libs.expedia.ktor.server.graphql)
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.json)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.sqlite.jdbc)
     testImplementation(ktorLibs.server.testHost)
     testImplementation(libs.kotlin.test.junit)
 }
