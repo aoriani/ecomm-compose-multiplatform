@@ -3,7 +3,7 @@ package dev.aoriani.ecomm.graphql.queries
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.server.operations.Query
 import dev.aoriani.ecomm.graphql.models.Product
-import dev.aoriani.ecomm.graphql.repository.ProductRepository
+import dev.aoriani.ecomm.repository.ProductRepository
 
 @GraphQLDescription("Root entry point for product-related queries")
 class ProductQuery(private val repository: ProductRepository) : Query {

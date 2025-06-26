@@ -1,10 +1,10 @@
-package dev.aoriani.ecomm.graphql.repository
+package dev.aoriani.ecomm.repository
 
 import dev.aoriani.ecomm.graphql.models.Product
 
-object ProductRepository {
+object HardcodedProductRepositoryImpl: ProductRepository {
 
-    val products = listOf(
+    private val products = listOf(
         Product(
             id = "elon_musk_plush",
             name = "Elon Musk",
@@ -199,6 +199,6 @@ object ProductRepository {
         )
     )
 
-    fun getAll(): List<Product> = products
-    fun getById(id: String): Product? = products.firstOrNull { it.id == id }
+    override fun getAll(): List<Product> = products
+    override fun getById(id: String): Product? = products.firstOrNull { it.id == id }
 }

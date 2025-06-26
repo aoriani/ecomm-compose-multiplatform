@@ -3,7 +3,7 @@ package dev.aoriani.ecomm
 import com.expediagroup.graphql.server.ktor.GraphQL
 import com.expediagroup.graphql.server.ktor.defaultGraphQLStatusPages
 import dev.aoriani.ecomm.graphql.queries.ProductQuery
-import dev.aoriani.ecomm.graphql.repository.ProductRepository
+import dev.aoriani.ecomm.repository.HardcodedProductRepositoryImpl
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.*
@@ -52,7 +52,7 @@ fun Application.module() {
     install(GraphQL) {
         schema {
             packages = listOf("dev.aoriani.ecomm.graphql.models")
-            queries = listOf(ProductQuery(ProductRepository))
+            queries = listOf(ProductQuery(HardcodedProductRepositoryImpl))
         }
     }
     configureRouting()
