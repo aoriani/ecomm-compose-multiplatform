@@ -5,8 +5,11 @@ schema {
 "Marks the field, argument, input field or enum value as deprecated"
 directive @deprecated(
   "The reason for the deprecation"
-  reason: String = "No longer supported"
+  reason: String! = "No longer supported"
 ) on FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM_VALUE | INPUT_FIELD_DEFINITION
+
+"This directive disables error propagation when a non nullable field returns null for the given operation."
+directive @experimental_disableErrorPropagation on QUERY | MUTATION | SUBSCRIPTION
 
 "Directs the executor to include this field or fragment only when the `if` argument is true"
 directive @include(
@@ -29,18 +32,35 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
+"Represents a product available in the e-commerce catalog"
 type Product {
+  "Country where the product was manufactured"
   countryOfOrigin: String!
+  "Detailed description of the product"
   description: String!
+  "Unique identifier of the product"
   id: String!
+  "List of image URLs associated with the product"
   images: [String!]!
+  "Indicates whether the product is currently in stock"
   inStock: Boolean!
+  "Material composition of the product"
   material: String!
+  "Name of the product"
   name: String!
-  price: Float!
+  "Price of the product in USD"
+  price: BigDecimal!
 }
 
 type Query {
-  product(id: String!): Product
+  "Fetch a single product by its unique identifier"
+  product(
+    "The unique ID of the product to retrieve"
+    id: String!
+  ): Product
+  "Retrieve all products available in the catalog"
   products: [Product!]!
 }
+
+"An arbitrary precision signed decimal"
+scalar BigDecimal

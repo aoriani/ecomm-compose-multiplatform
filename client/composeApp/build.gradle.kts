@@ -80,6 +80,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.apollo.kotlin)
             implementation(libs.apollo.ktor)
+            implementation(libs.apollo.adapters.core)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.kotlinx.serialization.json)
@@ -141,6 +142,7 @@ apollo {
         introspection {
             endpointUrl.set("https://aoriani.dev/graphql")
         }
+        mapScalar("BigDecimal", "com.apollographql.adapter.core.BigDecimal", "com.apollographql.adapter.core.BigDecimalAdapter")
     }
 }
 

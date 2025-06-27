@@ -1,5 +1,7 @@
 package io.aoriani.ecomm.data.repositories
 
+import co.touchlab.kermit.Logger
+import com.apollographql.adapter.core.toNumber
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.exception.ApolloException
@@ -23,7 +25,8 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
             )
         }
         if (response.hasErrors()) {
-            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message } ?: "Unknown GraphQL error"
+            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
+                ?: "Unknown GraphQL error"
             throw ProductRepository.GraphQlException(errorMessages)
         } else {
             return response.data?.products?.map { product ->
@@ -44,7 +47,8 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
 
         val product = response.data?.product
         return if (response.hasErrors()) {
-            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message } ?: "Unknown GraphQL error"
+            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
+                ?: "Unknown GraphQL error"
             throw ProductRepository.GraphQlException(errorMessages)
         } else {
             product?.toProductModel() ?: throw ProductRepository.GraphQlException(
@@ -57,14 +61,14 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
 private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = ProductPreview(
     id = id,
     name = name,
-    price = price,
+    price = price.toString().toDouble(),
     thumbnail = images.firstOrNull(),
 )
 
 private fun FetchProductQuery.Product.toProductModel(): Product = Product(
     id = id,
     name = name,
-    price = price,
+    price = price.toString().toDouble(),
     description = description,
     images = images.toImmutableList(),
 )
