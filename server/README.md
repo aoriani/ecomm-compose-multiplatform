@@ -1,64 +1,168 @@
-# ecomm
+# eCommerceApp Development Guidelines
 
-This project is an e-commerce backend application built with Ktor. It provides a GraphQL API for managing products and other e-commerce functionalities.
+This document provides essential information for developers working on the eCommerceApp project.
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+## Build/Configuration Instructions
 
-Here are some useful links to get you started:
+### Prerequisites
+- JDK 11 or newer (Amazon Corretto 22 recommended for production)
+- Gradle 8.4 or newer (included via Gradle wrapper)
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+### Building the Project
+The project uses Gradle as its build system. The Gradle wrapper is included in the repository, so you don't need to install Gradle separately.
 
-## Features
+#### Basic Build Commands
+```bash
+# Build the project
+./gradlew build
 
-Here's a list of features included in this project:
+# Run the application locally
+./gradlew run
 
-| Name                                                     | Description                                |
-| ----------------------------------------------------------|-------------------------------------------- |
-| [Routing](https://start.ktor.io/p/routing)               | Provides a structured routing DSL          |
-| [Static Content](https://start.ktor.io/p/static-content) | Serves static files from defined locations |
-| GraphQL                                                  | API using graphql-kotlin                   |
-
-## Building & Running
-
-To build or run the project, use one of the following tasks:
-
-| Task                          | Description                                                          |
-| -------------------------------|---------------------------------------------------------------------- |
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
-
-If the server starts successfully, you'll see the following output:
-
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
+# Build a fat JAR for deployment
+./gradlew buildFatJar
 ```
 
-## GraphQL API
+### Docker Build
+The project includes a multi-stage Dockerfile for containerized deployment:
 
-The primary way to interact with this e-commerce backend is through its GraphQL API.
+```bash
+# Build the Docker image
+docker build -t ecommerceapp:latest .
 
-- **Main Endpoint:** `/graphql`
-- **GraphiQL Console:** `/graphiql` (for interactive queries and schema exploration)
+# Run the container
+docker run -p 8080:8080 ecommerceapp:latest
+```
 
-Here's an example query to fetch all products' names and prices:
+The Dockerfile uses a three-stage build process:
+1. Cache Gradle dependencies
+2. Build the application
+3. Create a minimal runtime image with Amazon Corretto 22
 
-```graphql
-query {
-  products {
-    name
-    price
-  }
+### Configuration
+The application is configured via `src/main/resources/application.yaml`. Key configuration options:
+
+- Server port: Set via the `PORT` environment variable or defaults to 8080
+- Application module: `dev.aoriani.ecomm.ApplicationKt.module`
+
+For development, you can enable development mode:
+```bash
+./gradlew run -Pdevelopment=true
+```
+
+## Testing Information
+
+### Running Tests
+The project uses Kotlin's built-in testing framework with JUnit.
+
+```bash
+# Run all tests
+./gradlew test
+
+# Run a specific test class
+./gradlew test --tests "dev.aoriani.ecomm.graphql.repository.ProductRepositoryTest"
+
+# Run a specific test method
+./gradlew test --tests "dev.aoriani.ecomm.graphql.repository.ProductRepositoryTest.testGetAllProducts"
+```
+
+### Test Structure
+Tests are organized in the `src/test/kotlin` directory, mirroring the structure of the main source code.
+
+#### Unit Tests
+Unit tests focus on testing individual components in isolation. Example:
+
+```kotlin
+// Testing a repository
+class ProductRepositoryTest {
+    @Test
+    fun testGetAllProducts() {
+        val products = ProductRepository.getAll()
+        assertEquals(16, products.size)
+    }
 }
 ```
 
-## Configuration
+#### GraphQL Tests
+GraphQL endpoints can be tested using Ktor's `testApplication` function:
 
-Currently, the application uses default configurations for port and hardcoded CORS settings. For production environments, consider making these configurable via environment variables or a configuration file. Key areas for configuration would be the server port and allowed CORS origins.
+```kotlin
+class ProductQueryTest {
+    @Test
+    fun testProductsQuery() = testApplication {
+        application {
+            module()
+        }
+        
+        val response = client.post("/graphql") {
+            contentType(ContentType.Application.Json)
+            setBody("""
+                {
+                    "query": "{ products { id name price } }"
+                }
+            """.trimIndent())
+        }
+        
+        assertEquals(HttpStatusCode.OK, response.status)
+        // Additional assertions...
+    }
+}
+```
+
+### Adding New Tests
+When adding new tests:
+
+1. Create a test class in the appropriate package under `src/test/kotlin`
+2. Use the `@Test` annotation for test methods
+3. Follow the Given-When-Then pattern for clarity
+4. Use descriptive method names (e.g., `testGetProductById_nonExistingProduct`)
+5. Include assertions to verify expected behavior
+
+## Development Guidelines
+
+### Project Structure
+- `src/main/kotlin/dev/aoriani/ecomm/` - Main application code
+  - `Application.kt` - Application entry point and configuration
+  - `Routing.kt` - HTTP routing configuration
+  - `graphql/` - GraphQL-related code
+    - `models/` - Data models
+    - `queries/` - GraphQL query resolvers
+    - `repository/` - Data repositories
+
+### GraphQL Development
+The project uses the ExpediaGroup GraphQL Kotlin library:
+
+1. Define data models in `graphql/models/` with `@GraphQLDescription` annotations
+2. Create query resolvers in `graphql/queries/` that implement the `Query` interface
+3. Access the GraphiQL interface at `/graphiql` when running the application
+
+Example of adding a new GraphQL query:
+```kotlin
+@GraphQLDescription("Root entry point for category-related queries")
+class CategoryQuery : Query {
+    @GraphQLDescription("Retrieve all categories")
+    fun categories(): List<Category> = CategoryRepository.getAll()
+}
+```
+
+Then register the query in `Application.kt`:
+```kotlin
+install(GraphQL) {
+    schema {
+        packages = listOf("dev.aoriani.ecomm.graphql.models")
+        queries = listOf(ProductQuery(), CategoryQuery())
+    }
+}
+```
+
+### Code Style
+- Follow Kotlin conventions and idioms
+- Use data classes for models
+- Prefer immutability (val over var)
+- Use descriptive names and add GraphQL descriptions for schema documentation
+- Include comments for complex logic
+
+### Debugging
+- GraphiQL interface is available at `/graphiql` for testing GraphQL queries
+- Development mode provides additional logging and hot reloading
+- Use the `[DEBUG_LOG]` prefix in test logs for better visibility
