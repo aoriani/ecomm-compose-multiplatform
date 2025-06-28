@@ -38,7 +38,7 @@ fun Navigation(
                         Routes.ProductDetails(
                             id = product.id,
                             name = product.name,
-                            imageUrl = product.thumbnail
+                            imageUrl = product.thumbnailUrl
                         )
                     )
                 }

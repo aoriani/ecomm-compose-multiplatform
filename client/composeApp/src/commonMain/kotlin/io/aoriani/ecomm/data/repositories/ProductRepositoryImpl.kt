@@ -1,7 +1,5 @@
 package io.aoriani.ecomm.data.repositories
 
-import co.touchlab.kermit.Logger
-import com.apollographql.adapter.core.toNumber
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.exception.ApolloException
@@ -62,7 +60,7 @@ private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = 
     id = id,
     name = name,
     price = price.toString().toDouble(),
-    thumbnail = images.firstOrNull(),
+    thumbnailUrl = images.firstOrNull(),
 )
 
 private fun FetchProductQuery.Product.toProductModel(): Product = Product(

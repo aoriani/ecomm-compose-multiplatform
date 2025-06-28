@@ -7,5 +7,5 @@ data class ProductPreview(
     val id: String,
     val name: String,
     val price: Double,
-    val thumbnail: String?,
+    val thumbnailUrl: String?,
 )
