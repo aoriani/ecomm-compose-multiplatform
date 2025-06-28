@@ -101,6 +101,7 @@ kotlin {
         }
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
+            implementation(npm("big.js", "7.0.1"))
         }
     }
 }
