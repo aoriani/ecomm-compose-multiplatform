@@ -1,37 +1,197 @@
-# E-Commerce Kotlin Multiplatform Client
+# eCommerceApp Development Guidelines
 
-This is the Kotlin Multiplatform client for an e-commerce application. It targets Android, iOS, Desktop, and Web (using Kotlin/Wasm).
+This document provides essential information for developers working on the eCommerceApp project. It includes build/configuration instructions, testing information, and additional development details specific to this project.
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+## Build/Configuration Instructions
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+### Project Overview
 
+This is a Kotlin Multiplatform project using Compose Multiplatform for UI. It targets multiple platforms:
+- Android
+- iOS
+- Desktop (JVM)
+- Web (WebAssembly)
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+### Prerequisites
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [GitHub](https://github.com/JetBrains/compose-multiplatform/issues).
+- JDK 11 or higher
+- Android SDK
+- Xcode (for iOS development)
+- Node.js and npm (for WebAssembly target)
 
-## Configuration
+### Building the Project
 
-This client application needs to connect to a GraphQL backend to fetch and display e-commerce data.
+#### From Command Line
 
-The GraphQL server URL is currently hardcoded in `client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/di/Deps.kt`.
-For development, you might need to change this URL to point to your local server instance. In a production build, this URL should point to the deployed backend. Future improvements should make this URL configurable through build parameters or environment settings.
+```bash
+# Build all platforms
+./gradlew build
 
-## Running the Application
+# Build specific platform
+./gradlew composeApp:androidBuild  # Android
+./gradlew composeApp:jvmJar        # Desktop
+./gradlew composeApp:iosArm64XCFramework  # iOS
+./gradlew composeApp:wasmJsBrowserProductionWebpack  # WebAssembly
+```
 
-Here's how to run the application on different platforms:
+#### Running the Application
 
-*   **Web (Wasm):** You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task.
-*   **Android:** To run on Android, open the project in Android Studio and run the `composeApp` configuration on an emulator or connected device.
-*   **iOS:** To run on iOS, open `client/iosApp/iosApp.xcodeproj` in Xcode and run the app on a simulator or connected device.
-*   **Desktop:** To run on Desktop, execute the Gradle task `:composeApp:run` (or `:composeApp:desktopRun`, `:composeApp:runDesktop` - please check your available tasks).
+```bash
+# Run on Android
+./gradlew composeApp:installDebug
+
+# Run on Desktop
+./gradlew composeApp:run
+
+# Run on iOS (requires opening the Xcode project)
+open iosApp/iosApp.xcodeproj
+
+# Run on Browser
+./gradlew composeApp:wasmJsBrowserDevelopmentRun
+```
+
+### Configuration
+
+The project uses the Gradle Version Catalog for dependency management, located at `gradle/libs.versions.toml`. Key configurations:
+
+- Android configuration is in `composeApp/build.gradle.kts`
+- iOS configuration is in `iosApp/Configuration/Config.xcconfig`
+- GraphQL configuration is in the Apollo section of `composeApp/build.gradle.kts`
+
+## Testing Information
+
+### Test Structure
+
+The project follows Kotlin Multiplatform testing conventions:
+
+- `commonTest`: Tests that run on all platforms
+- `androidTest`: Android-specific tests
+- `jvmTest`: JVM/Desktop-specific tests
+- `iosTest`: iOS-specific tests
+- `wasmJsTest`: WebAssembly-specific tests
+
+### Writing Tests
+
+Tests are written using the Kotlin Test library. Here's an example of a simple test:
+
+```kotlin
+class CartItemTest {
+
+    @Test
+    fun testTotalPriceCalculation() {
+        // Arrange
+        val cartItem = CartItem(
+            id = "test-id",
+            name = "Test Product",
+            price = 10.0,
+            quantity = 2
+        )
+
+        // Act
+        val totalPrice = cartItem.totalPrice
+
+        // Assert
+        assertEquals(20.0, totalPrice, "Total price should be price * quantity")
+    }
+}
+```
+
+Note: In actual code, you would need to include the appropriate imports:
+```
+import kotlin.test.Test
+import kotlin.test.assertEquals
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+./gradlew allTests
+
+# Run tests for specific platform
+./gradlew jvmTest
+./gradlew androidTest
+./gradlew iosTest
+./gradlew wasmJsTest
+
+# Run a specific test class
+./gradlew jvmTest --tests "io.aoriani.ecomm.data.model.CartItemTest"
+```
+
+### Test Dependencies
+
+Test dependencies are configured in the `build.gradle.kts` file:
+
+```kotlin
+commonTest.dependencies {
+    implementation(libs.kotlin.test)
+}
+
+jvmTest.dependencies {
+    implementation(libs.kotlin.test.junit)
+}
+```
+
+Note: JUnit is not compatible with WebAssembly, so we only add it to JVM and Android test targets.
+
+## Additional Development Information
+
+### Project Architecture
+
+The project follows a clean architecture approach with the following layers:
+
+- **UI Layer**: Compose UI components in `screens` packages
+- **ViewModel Layer**: ViewModels that handle UI logic and state
+- **Repository Layer**: Repositories that abstract data sources
+- **Data Layer**: Data models and network clients
+
+### Code Style
+
+- Follow Kotlin coding conventions
+- Use meaningful names for variables, functions, and classes
+- Write comments for complex logic
+- Include KDoc for public APIs
+
+### GraphQL Integration
+
+The project uses Apollo Kotlin for GraphQL integration:
+
+- GraphQL schema is in `composeApp/src/commonMain/graphql/aoriani/schema.graphqls`
+- Queries are in `composeApp/src/commonMain/graphql/aoriani/queries/`
+- Apollo generates Kotlin code for GraphQL operations
+
+### Navigation
+
+The project uses Compose Navigation:
+
+- Routes are defined in `io.aoriani.ecomm.ui.navigation.Routes`
+- Navigation graph is in `io.aoriani.ecomm.ui.navigation.Navigation`
+
+### Dependency Injection
+
+The project uses a simple dependency injection approach:
+
+- Dependencies are defined in `io.aoriani.ecomm.di.Deps`
+- ViewModels access dependencies through this object
+
+### Logging
+
+The project uses Kermit for logging:
+
+```kotlin
+private val logger = Logger.withTag("YourClassName")
+logger.d { "Debug message" }
+logger.i { "Info message" }
+logger.w { "Warning message" }
+logger.e { "Error message" }
+```
+
+### Hot Reload
+
+The project supports Compose Hot Reload for faster development:
+
+```bash
+./gradlew :composeApp:enableComposeCompilerReports
+```
+
+This will generate reports in `build/compose_compiler` that can help optimize Compose performance.
