@@ -57,7 +57,7 @@ fun ProductImage(product: ProductPreview) {
     val isPreview = LocalInspectionMode.current
     if (!isPreview) {
         AsyncImage(
-            model = product.thumbnail,
+            model = product.thumbnailUrl,
             contentScale = ContentScale.Crop,
             contentDescription = product.name,
             modifier = Modifier
@@ -99,7 +99,7 @@ fun ProductTilePreview() {
                 id = "id",
                 name = "Product Name",
                 price = 10.0,
-                thumbnail = "https://picsum.photos/200/300"
+                thumbnailUrl = "https://picsum.photos/200/300"
             )
         )
     }
