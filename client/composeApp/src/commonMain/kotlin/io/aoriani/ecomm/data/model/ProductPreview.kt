@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 data class ProductPreview(
     val id: String,
     val name: String,
-    @Contextual val price: DollarAmount,
+    val price: DollarAmount,
     val thumbnailUrl: String?,
 )
