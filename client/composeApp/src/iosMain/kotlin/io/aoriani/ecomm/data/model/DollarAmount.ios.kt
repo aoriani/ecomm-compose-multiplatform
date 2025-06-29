@@ -1,11 +1,13 @@
 package io.aoriani.ecomm.data.model
 
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.serialization.Serializable
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSNumberFormatterDecimalStyle
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@Serializable(with = DollarAmountAsStringSerializer::class)
 actual class DollarAmount private constructor(private val delegate: NSDecimalNumber) {
     @OptIn(ExperimentalForeignApi::class)
     actual constructor(value: String) : this(NSDecimalNumber(value))
