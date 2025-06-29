@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_back
+import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollbarIfSupported
 import io.aoriani.ecomm.ui.screens.productdetails.components.ProductImage
@@ -81,7 +82,7 @@ fun ProductListScreenPreview() {
                 product = Product(
                     id = "id",
                     name = "Product Name",
-                    price = 10.0,
+                    price = DollarAmount("10.0"),
                     description = "Product Description",
                     images = persistentListOf("")
                 )
