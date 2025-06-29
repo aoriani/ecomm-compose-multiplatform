@@ -2,6 +2,7 @@ package io.aoriani.ecomm.data.model
 
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlinx.serialization.KSerializer
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class DollarAmount private constructor(private val delegate: BigDecimal) {

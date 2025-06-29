@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.compose_multiplatform
+import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductPreview
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -77,7 +78,7 @@ fun ProductImage(product: ProductPreview) {
 }
 
 @Composable
-fun ProductPrice(price: Double) {
+fun ProductPrice(price: DollarAmount) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
@@ -98,7 +99,7 @@ fun ProductTilePreview() {
             ProductPreview(
                 id = "id",
                 name = "Product Name",
-                price = 10.0,
+                price = DollarAmount("10.0"),
                 thumbnailUrl = "https://picsum.photos/200/300"
             )
         )

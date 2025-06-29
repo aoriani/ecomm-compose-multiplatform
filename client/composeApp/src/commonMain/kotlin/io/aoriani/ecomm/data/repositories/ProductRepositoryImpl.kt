@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.exception.ApolloException
 import io.aoriani.ecomm.data.graphql.FetchProductQuery
 import io.aoriani.ecomm.data.graphql.ListProductsQuery
+import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductPreview
 import kotlinx.collections.immutable.ImmutableList
@@ -59,14 +60,14 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
 private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = ProductPreview(
     id = id,
     name = name,
-    price = price.toString().toDouble(),
+    price = DollarAmount(price.toString()),
     thumbnailUrl = images.firstOrNull(),
 )
 
 private fun FetchProductQuery.Product.toProductModel(): Product = Product(
     id = id,
     name = name,
-    price = price.toString().toDouble(),
+    price = DollarAmount(price.toString()),
     description = description,
     images = images.toImmutableList(),
 )
