@@ -8,18 +8,27 @@ private external class Big {
 
     fun plus(other: Big): Big
     fun times(other: Big): Big
+
+    fun toFixed(decimals: Int, roundingMode: Int): String
+
+    companion object {
+        val roundHalfEven: Int
+    }
 }
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class DollarAmount private constructor(private val rawValue: Big) {
+actual class DollarAmount private constructor(private val delegate: Big) {
     actual constructor(value: String) : this(Big(value))
 
     actual operator fun plus(other: DollarAmount): DollarAmount {
-        return DollarAmount(rawValue.plus(other.rawValue))
+        return DollarAmount(delegate.plus(other.delegate))
     }
 
     actual operator fun times(other: Int): DollarAmount {
-        return DollarAmount(rawValue.times(Big(other)))
+        return DollarAmount(delegate.times(Big(other)))
     }
 
+    actual override fun toString(): String {
+        return delegate.toFixed(2, Big.roundHalfEven)
+    }
 }
