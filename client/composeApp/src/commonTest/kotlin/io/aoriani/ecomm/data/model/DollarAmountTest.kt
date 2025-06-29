@@ -4,6 +4,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
 
 class DollarAmountTest {
 
@@ -83,5 +86,37 @@ class DollarAmountTest {
 
         val amount4 = DollarAmount("10.567")  // Should round to 2 decimal places
         assertEquals("10.57", amount4.toString())  // Assuming rounding is implemented
+    }
+
+    @Test
+    fun `Serialization and deserialization`() {
+        // Create a DollarAmount instance
+        val originalAmount = DollarAmount("42.99")
+
+        // Create a Json instance
+        val json = Json { 
+            ignoreUnknownKeys = true 
+            isLenient = true
+        }
+
+        // Serialize to JSON
+        val jsonString = json.encodeToString(DollarAmount.serializer(), originalAmount)
+
+        // Verify the serialized format (should be a string representation)
+        assertEquals("\"42.99\"", jsonString)
+
+        // Deserialize from JSON
+        val deserializedAmount = json.decodeFromString(DollarAmount.serializer(), jsonString)
+
+        // Verify the deserialized value matches the original
+        assertEquals(originalAmount.toString(), deserializedAmount.toString())
+
+        // Test with a different value
+        val anotherAmount = DollarAmount("99.50")
+        val anotherJsonString = json.encodeToString(DollarAmount.serializer(), anotherAmount)
+        assertEquals("\"99.50\"", anotherJsonString)
+
+        val anotherDeserialized = json.decodeFromString(DollarAmount.serializer(), anotherJsonString)
+        assertEquals(anotherAmount.toString(), anotherDeserialized.toString())
     }
 }
