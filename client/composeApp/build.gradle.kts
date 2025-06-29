@@ -91,10 +91,18 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.kotlinx.coroutines.core)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.java)
+        }
+        val desktopTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test.junit)
+            }
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
