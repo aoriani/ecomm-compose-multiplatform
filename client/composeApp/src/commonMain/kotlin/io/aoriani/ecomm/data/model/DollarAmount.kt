@@ -4,4 +4,5 @@ package io.aoriani.ecomm.data.model
 expect class DollarAmount(value: String) {
     operator fun plus(other: DollarAmount): DollarAmount
     operator fun times(other: Int): DollarAmount
+    override fun toString(): String
 }
