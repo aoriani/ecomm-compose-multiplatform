@@ -151,7 +151,11 @@ apollo {
         introspection {
             endpointUrl.set("https://aoriani.dev/graphql")
         }
-        mapScalar("BigDecimal", "com.apollographql.adapter.core.BigDecimal", "com.apollographql.adapter.core.BigDecimalAdapter")
+        mapScalar(
+            "BigDecimal",
+            "com.apollographql.adapter.core.BigDecimal",
+            "com.apollographql.adapter.core.BigDecimalAdapter"
+        )
     }
 }
 
