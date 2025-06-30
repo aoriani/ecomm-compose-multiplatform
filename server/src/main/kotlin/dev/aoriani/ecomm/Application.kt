@@ -28,7 +28,9 @@ fun Application.module() {
             val httpMethod = call.request.httpMethod.value
             val uri = call.request.uri
             val userAgent = call.request.headers["User-Agent"]
-            "Status: $status, HTTP method: $httpMethod, URI: $uri, User agent: $userAgent"
+            val contentType = call.request.contentType()
+            val contentLength = call.request.headers["Content-Length"]
+            "Request: $httpMethod $uri, Status: $status, Content-Type: $contentType, Content-Length: $contentLength, User-Agent: $userAgent"
         }
     }
 
