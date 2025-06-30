@@ -4,7 +4,7 @@ logback-version = "1.5.18"
 expediagroup-graphql = "9.0.0-alpha.8"
 exposed = "1.0.0-beta-2"
 sqlite = "3.50.1.0"
-kotlinx-serialization = "1.8.1"
+kotlinx-serialization = "1.9.0"
 
 [libraries]
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
