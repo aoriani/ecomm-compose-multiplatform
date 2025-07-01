@@ -9,13 +9,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.aoriani.ecomm.di.Deps
 import io.aoriani.ecomm.ui.screens.cart.CartScreen
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsScreen
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsUiState
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsViewModel
 import io.aoriani.ecomm.ui.screens.productlist.ProductListScreen
 import io.aoriani.ecomm.ui.screens.productlist.ProductListViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun Navigation(
@@ -26,7 +26,7 @@ fun Navigation(
         composable<Routes.ProductList> {
             val viewModel: ProductListViewModel = viewModel(
                 factory = ProductListViewModel.Companion.Factory(
-                    Deps.productRepository
+                    koinInject()
                 )
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -48,7 +48,7 @@ fun Navigation(
         composable<Routes.ProductDetails> { backStackEntry ->
             val viewModel: ProductDetailsViewModel = viewModel(
                 factory = ProductDetailsViewModel.Companion.Factory(
-                    Deps.productRepository,
+                    koinInject(),
                 )
             )
             val state: ProductDetailsUiState by viewModel.state.collectAsStateWithLifecycle()
