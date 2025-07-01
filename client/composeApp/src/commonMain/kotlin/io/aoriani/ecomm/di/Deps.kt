@@ -5,10 +5,13 @@ import io.aoriani.ecomm.data.network.KtorClient
 import io.aoriani.ecomm.data.repositories.ProductRepository
 import io.aoriani.ecomm.data.repositories.ProductRepositoryImpl
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+
 val appModule = module {
     singleOf(::KtorClient)
-    single { ApolloClient("https://aoriani.dev/graphql", get()) }
+    single(named("backendBaseUrl")) { "https://aoriani.dev/graphql" }
+    single { ApolloClient(get(named("backendBaseUrl")), get()) }
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
 }

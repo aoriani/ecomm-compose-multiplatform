@@ -1,6 +1,5 @@
 package io.aoriani.ecomm.data.model
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
