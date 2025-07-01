@@ -183,11 +183,11 @@ query {
 
 The client application needs to connect to the backend GraphQL API to function.
 
-*   **Backend URL Configuration:** The GraphQL server URL is currently hardcoded in `client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/di/Deps.kt`.
-*   **Development:** When running the server locally, the client should point to `http://localhost:8080/graphql` (or `http://10.0.2.2:8080/graphql` for Android emulators accessing the host machine's localhost). You may need to modify this URL in the `Deps.kt` file if your local server runs on a different port or address.
+*   **Backend URL Configuration:** The GraphQL server URL is configured in the Koin module located in `client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/di/DI.kt`.
+*   **Development:** When running the server locally, the client should point to `http://localhost:8080/graphql` (or `http://10.0.2.2:8080/graphql` for Android emulators accessing the host machine's localhost). You may need to modify this URL in the `DI.kt` file if your local server runs on a different port or address.
 *   **Production:** For a production build, this URL must be updated to point to the deployed backend service.
 
-Future improvements should make this URL configurable through build parameters or environment settings rather than hardcoding. Please refer to `client/README.md` for any updates on this topic.
+Future improvements should make this URL configurable through build parameters or environment settings. Please refer to `client/README.md` for any updates on this topic.
 
 ## Building and Deployment
 

@@ -4,18 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.aoriani.ecomm.di.Deps
 import io.aoriani.ecomm.ui.screens.cart.CartScreen
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsScreen
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsUiState
 import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsViewModel
 import io.aoriani.ecomm.ui.screens.productlist.ProductListScreen
 import io.aoriani.ecomm.ui.screens.productlist.ProductListViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun Navigation(
@@ -24,11 +23,7 @@ fun Navigation(
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.ProductList) {
         composable<Routes.ProductList> {
-            val viewModel: ProductListViewModel = viewModel(
-                factory = ProductListViewModel.Companion.Factory(
-                    Deps.productRepository
-                )
-            )
+            val viewModel: ProductListViewModel = koinViewModel()
             val state by viewModel.state.collectAsStateWithLifecycle()
             ProductListScreen(
                 state = state,
@@ -46,11 +41,7 @@ fun Navigation(
         }
 
         composable<Routes.ProductDetails> { backStackEntry ->
-            val viewModel: ProductDetailsViewModel = viewModel(
-                factory = ProductDetailsViewModel.Companion.Factory(
-                    Deps.productRepository,
-                )
-            )
+            val viewModel: ProductDetailsViewModel = koinViewModel()
             val state: ProductDetailsUiState by viewModel.state.collectAsStateWithLifecycle()
             ProductDetailsScreen(state, navigateBack = { navController.popBackStack() })
         }

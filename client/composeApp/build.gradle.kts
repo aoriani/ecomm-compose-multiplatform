@@ -66,6 +66,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kotlinx.coroutines.android)
+
+            // Koin
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -90,6 +93,10 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
             implementation(libs.kotlinx.coroutines.core)
+
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

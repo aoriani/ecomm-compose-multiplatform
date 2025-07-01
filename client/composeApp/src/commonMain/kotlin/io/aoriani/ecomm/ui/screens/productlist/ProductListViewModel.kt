@@ -1,9 +1,7 @@
 package io.aoriani.ecomm.ui.screens.productlist
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import co.touchlab.kermit.Logger
 import io.aoriani.ecomm.data.repositories.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,19 +28,6 @@ class ProductListViewModel(private val productRepository: ProductRepository) : V
             } catch (ex: ProductRepository.GraphQlException) {
                 Logger.e(ex, "ProductListViewModel") { "Error fetching products" }
                 state.update { ProductListUiState.Error }
-            }
-        }
-    }
-
-    companion object {
-        class Factory(private val productRepository: ProductRepository) :
-            ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(
-                modelClass: KClass<T>,
-                extras: CreationExtras
-            ): T {
-                @Suppress("UNCHECKED_CAST")
-                return ProductListViewModel(productRepository) as T
             }
         }
     }

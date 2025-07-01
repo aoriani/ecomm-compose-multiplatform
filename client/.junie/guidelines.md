@@ -169,10 +169,10 @@ The project uses Compose Navigation:
 
 ### Dependency Injection
 
-The project uses a simple dependency injection approach:
+The project uses Koin for dependency injection:
 
-- Dependencies are defined in `io.aoriani.ecomm.di.Deps`
-- ViewModels access dependencies through this object
+- Modules are defined in `io.aoriani.ecomm.di.DI.kt`.
+- ViewModels and other classes receive dependencies through constructor injection, managed by Koin.
 
 ### Logging
 
