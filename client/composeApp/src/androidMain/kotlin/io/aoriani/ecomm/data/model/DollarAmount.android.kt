@@ -1,8 +1,8 @@
 package io.aoriani.ecomm.data.model
 
+import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlinx.serialization.Serializable
 
 /**
  * Android-specific implementation of [DollarAmount].
