@@ -25,25 +25,27 @@ fun main(args: Array<String>) {
  * Configures plugins, database, GraphQL, routing, and other application services.
  */
 fun Application.module() {
-    val callLogLevel = environment.config.propertyOrNull("ecomm.logging.level")?.getString()
-    val slf4jLevel = Level.valueOf(callLogLevel ?: "INFO") // Default to INFO if not set
+    configureCallLogging()
+    configureDatabase()
+    configureCors()
+    configureGraphQl()
+    configureRouting()
+    install(StatusPages) {
+        defaultGraphQLStatusPages()
+    }
+}
 
-    install(CallLogging) {
-        level = slf4jLevel
-        filter { call -> call.request.path().startsWith("/") }
-        format { call ->
-            val status = call.response.status()
-            val httpMethod = call.request.httpMethod.value
-            val uri = call.request.uri
-            val userAgent = call.request.headers["User-Agent"]
-            val contentType = call.request.contentType()
-            val contentLength = call.request.headers["Content-Length"]
-            "Request: $httpMethod $uri, Status: $status, Content-Type: $contentType, Content-Length: $contentLength, User-Agent: $userAgent"
+private fun Application.configureGraphQl() {
+    install(GraphQL) {
+        schema {
+            packages = listOf("dev.aoriani.ecomm.graphql.models", "java.math")
+            queries = listOf(ProductQuery(DatabaseProductRepositoryImpl))
+            hooks = ProductSchemaGeneratorHooks
         }
     }
+}
 
-    configureDatabase()
-
+private fun Application.configureCors() {
     install(CORS) {
         // Common local development ports for client applications
         allowHost("localhost:8080", schemes = listOf("http"))
@@ -63,16 +65,23 @@ fun Application.module() {
 
         allowCredentials = false // ou true, se estiver enviando cookies/autenticação
     }
+}
 
-    install(GraphQL) {
-        schema {
-            packages = listOf("dev.aoriani.ecomm.graphql.models", "java.math")
-            queries = listOf(ProductQuery(DatabaseProductRepositoryImpl))
-            hooks = ProductSchemaGeneratorHooks
+private fun Application.configureCallLogging() {
+    val callLogLevel = environment.config.propertyOrNull("ecomm.logging.level")?.getString()
+    val slf4jLevel = Level.valueOf(callLogLevel ?: "INFO") // Default to INFO if not set
+
+    install(CallLogging) {
+        level = slf4jLevel
+        filter { call -> call.request.path().startsWith("/") }
+        format { call ->
+            val status = call.response.status()
+            val httpMethod = call.request.httpMethod.value
+            val uri = call.request.uri
+            val userAgent = call.request.headers["User-Agent"]
+            val contentType = call.request.contentType()
+            val contentLength = call.request.headers["Content-Length"]
+            "Request: $httpMethod $uri, Status: $status, Content-Type: $contentType, Content-Length: $contentLength, User-Agent: $userAgent"
         }
-    }
-    configureRouting()
-    install(StatusPages) {
-        defaultGraphQLStatusPages()
     }
 }
