@@ -20,9 +20,16 @@ fun main(args: Array<String>) {
     EngineMain.main(args)
 }
 
+/**
+ * Main Ktor application module.
+ * Configures plugins, database, GraphQL, routing, and other application services.
+ */
 fun Application.module() {
+    val callLogLevel = environment.config.propertyOrNull("ecomm.logging.level")?.getString()
+    val slf4jLevel = Level.valueOf(callLogLevel ?: "INFO") // Default to INFO if not set
+
     install(CallLogging) {
-        level = Level.DEBUG
+        level = slf4jLevel
         filter { call -> call.request.path().startsWith("/") }
         format { call ->
             val status = call.response.status()
@@ -38,7 +45,11 @@ fun Application.module() {
     configureDatabase()
 
     install(CORS) {
-        allowHost("localhost:8080", schemes = listOf("http"))
+        // Common local development ports for client applications
+        allowHost("localhost:3000", schemes = listOf("http")) // e.g., React, Vue, Angular default
+        allowHost("localhost:5173", schemes = listOf("http")) // e.g., Vite default
+        allowHost("localhost:8080", schemes = listOf("http")) // If client is also served from this port or for other tools
+        // Production client host
         allowHost("aoriani.dev", schemes = listOf("https"))
 
         allowMethod(HttpMethod.Get)

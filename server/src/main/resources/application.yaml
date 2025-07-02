@@ -1,6 +1,0 @@
-ktor:
-    application:
-        modules:
-            - dev.aoriani.ecomm.ApplicationKt.module
-    deployment:
-        port: "$PORT:8080"
