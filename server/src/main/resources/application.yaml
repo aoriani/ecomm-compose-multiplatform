@@ -1,0 +1,14 @@
+ktor:
+  application:
+    modules:
+      - dev.aoriani.ecomm.ApplicationKt.module
+  deployment:
+    port: "$PORT:8080"
+
+ecomm:
+  database:
+    url: "jdbc:sqlite:./data/products.db"
+    driver: "org.sqlite.JDBC"
+  logging:
+    level: "DEBUG"
+
