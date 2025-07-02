@@ -149,8 +149,8 @@ Then register the query in `Application.kt`:
 ```kotlin
 install(GraphQL) {
     schema {
-        packages = listOf("dev.aoriani.ecomm.graphql.models")
-        queries = listOf(ProductQuery(), CategoryQuery())
+        packages = listOf("dev.aoriani.ecomm.graphql.models", "java.math") // Ensure all relevant model packages are listed
+        queries = listOf(ProductQuery(), CategoryQuery()) // Register your query instances here
     }
 }
 ```
