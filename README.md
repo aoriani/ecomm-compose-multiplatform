@@ -49,7 +49,7 @@ Comprehensive documentation for this project, including detailed explanations of
     *   Compose Multiplatform (for UI)
     *   Kotlin/Wasm (for Web target)
     *   Gradle (Build tool)
-*   **Database:** (Specify if known, otherwise omit or state as TBD)
+*   **Database:** SQLite (for local development/demo purposes)
 *   **Other Tools:**
     *   Docker (for containerization of the server)
 
@@ -74,7 +74,7 @@ To get started with developing and running this project, you'll need to set up y
 
 ### Prerequisites
 
-*   **Java Development Kit (JDK):** Version 17 or higher is recommended for both the client and server. You can download it from [Oracle](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html) or use an alternative distribution like [OpenJDK](https://openjdk.java.net/).
+*   **Java Development Kit (JDK):** Version 11 or newer. For the server, Amazon Corretto 22 is recommended for production (as per `server/README.md`). For client development, ensuring your environment supports Java 11 (used by Android and Kotlin JVM targets) is key. Using JDK 17+ for development is generally fine.
 *   **IntelliJ IDEA:** The recommended IDE for Kotlin development. You can use the Community or Ultimate edition. Download it from [JetBrains](https://www.jetbrains.com/idea/download/).
 *   **Android Studio:** Required for Android development. It can be downloaded from the [Android Developer website](https://developer.android.com/studio). Ensure you have the Android SDK and emulators set up.
 *   **Xcode:** Required for iOS development (macOS only). Download it from the [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835).
@@ -217,7 +217,7 @@ This section provides guidance on building the application components for produc
 3.  **Deployment:**
     *   The executable JAR can be deployed to any environment with a Java runtime.
     *   The Docker image can be deployed to container orchestration platforms (like Kubernetes, Docker Swarm) or any service that supports Docker containers (e.g., AWS ECS, Google Cloud Run).
-    *   Ensure to configure necessary environment variables for production (e.g., database connections, external service URLs, CORS settings if not handled via a gateway). The `server/README.md` mentions that CORS is currently hardcoded, which should be addressed for production.
+    *   Ensure to configure necessary environment variables for production (e.g., database connections, external service URLs). The CORS settings are currently hardcoded in `server/src/main/kotlin/dev/aoriani/ecomm/Application.kt` (allowing specific hosts like `localhost:8080` and `aoriani.dev`); this may need to be made more flexible for different production environments if not handled by a gateway.
 
 ### Client
 

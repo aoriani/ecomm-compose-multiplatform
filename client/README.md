@@ -28,7 +28,8 @@ This is a Kotlin Multiplatform project using Compose Multiplatform for UI. It ta
 ./gradlew build
 
 # Build specific platform
-./gradlew composeApp:androidBuild  # Android
+./gradlew :composeApp:assembleDebug  # Android (Debug build)
+# For a release build, use: ./gradlew :composeApp:assembleRelease
 ./gradlew composeApp:jvmJar        # Desktop
 ./gradlew composeApp:iosArm64XCFramework  # iOS
 ./gradlew composeApp:wasmJsBrowserProductionWebpack  # WebAssembly
@@ -105,8 +106,10 @@ import kotlin.test.assertEquals
 ### Running Tests
 
 ```bash
-# Run all tests
-./gradlew allTests
+# Run all tests (executes tests for all targets)
+./gradlew check
+# Alternatively, to run tests for the default target (often JVM):
+# ./gradlew test
 
 # Run tests for specific platform
 ./gradlew jvmTest
