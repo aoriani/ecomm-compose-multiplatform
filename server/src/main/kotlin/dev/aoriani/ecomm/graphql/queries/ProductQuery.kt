@@ -24,7 +24,9 @@ class ProductQuery(private val repository: ProductRepository) : Query {
         @GraphQLDescription("The unique ID of the product to retrieve. Cannot be blank.")
         id: String
     ): Product {
-        require(id.isNotBlank()) { "Product ID cannot be blank." }
+        if (id.isBlank()) {
+            throw IllegalArgumentException("Product ID cannot be blank.")
+        }
         return repository.getById(id) ?: throw ProductNotFoundException(id)
     }
 }
