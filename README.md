@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/aoriani/ecomm-compose-multiplatform)
+
 # E-Commerce Full-Stack Application
 
 Welcome to the E-Commerce Full-Stack Application! This project demonstrates a modern approach to building a complete e-commerce platform using Kotlin for both the backend and the client-side applications.
