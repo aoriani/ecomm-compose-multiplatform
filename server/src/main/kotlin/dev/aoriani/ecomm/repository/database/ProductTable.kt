@@ -41,12 +41,25 @@ class ProductEntity(id: EntityID<String>) : Entity<String>(id) {
 
 private const val IMAGE_URL_BASE = "https://aoriani.dev/static/images"
 
-fun ProductTable.initialize() {
+/**
+ * Initializes the database schema for products.
+ * Creates the [ProductTable] if it doesn't already exist.
+ */
+fun ProductTable.initializeSchema() {
     transaction {
-        SchemaUtils.create(this@initialize)
+        SchemaUtils.create(this@initializeSchema)
+    }
+}
 
-        ProductTable.upsert {
-            it[id] = "elon_musk_plush"
+/**
+ * Seeds the [ProductTable] with initial sample data.
+ * This function should be called within a transaction.
+ * It populates the table with a predefined list of tech personality plushies.
+ */
+private fun ProductTable.doSeedData() {
+    // Data seeding logic starts here
+    ProductTable.upsert {
+        it[id] = "elon_musk_plush"
             it[name] = "Elon Musk"
             it[price] = BigDecimal("34.99")
             it[description] = """
@@ -251,6 +264,21 @@ fun ProductTable.initialize() {
             it[material] = "Tech-grade nylon weave"
             it[inStock] = true
             it[countryOfOrigin] = "India"
+        }
+    }
+}
+
+/**
+ * Initializes the database by creating the schema and seeding it with sample data if the product table is currently empty.
+ * This is the primary function called during application startup to set up the database.
+ */
+fun initializeDatabaseAndSeedIfEmpty() {
+    ProductTable.initializeSchema() // Creates schema if it doesn't exist
+
+    transaction {
+        val isProductTableEmpty = ProductEntity.all().empty()
+        if (isProductTableEmpty) {
+            ProductTable.doSeedData()
         }
     }
 }

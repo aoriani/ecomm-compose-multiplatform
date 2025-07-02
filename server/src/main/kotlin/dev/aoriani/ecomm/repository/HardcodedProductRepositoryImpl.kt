@@ -202,6 +202,6 @@ object HardcodedProductRepositoryImpl: ProductRepository {
         )
     )
 
-    override fun getAll(): List<Product> = products
-    override fun getById(id: String): Product? = products.firstOrNull { it.id == id }
+    override suspend fun getAll(): List<Product> = products
+    override suspend fun getById(id: String): Product? = products.firstOrNull { it.id == id }
 }

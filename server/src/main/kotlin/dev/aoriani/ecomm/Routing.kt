@@ -8,6 +8,10 @@ import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Configures the application's routing.
+ * Sets up a root path, static resources, and GraphQL endpoints (POST, GET, GraphiQL).
+ */
 fun Application.configureRouting() {
     routing {
         get("/") {
