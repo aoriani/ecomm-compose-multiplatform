@@ -46,7 +46,9 @@ fun Application.module() {
 
     install(CORS) {
         // Common local development ports for client applications
-        allowHost("localhost:8080", schemes = listOf("http"))
+        allowHost("localhost:3000", schemes = listOf("http")) // e.g., React, Vue, Angular default
+        allowHost("localhost:5173", schemes = listOf("http")) // e.g., Vite default
+        allowHost("localhost:8080", schemes = listOf("http")) // If client is also served from this port or for other tools
         // Production client host
         allowHost("aoriani.dev", schemes = listOf("https"))
 
