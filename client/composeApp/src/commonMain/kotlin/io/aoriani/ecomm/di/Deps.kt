@@ -9,9 +9,11 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+private const val BACKEND_BASE_URL = "backendBaseUrl"
+
 val appModule = module {
     singleOf(::KtorClient)
-    single(named("backendBaseUrl")) { "https://aoriani.dev/graphql" }
-    single { ApolloClient(get(named("backendBaseUrl")), get()) }
+    single(named(BACKEND_BASE_URL)) { "https://aoriani.dev/graphql" }
+    single { ApolloClient(get(named(BACKEND_BASE_URL)), get()) }
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
 }
