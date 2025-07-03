@@ -58,16 +58,19 @@ class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRep
 }
 
 private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = ProductPreview(
-    id = id,
-    name = name,
-    price = DollarAmount(price.toString()),
-    thumbnailUrl = images.firstOrNull(),
+    id = productBasic.id,
+    name = productBasic.name,
+    price = DollarAmount(productBasic.price.toString()),
+    thumbnailUrl = productBasic.images.firstOrNull(),
 )
 
 private fun FetchProductQuery.Product.toProductModel(): Product = Product(
-    id = id,
-    name = name,
-    price = DollarAmount(price.toString()),
+    id = productBasic.id,
+    name = productBasic.name,
+    price = DollarAmount(productBasic.price.toString()),
     description = description,
-    images = images.toImmutableList(),
+    images = productBasic.images.toImmutableList(),
+    material = material,
+    countryOfOrigin = countryOfOrigin,
+    inStock = inStock
 )

@@ -9,5 +9,8 @@ data class Product(
     val name: String,
     val price: DollarAmount,
     val description: String,
+    val material: String,
+    val countryOfOrigin: String,
+    val inStock: Boolean,
     val images: ImmutableList<String>,
 )
