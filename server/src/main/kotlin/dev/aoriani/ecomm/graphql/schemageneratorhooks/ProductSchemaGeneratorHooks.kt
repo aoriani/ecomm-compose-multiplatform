@@ -1,4 +1,4 @@
-package dev.aoriani.ecomm.graphql
+package dev.aoriani.ecomm.graphql.schemageneratorhooks
 
 import com.expediagroup.graphql.generator.hooks.SchemaGeneratorHooks
 import graphql.scalars.ExtendedScalars

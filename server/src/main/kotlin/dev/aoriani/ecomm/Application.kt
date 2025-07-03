@@ -2,9 +2,8 @@ package dev.aoriani.ecomm
 
 import com.expediagroup.graphql.server.ktor.GraphQL
 import com.expediagroup.graphql.server.ktor.defaultGraphQLStatusPages
-import dev.aoriani.ecomm.graphql.ProductSchemaGeneratorHooks
+import dev.aoriani.ecomm.graphql.schemageneratorhooks.ProductSchemaGeneratorHooks
 import dev.aoriani.ecomm.graphql.queries.ProductQuery
-import dev.aoriani.ecomm.repository.HardcodedProductRepositoryImpl
 import dev.aoriani.ecomm.repository.database.DatabaseProductRepositoryImpl
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod

@@ -4,16 +4,35 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
-import org.jetbrains.exposed.v1.dao.Entity
-import org.jetbrains.exposed.v1.dao.ImmutableEntityClass
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.upsert
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.json.json
 import java.math.BigDecimal
 
-const val MAX_VARCHAR_LENGTH = 256
+private const val MAX_VARCHAR_LENGTH = 256
 
+private const val IMAGE_URL_BASE = "https://aoriani.dev/static/images"
+
+/**
+ * Represents the database table for storing product information.
+ * This object defines the schema for the `products` table and its corresponding columns.
+ * Each column in this table maps to a specific attribute of a product and supports
+ * interactions with the database using Exposed DSL.
+ *
+ * Columns:
+ * - `id`: The unique identifier for the product.
+ * - `name`: The name of the product.
+ * - `price`: The price of the product, represented as a decimal value with a precision of 20 and a scale of 2.
+ * - `description`: A text field containing a detailed description of the product.
+ * - `material`: The material of the product.
+ * - `images`: A JSON array storing URLs or references to product images.
+ * - `inStock`: A boolean indicating whether the product is in stock.
+ * - `countryOfOrigin`: The country where the product originates.
+ *
+ * Primary Key:
+ * The `id` column serves as the primary key of the table.
+ */
 object ProductTable : IdTable<String>("products") {
     override val id: Column<EntityID<String>> = varchar(name = "id", length = MAX_VARCHAR_LENGTH).entityId()
     val name = varchar(name = "name", length = MAX_VARCHAR_LENGTH)
@@ -22,24 +41,10 @@ object ProductTable : IdTable<String>("products") {
     val material = varchar("material", MAX_VARCHAR_LENGTH)
     val images = json<List<String>>("images", Json)
     val inStock = bool("in_stock")
-    val countryOfOrigin = varchar("country_of_origin", MAX_VARCHAR_LENGTH)
 
+    val countryOfOrigin = varchar("country_of_origin", MAX_VARCHAR_LENGTH)
     override val primaryKey = PrimaryKey(id)
 }
-
-class ProductEntity(id: EntityID<String>) : Entity<String>(id) {
-    companion object : ImmutableEntityClass<String, ProductEntity>(ProductTable)
-
-    val name by ProductTable.name
-    val price by ProductTable.price
-    val description by ProductTable.description
-    val material by ProductTable.material
-    val images by ProductTable.images
-    val inStock by ProductTable.inStock
-    val countryOfOrigin by ProductTable.countryOfOrigin
-}
-
-private const val IMAGE_URL_BASE = "https://aoriani.dev/static/images"
 
 /**
  * Initializes the database schema for products.
