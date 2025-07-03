@@ -12,8 +12,8 @@ interface ProductDetailsUiState {
     ) : ProductDetailsUiState
 
     data class Loaded(val product: Product) : ProductDetailsUiState {
-        override inline val title: String get() = product.name
-        override inline val imageUrl: String get() = product.images.firstOrNull().orEmpty()
+        override val title: String get() = product.name
+        override val imageUrl: String get() = product.images.firstOrNull().orEmpty()
     }
 
     data class Error(
