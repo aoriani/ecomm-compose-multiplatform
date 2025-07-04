@@ -179,6 +179,11 @@ apollo {
         introspection {
             endpointUrl.set("https://aoriani.dev/graphql")
         }
+        mapScalar(
+            "BigDecimal",
+            "com.apollographql.adapter.core.BigDecimal",
+            "com.apollographql.adapter.core.BigDecimalAdapter"
+        )
     }
 }
 
@@ -188,11 +193,6 @@ sqldelight {
             packageName.set("io.aoriani.ecomm.data.repositories.db")
             generateAsync.set(true)
         }
-        mapScalar(
-            "BigDecimal",
-            "com.apollographql.adapter.core.BigDecimal",
-            "com.apollographql.adapter.core.BigDecimalAdapter"
-        )
     }
 }
 
