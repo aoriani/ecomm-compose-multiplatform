@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -19,6 +20,10 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
+    }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     sourceSets.all {
@@ -66,6 +71,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.sqldelight.android.driver)
         }
         commonMain.dependencies {
 //            implementation(libs.kermit.koin)
@@ -86,6 +92,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
             implementation(libs.kermit.main)
+            implementation(libs.sqldelight.coroutines.extension)
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.collections.immutable)
@@ -101,6 +108,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.ktor.client.java)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.sqldelight.jvm.driver)
         }
         val desktopTest by getting {
             dependencies {
@@ -109,10 +117,27 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.native.driver)
         }
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(npm("big.js", "7.0.1"))
+            implementation(libs.sqldelight.webworker.driver)
+            implementation(libs.sqldelight.runtime.wasmjs)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
+            implementation(npm("sql.js", "1.12.0")) // Ensure this version is compatible or newer
+            implementation(devNpm("copy-webpack-plugin", "9.1.0")) // For copying the .wasm file
+            //TODO
+            // Reference for sqldelight wasm setup
+            // https://github.com/DrUlysses/Kristine/blob/main/composeApp/build.gradle.kts
+            // https://kotlinlang.slack.com/archives/C5HT9AL7Q/p1748911587936999
+            // https://kotlinlang.slack.com/archives/C5HT9AL7Q/p1749181253399889
+            // https://github.com/dellisd/sqldelight-sqlite-wasm
+            // https://kotlinlang.slack.com/archives/C5HT9AL7Q/p1735354252983189
+            // https://github.com/sqldelight/sqldelight/pull/5534
+            // It seems that DB will be in memory, which is useless for my purpose
+            // Research suggest using IndexDB or OPFS (https://webkit.org/blog/12257/the-file-system-access-api-with-origin-private-file-system/)
+            // https://g.co/gemini/share/997e74da6816 -> My personal gemini search on the topic
         }
     }
 }
@@ -159,6 +184,15 @@ apollo {
             "com.apollographql.adapter.core.BigDecimal",
             "com.apollographql.adapter.core.BigDecimalAdapter"
         )
+    }
+}
+
+sqldelight {
+    databases {
+        create("ProductDatabase") {
+            packageName.set("io.aoriani.ecomm.data.repositories.db")
+            generateAsync.set(true)
+        }
     }
 }
 
