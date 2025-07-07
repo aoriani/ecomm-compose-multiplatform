@@ -194,6 +194,7 @@ sqldelight {
             generateAsync.set(true)
         }
     }
+    linkSqlite = true
 }
 
 compose.desktop {
