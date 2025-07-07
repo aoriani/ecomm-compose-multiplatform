@@ -16,7 +16,7 @@ apollo = "4.3.1"
 apollo-adapters-core = "0.7.0"
 apollo-engine-ktor = "0.1.1"
 coil = "3.2.0"
-compose-hotreload = "1.0.0-beta01"
+compose-hotreload = "1.0.0-beta03"
 compose-multiplatform = "1.8.2"
 junit = "4.13.2"
 kermit = "2.0.6"
@@ -90,7 +90,7 @@ sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", versi
 sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines-extension = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-webworker-driver = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqldelight" }
-sqldelight-runtime-wasmjs = { module = "app.cash.sqldelight:runtime-wasm-js", version.ref = "sqldelight" }
+#sqldelight-runtime-wasmjs = { module = "app.cash.sqldelight:runtime-wasm-js", version.ref = "sqldelight" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

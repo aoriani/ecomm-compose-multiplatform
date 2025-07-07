@@ -8,11 +8,13 @@ import io.aoriani.ecomm.data.graphql.ListProductsQuery
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductPreview
+import io.aoriani.ecomm.data.repositories.db.ProductDatabase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
-class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRepository {
+class ProductRepositoryImpl(private val apolloClient: ApolloClient, private val productDatabase: ProductDatabase) : ProductRepository {
+
 
     override suspend fun fetchProducts(): ImmutableList<ProductPreview> {
         val response: ApolloResponse<ListProductsQuery.Data>
