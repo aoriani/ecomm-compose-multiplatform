@@ -4,9 +4,11 @@ import io.aoriani.ecomm.data.network.ApolloClient
 import io.aoriani.ecomm.data.network.KtorClient
 import io.aoriani.ecomm.data.repositories.ProductRepository
 import io.aoriani.ecomm.data.repositories.ProductRepositoryImpl
+import io.aoriani.ecomm.data.repositories.db.DollarAmountAdapter
 import io.aoriani.ecomm.data.repositories.db.ProductDatabase
 import io.aoriani.ecomm.data.repositories.db.SqlDriverFactory
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -18,8 +20,9 @@ expect val sqlPlatformModule: Module
 
 val sqlCommonModule = module {
     includes(sqlPlatformModule)
+    factoryOf(::DollarAmountAdapter)
     single { get<SqlDriverFactory>().createDriver() }
-    single { ProductDatabase(get()) }
+    single { ProductDatabase(driver = get(), product_basicAdapter = get()) }
 }
 
 val appModule = module {

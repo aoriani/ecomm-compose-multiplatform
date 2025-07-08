@@ -1,9 +1,10 @@
+import io.aoriani.ecomm.data.model.DollarAmount;
 import kotlin.Boolean;
 
 CREATE TABLE IF NOT EXISTS product_basic (
     id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
-    price REAL NOT NULL
+    price TEXT AS DollarAmount NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS product_extra (
@@ -39,8 +40,8 @@ SELECT
     COALESCE(pe.description, '') AS description,
     COALESCE(pe.countryOfOrigin, '') AS countryOfOrigin,
     COALESCE(pe.material, '') AS material,
-    COALESCE(pe.inStock, 0) AS inStock,
-    (SELECT GROUP_CONCAT(image) FROM product_image WHERE product_image.id = pb.id) AS images
+    pe.inStock AS inStock,
+    (SELECT GROUP_CONCAT(image) AS Boolean FROM product_image WHERE product_image.id = pb.id) AS images
 FROM product_basic AS pb
 INNER JOIN product_extra AS pe
 WHERE pb.id = :id;
