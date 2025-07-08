@@ -56,5 +56,3 @@ VALUES (:id, :description, :countryOfOrigin, :material, :inStock);
 insertProductImage:
 INSERT OR REPLACE INTO  product_image(id, image)
 VALUES (:id, :image);
-
-
