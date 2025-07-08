@@ -47,9 +47,12 @@ Comprehensive documentation for this project, including detailed explanations of
 *   **Client:**
     *   Kotlin Multiplatform
     *   Compose Multiplatform (for UI)
+    *   SQLDelight (for local database caching)
     *   Kotlin/Wasm (for Web target)
     *   Gradle (Build tool)
-*   **Database:** SQLite (for local development/demo purposes)
+*   **Database:**
+    *   **Server:** SQLite (for local development/demo purposes)
+    *   **Client:** SQLite (via SQLDelight for local caching)
 *   **Other Tools:**
     *   Docker (for containerization of the server)
 
@@ -59,7 +62,9 @@ The repository is organized into two main directories:
 
 *   `./client/`: Contains the Kotlin Multiplatform client application.
     *   `composeApp/`: Shared UI and business logic written in Compose Multiplatform.
-        *   `commonMain/`: Code common to all client targets (Android, iOS, Desktop, Web).
+        *   `commonMain/`: Code common to all client targets, including:
+            *   `kotlin/`: Shared Kotlin source code for UI and business logic.
+            *   `sqldelight/`: SQLDelight database schema and queries for local caching.
         *   `androidMain/`, `iosMain/`, `desktopMain/`, `wasmJsMain/`: Platform-specific implementations and entry points.
     *   `iosApp/`: Xcode project for the iOS application.
     *   See `client/README.md` for more detailed information on the client project structure.

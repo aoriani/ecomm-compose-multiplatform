@@ -58,6 +58,7 @@ The project uses the Gradle Version Catalog for dependency management, located a
 - Android configuration is in `composeApp/build.gradle.kts`
 - iOS configuration is in `iosApp/Configuration/Config.xcconfig`
 - GraphQL configuration is in the Apollo section of `composeApp/build.gradle.kts`
+- SQLDelight configuration is in the SQLDelight section of `composeApp/build.gradle.kts`
 
 ## Testing Information
 
@@ -146,7 +147,7 @@ The project follows a clean architecture approach with the following layers:
 - **UI Layer**: Compose UI components in `screens` packages
 - **ViewModel Layer**: ViewModels that handle UI logic and state
 - **Repository Layer**: Repositories that abstract data sources
-- **Data Layer**: Data models and network clients
+- **Data Layer**: Data models, network clients, and local database access
 
 ### Code Style
 
@@ -162,6 +163,14 @@ The project uses Apollo Kotlin for GraphQL integration:
 - GraphQL schema is in `composeApp/src/commonMain/graphql/aoriani/schema.graphqls`
 - Queries are in `composeApp/src/commonMain/graphql/aoriani/queries/`
 - Apollo generates Kotlin code for GraphQL operations
+
+### Local Database with SQLDelight
+
+The project uses SQLDelight for local database caching:
+
+- Database schema and queries are defined in `.sq` files located in `composeApp/src/commonMain/sqldelight/`
+- SQLDelight generates type-safe Kotlin APIs for interacting with the database.
+- Platform-specific drivers for SQLite are provided in the respective `...Main` source sets.
 
 ### Navigation
 
