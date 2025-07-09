@@ -24,11 +24,11 @@ class ProductListViewModel(private val productRepository: ProductRepository) : V
         viewModelScope.launch {
             try {
                 state.update { ProductListUiState.Loading }
-                val list = productRepository.fetchProducts()
-                Logger.i("ProductListViewModel") { "Products fetched: $list" }
-                state.update { ProductListUiState.Success(list) }
-            } catch (ex: ProductRepository.GraphQlException) {
-                Logger.e(ex, "ProductListViewModel") { "Error fetching products" }
+                val products = productRepository.fetchProducts()
+                Logger.i("ProductListViewModel") { "Products fetched: $products" }
+                state.update { ProductListUiState.Success(products) }
+            } catch (graphQlException: ProductRepository.GraphQlException) {
+                Logger.e(graphQlException, "ProductListViewModel") { "Error fetching products" }
                 state.update { ProductListUiState.Error }
             }
         }

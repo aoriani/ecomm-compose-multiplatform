@@ -31,6 +31,7 @@ dependencies {
     implementation(ktorLibs.server.callLogging)
     implementation(ktorLibs.server.netty)
     implementation(ktorLibs.server.cors)
+    implementation(ktorLibs.server.compression)
     implementation(ktorLibs.server.config.yaml)
     implementation(libs.logback.classic)
     implementation(libs.expedia.ktor.server.graphql)

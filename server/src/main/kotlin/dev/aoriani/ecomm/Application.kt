@@ -5,11 +5,17 @@ import com.expediagroup.graphql.server.ktor.defaultGraphQLStatusPages
 import dev.aoriani.ecomm.graphql.schemageneratorhooks.ProductSchemaGeneratorHooks
 import dev.aoriani.ecomm.graphql.queries.ProductQuery
 import dev.aoriani.ecomm.repository.database.DatabaseProductRepositoryImpl
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain
 import io.ktor.server.plugins.calllogging.CallLogging
+import io.ktor.server.plugins.compression.Compression
+import io.ktor.server.plugins.compression.deflate
+import io.ktor.server.plugins.compression.gzip
+import io.ktor.server.plugins.compression.matchContentType
+import io.ktor.server.plugins.compression.minimumSize
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.*
@@ -25,6 +31,7 @@ fun main(args: Array<String>) {
  */
 fun Application.module() {
     configureCallLogging()
+    configureCompression()
     configureDatabase()
     configureCors()
     configureGraphQl()
@@ -83,4 +90,14 @@ private fun Application.configureCallLogging() {
             "Request: $httpMethod $uri, Status: $status, Content-Type: $contentType, Content-Length: $contentLength, User-Agent: $userAgent"
         }
     }
+}
+
+private fun Application.configureCompression() {
+  install(Compression) {
+    gzip {
+      priority = 1.0
+      minimumSize(1_024)            // only compress if >1 KB
+      matchContentType(ContentType.Text.Any, ContentType.Application.Json)   // all text/*
+    }
+  }
 }
