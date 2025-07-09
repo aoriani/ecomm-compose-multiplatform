@@ -7,12 +7,11 @@ import kotlinx.collections.immutable.ImmutableList
 
 class ProductRepositoryImpl(private val dataSource: ProductDataSource) : ProductRepository {
 
-    override suspend fun fetchProducts(): ImmutableList<ProductPreview> {
+    override suspend fun fetchProducts(): Result<ImmutableList<ProductPreview>> {
         return dataSource.fetchProducts()
     }
 
-    override suspend fun getProduct(id: String): Product? {
+    override suspend fun getProduct(id: String): Result<Product?> {
         return dataSource.getProduct(id)
     }
 }
-

@@ -13,44 +13,57 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 class GraphQlProductDataSource(private val apolloClient: ApolloClient) : ProductDataSource {
-    override suspend fun fetchProducts(): ImmutableList<ProductPreview> {
-        val response: ApolloResponse<ListProductsQuery.Data>
-        try {
-            response = apolloClient.query(ListProductsQuery()).execute()
+    override suspend fun fetchProducts(): Result<ImmutableList<ProductPreview>> {
+        return try {
+            val response: ApolloResponse<ListProductsQuery.Data> =
+                apolloClient.query(ListProductsQuery()).execute()
+
+            if (response.hasErrors()) {
+                val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
+                    ?: "Unknown GraphQL error"
+                Result.failure(ProductRepository.ProductException(errorMessages))
+            } else {
+                val products: ImmutableList<ProductPreview> =
+                    response.data?.products?.map { product ->
+                        product.toProductPreviewModel()
+                    }?.toImmutableList() ?: persistentListOf()
+                Result.success(products)
+            }
         } catch (apolloException: ApolloException) {
-            throw ProductRepository.ProductException(
-                apolloException.message.orEmpty(), apolloException
+            Result.failure(
+                ProductRepository.ProductException(
+                    apolloException.message.orEmpty(), apolloException
+                )
             )
-        }
-        if (response.hasErrors()) {
-            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
-                ?: "Unknown GraphQL error"
-            throw ProductRepository.ProductException(errorMessages)
-        } else {
-            return response.data?.products?.map { product ->
-                product.toProductPreviewModel()
-            }?.toImmutableList() ?: persistentListOf()
         }
     }
 
-    override suspend fun getProduct(id: String): Product? {
-        val response: ApolloResponse<FetchProductQuery.Data>
-        try {
-            response = apolloClient.query(FetchProductQuery(id)).execute()
-        } catch (apolloException: ApolloException) {
-            throw ProductRepository.ProductException(
-                apolloException.message.orEmpty(), apolloException
-            )
-        }
+    override suspend fun getProduct(id: String): Result<Product> {
+        return try {
+            val response: ApolloResponse<FetchProductQuery.Data> =
+                apolloClient.query(FetchProductQuery(id)).execute()
 
-        val product = response.data?.product
-        return if (response.hasErrors()) {
-            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
-                ?: "Unknown GraphQL error"
-            throw ProductRepository.ProductException(errorMessages)
-        } else {
-            product?.toProductModel() ?: throw ProductRepository.ProductException(
-                "Product not found or missing data for id: $id"
+            if (response.hasErrors()) {
+                val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
+                    ?: "Unknown GraphQL error"
+                Result.failure(ProductRepository.ProductException(errorMessages))
+            } else {
+                val product = response.data?.product?.toProductModel()
+                if (product != null) {
+                    Result.success(product)
+                } else {
+                    Result.failure(
+                        ProductRepository.ProductException(
+                            "Product not found or missing data for id: $id"
+                        )
+                    )
+                }
+            }
+        } catch (apolloException: ApolloException) {
+            Result.failure(
+                ProductRepository.ProductException(
+                    apolloException.message.orEmpty(), apolloException
+                )
             )
         }
     }

@@ -5,14 +5,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import co.touchlab.kermit.Logger
+import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class ProductListViewModel(private val productRepository: ProductRepository) : ViewModel() {
+private const val LOGTAG = "ProductListViewModel"
+
+class ProductListViewModel(
+    private val productRepository: ProductRepository,
+    private val logger: Logger = Logger
+) : ViewModel() {
     val state: StateFlow<ProductListUiState>
         field = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading)
 
@@ -22,15 +29,16 @@ class ProductListViewModel(private val productRepository: ProductRepository) : V
 
     private fun fetchProducts() {
         viewModelScope.launch {
-            try {
-                state.update { ProductListUiState.Loading }
-                val products = productRepository.fetchProducts()
-                Logger.i("ProductListViewModel") { "Products fetched: $products" }
-                state.update { ProductListUiState.Success(products) }
-            } catch (productException: ProductRepository.ProductException) {
-                Logger.e(productException, "ProductListViewModel") { "Error fetching products" }
-                state.update { ProductListUiState.Error }
-            }
+            state.update { ProductListUiState.Loading }
+            productRepository.fetchProducts()
+                .onSuccess { productPreviews ->
+                    logger.i(tag = LOGTAG) { "Products fetched: $productPreviews" }
+                    state.update { ProductListUiState.Success(productPreviews) }
+                }
+                .onFailure {
+                    logger.e(throwable = it, tag = LOGTAG) { "Error fetching products" }
+                    state.update { ProductListUiState.Error }
+                }
         }
     }
 

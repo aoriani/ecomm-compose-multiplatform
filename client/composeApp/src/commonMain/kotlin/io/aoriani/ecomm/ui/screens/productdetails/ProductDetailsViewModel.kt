@@ -32,26 +32,28 @@ class ProductDetailsViewModel(
 
     private fun fetchProductDetails() {
         viewModelScope.launch {
-            try {
-                val product = productRepository.getProduct(route.id)
-                if (product == null) {
+            productRepository.getProduct(route.id)
+                .onSuccess { product -> // product is of type Product?
+                    if (product == null) {
+                        state.update {
+                            ProductDetailsUiState.Error(
+                                title = route.name,
+                                imageUrl = route.imageUrl
+                            )
+                        }
+                    } else {
+                        state.update { ProductDetailsUiState.Loaded(product) }
+                    }
+                }
+                .onFailure {
+                    // Optionally, log the error 'it' using a Logger
                     state.update {
                         ProductDetailsUiState.Error(
                             title = route.name,
                             imageUrl = route.imageUrl
                         )
                     }
-                } else {
-                    state.update { ProductDetailsUiState.Loaded(product) }
                 }
-            } catch (ex: ProductRepository.ProductException) {
-                state.update {
-                    ProductDetailsUiState.Error(
-                        title = route.name,
-                        imageUrl = route.imageUrl
-                    )
-                }
-            }
         }
     }
 
