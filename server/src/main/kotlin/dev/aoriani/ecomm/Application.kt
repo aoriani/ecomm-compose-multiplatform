@@ -94,7 +94,9 @@ private const val STATIC_ROUTE = "/static"
 private const val STATIC_RESOURCE_DIR = "static"
 
 /**
+ * Entry point of the application.
  *
+ * @param args Command-line arguments passed to the application.
  */
 fun main(args: Array<String>) {
     EngineMain.main(args)
