@@ -8,6 +8,8 @@ import co.touchlab.kermit.Logger
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -18,7 +20,8 @@ private const val LOGTAG = "ProductListViewModel"
 
 class ProductListViewModel(
     private val productRepository: ProductRepository,
-    private val logger: Logger = Logger
+    private val logger: Logger = Logger,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
     val state: StateFlow<ProductListUiState>
         field = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading)
@@ -28,7 +31,7 @@ class ProductListViewModel(
     }
 
     private fun fetchProducts() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             state.update { ProductListUiState.Loading }
             productRepository.fetchProducts()
                 .onSuccess { productPreviews ->

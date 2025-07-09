@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.powerassert)
     alias(libs.plugins.sqlDelight)
 }
 
@@ -103,6 +104,8 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kermit.test)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
