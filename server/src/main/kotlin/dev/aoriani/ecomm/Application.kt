@@ -257,7 +257,7 @@ private fun Application.configureCompression() {
  * Usage of this method integrates routing features, enabling the application to handle
  * static content, GraphQL operations, and the default entry point for HTTP requests.
  */
-fun Application.configureRouting() {
+private fun Application.configureRouting() {
     routing {
         get(ROOT_ROUTE) {
             call.respondText("Hello World!")
@@ -278,7 +278,7 @@ fun Application.configureRouting() {
  *
  * This function is typically invoked during the application startup process as part of configuring the application's resources.
  */
-fun Application.configureDatabase() {
+private fun Application.configureDatabase() {
     dependencies {
         provide<ProductRepository> { DatabaseProductRepositoryImpl }
     }
