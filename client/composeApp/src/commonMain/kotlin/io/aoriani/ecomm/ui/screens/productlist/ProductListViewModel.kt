@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import co.touchlab.kermit.Logger
-import io.aoriani.ecomm.data.repositories.ProductRepository
+import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -27,8 +27,8 @@ class ProductListViewModel(private val productRepository: ProductRepository) : V
                 val products = productRepository.fetchProducts()
                 Logger.i("ProductListViewModel") { "Products fetched: $products" }
                 state.update { ProductListUiState.Success(products) }
-            } catch (graphQlException: ProductRepository.GraphQlException) {
-                Logger.e(graphQlException, "ProductListViewModel") { "Error fetching products" }
+            } catch (productException: ProductRepository.ProductException) {
+                Logger.e(productException, "ProductListViewModel") { "Error fetching products" }
                 state.update { ProductListUiState.Error }
             }
         }

@@ -7,7 +7,7 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.toRoute
-import io.aoriani.ecomm.data.repositories.ProductRepository
+import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import io.aoriani.ecomm.ui.navigation.Routes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,7 +44,7 @@ class ProductDetailsViewModel(
                 } else {
                     state.update { ProductDetailsUiState.Loaded(product) }
                 }
-            } catch (ex: ProductRepository.GraphQlException) {
+            } catch (ex: ProductRepository.ProductException) {
                 state.update {
                     ProductDetailsUiState.Error(
                         title = route.name,

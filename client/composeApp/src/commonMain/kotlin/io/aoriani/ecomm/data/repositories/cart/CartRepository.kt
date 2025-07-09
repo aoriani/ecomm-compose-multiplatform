@@ -1,4 +1,4 @@
-package io.aoriani.ecomm.data.repositories
+package io.aoriani.ecomm.data.repositories.cart
 
 import io.aoriani.ecomm.data.model.CartItem
 import kotlinx.collections.immutable.ImmutableList

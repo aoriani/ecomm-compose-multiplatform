@@ -1,4 +1,4 @@
-package io.aoriani.ecomm.data.repositories
+package io.aoriani.ecomm.data.repositories.products
 
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductPreview

@@ -6,7 +6,7 @@ import com.apollographql.apollo.exception.ApolloException
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductPreview
-import io.aoriani.ecomm.data.repositories.ProductRepository
+import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import io.aoriani.ecomm.data.repositories.products.datasources.ProductDataSource
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -18,14 +18,14 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
         try {
             response = apolloClient.query(ListProductsQuery()).execute()
         } catch (apolloException: ApolloException) {
-            throw ProductRepository.GraphQlException(
+            throw ProductRepository.ProductException(
                 apolloException.message.orEmpty(), apolloException
             )
         }
         if (response.hasErrors()) {
             val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
                 ?: "Unknown GraphQL error"
-            throw ProductRepository.GraphQlException(errorMessages)
+            throw ProductRepository.ProductException(errorMessages)
         } else {
             return response.data?.products?.map { product ->
                 product.toProductPreviewModel()
@@ -38,7 +38,7 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
         try {
             response = apolloClient.query(FetchProductQuery(id)).execute()
         } catch (apolloException: ApolloException) {
-            throw ProductRepository.GraphQlException(
+            throw ProductRepository.ProductException(
                 apolloException.message.orEmpty(), apolloException
             )
         }
@@ -47,9 +47,9 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
         return if (response.hasErrors()) {
             val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
                 ?: "Unknown GraphQL error"
-            throw ProductRepository.GraphQlException(errorMessages)
+            throw ProductRepository.ProductException(errorMessages)
         } else {
-            product?.toProductModel() ?: throw ProductRepository.GraphQlException(
+            product?.toProductModel() ?: throw ProductRepository.ProductException(
                 "Product not found or missing data for id: $id"
             )
         }
