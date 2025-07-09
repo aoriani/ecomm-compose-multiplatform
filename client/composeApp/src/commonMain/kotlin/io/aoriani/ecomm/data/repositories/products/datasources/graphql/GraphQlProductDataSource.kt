@@ -1,4 +1,4 @@
-package io.aoriani.ecomm.data.repositories.datasources.graphql
+package io.aoriani.ecomm.data.repositories.products.datasources.graphql
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
@@ -7,7 +7,7 @@ import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.ProductRepository
-import io.aoriani.ecomm.data.repositories.datasources.ProductDataSource
+import io.aoriani.ecomm.data.repositories.products.datasources.ProductDataSource
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
