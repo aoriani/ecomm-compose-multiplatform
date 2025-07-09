@@ -1,76 +1,18 @@
 package io.aoriani.ecomm.data.repositories
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ApolloResponse
-import com.apollographql.apollo.exception.ApolloException
-import io.aoriani.ecomm.data.graphql.FetchProductQuery
-import io.aoriani.ecomm.data.graphql.ListProductsQuery
-import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductPreview
+import io.aoriani.ecomm.data.repositories.datasources.ProductDataSource
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 
-class ProductRepositoryImpl(private val apolloClient: ApolloClient) : ProductRepository {
+class ProductRepositoryImpl(private val dataSource: ProductDataSource) : ProductRepository {
 
     override suspend fun fetchProducts(): ImmutableList<ProductPreview> {
-        val response: ApolloResponse<ListProductsQuery.Data>
-        try {
-            response = apolloClient.query(ListProductsQuery()).execute()
-        } catch (apolloException: ApolloException) {
-            throw ProductRepository.GraphQlException(
-                apolloException.message.orEmpty(), apolloException
-            )
-        }
-        if (response.hasErrors()) {
-            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
-                ?: "Unknown GraphQL error"
-            throw ProductRepository.GraphQlException(errorMessages)
-        } else {
-            return response.data?.products?.map { product ->
-                product.toProductPreviewModel()
-            }?.toImmutableList() ?: persistentListOf()
-        }
+        return dataSource.fetchProducts()
     }
 
     override suspend fun getProduct(id: String): Product {
-        val response: ApolloResponse<FetchProductQuery.Data>
-        try {
-            response = apolloClient.query(FetchProductQuery(id)).execute()
-        } catch (apolloException: ApolloException) {
-            throw ProductRepository.GraphQlException(
-                apolloException.message.orEmpty(), apolloException
-            )
-        }
-
-        val product = response.data?.product
-        return if (response.hasErrors()) {
-            val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
-                ?: "Unknown GraphQL error"
-            throw ProductRepository.GraphQlException(errorMessages)
-        } else {
-            product?.toProductModel() ?: throw ProductRepository.GraphQlException(
-                "Product not found or missing data for id: $id"
-            )
-        }
+        return getProduct(id)
     }
 }
 
-private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = ProductPreview(
-    id = productBasic.id,
-    name = productBasic.name,
-    price = DollarAmount(productBasic.price.toString()),
-    thumbnailUrl = productBasic.images.firstOrNull(),
-)
-
-private fun FetchProductQuery.Product.toProductModel(): Product = Product(
-    id = productBasic.id,
-    name = productBasic.name,
-    price = DollarAmount(productBasic.price.toString()),
-    description = description,
-    images = productBasic.images.toImmutableList(),
-    material = material,
-    countryOfOrigin = countryOfOrigin,
-    inStock = inStock
-)

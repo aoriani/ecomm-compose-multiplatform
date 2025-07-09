@@ -4,6 +4,8 @@ import io.aoriani.ecomm.data.network.ApolloClient
 import io.aoriani.ecomm.data.network.KtorClient
 import io.aoriani.ecomm.data.repositories.ProductRepository
 import io.aoriani.ecomm.data.repositories.ProductRepositoryImpl
+import io.aoriani.ecomm.data.repositories.datasources.ProductDataSource
+import io.aoriani.ecomm.data.repositories.datasources.graphql.GraphQlProductDataSource
 import io.aoriani.ecomm.data.repositories.db.DollarAmountAdapter
 import io.aoriani.ecomm.data.repositories.db.ProductDatabase
 import io.aoriani.ecomm.data.repositories.db.SqlDriverFactory
@@ -30,5 +32,6 @@ val appModule = module {
     singleOf(::KtorClient)
     single(named(BACKEND_BASE_URL)) { "https://aoriani.dev/graphql" }
     single { ApolloClient(get(named(BACKEND_BASE_URL)), get()) }
+    singleOf(::GraphQlProductDataSource) bind ProductDataSource::class
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
 }

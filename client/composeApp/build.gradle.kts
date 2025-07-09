@@ -158,7 +158,7 @@ dependencies {
 
 apollo {
     service("aoriani") {
-        packageName.set("io.aoriani.ecomm.data.graphql")
+        packageName.set("io.aoriani.ecomm.data.repositories.datasources.graphql")
         introspection {
             endpointUrl.set("https://aoriani.dev/graphql")
         }
