@@ -11,8 +11,8 @@ class ProductRepositoryImpl(private val dataSource: ProductDataSource) : Product
         return dataSource.fetchProducts()
     }
 
-    override suspend fun getProduct(id: String): Product {
-        return getProduct(id)
+    override suspend fun getProduct(id: String): Product? {
+        return dataSource.getProduct(id)
     }
 }
 
