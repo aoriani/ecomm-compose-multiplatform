@@ -32,6 +32,7 @@ import io.ktor.server.request.uri
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import dev.aoriani.ecomm.imageRouting // Import the new routing function
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 import org.slf4j.event.Level
@@ -262,7 +263,13 @@ private fun Application.configureRouting() {
         get(ROOT_ROUTE) {
             call.respondText("Hello World!")
         }
-        staticResources(STATIC_ROUTE, STATIC_RESOURCE_DIR)
+        // Serve static resources (e.g., CSS, JS, non-resized images)
+        staticResources(STATIC_ROUTE, STATIC_RESOURCE_DIR) {
+            // You can add configurations here if needed, like defaultFile, etc.
+            // For now, ensure it doesn't conflict with our specific image route.
+        }
+        // Add the new route for resized images
+        imageRouting()
         graphQLPostRoute()
         graphQLGetRoute()
         graphiQLRoute()
