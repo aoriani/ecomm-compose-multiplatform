@@ -22,6 +22,7 @@ import io.ktor.server.plugins.compression.Compression
 import io.ktor.server.plugins.compression.gzip
 import io.ktor.server.plugins.compression.matchContentType
 import io.ktor.server.plugins.compression.minimumSize
+import io.ktor.server.plugins.conditionalheaders.ConditionalHeaders
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -119,7 +120,7 @@ fun main(args: Array<String>) {
 fun Application.module() {
     configureDatabase()
     configureCallLogging()
-    configureCompression()
+    configureCompressionAndCaching()
     configureCors()
     configureGraphQL()
     configureRouting()
@@ -220,20 +221,20 @@ private fun Application.configureCallLogging() {
 }
 
 /**
- * Configures response compression for the application.
+ * Configures response compression and caching headers for the application.
  *
- * This method installs the `Compression` feature to optimize data transfer size
- * by compressing HTTP responses. It uses GZIP compression with a specified priority
- * and minimum size threshold. Additionally, content type matching is configured
- * to compress specific response types.
+ * This method installs:
+ * - The `Compression` feature to optimize data transfer size by compressing HTTP responses
+ * - The `ConditionalHeaders` feature to enable browser caching through ETags and Last-Modified headers
  *
- * The GZIP configuration includes:
- * - Priority: Determines the order in which compression algorithms are applied,
- *   with 1.0 being the highest priority.
- * - Minimum size: Sets a threshold (1 KB) below which responses will not be compressed.
- * - Content type matching: Restricts compression to responses with specific content types,
- *   such as `text*/
-private fun Application.configureCompression() {
+ * The compression configuration includes:
+ * - GZIP compression with priority 1.0 (highest)
+ * - Minimum size threshold of 1 KB before compressing
+ * - Content type matching for text and JSON responses
+ *
+ * Conditional headers are enabled to improve caching efficiency and reduce unnecessary transfers.
+ */
+private fun Application.configureCompressionAndCaching() {
     install(Compression) {
         gzip {
             priority = 1.0
@@ -241,6 +242,7 @@ private fun Application.configureCompression() {
             matchContentType(ContentType.Text.Any, ContentType.Application.Json)
         }
     }
+    install(ConditionalHeaders)
 }
 
 /**

@@ -29,6 +29,7 @@ repositories {
 dependencies {
     implementation(ktorLibs.server.core)
     implementation(ktorLibs.server.callLogging)
+    implementation(ktorLibs.server.conditionalHeaders)
     implementation(ktorLibs.server.di)
     implementation(ktorLibs.server.netty)
     implementation(ktorLibs.server.cors)
