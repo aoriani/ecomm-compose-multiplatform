@@ -44,6 +44,27 @@ The application is configured via `src/main/resources/application.yaml`. Key con
 
 - Server port: Set via the `PORT` environment variable or defaults to 8080
 - Application module: `dev.aoriani.ecomm.ApplicationKt.module`
+- Database configuration:
+  - URL: `jdbc:sqlite:./data/products.db`
+  - Driver: `org.sqlite.JDBC`
+- Logging level: Set to `DEBUG` by default
+
+Example configuration:
+```yaml
+ktor:
+  application:
+    modules:
+      - dev.aoriani.ecomm.ApplicationKt.module
+  deployment:
+    port: "$PORT:8080"
+
+ecomm:
+  database:
+    url: "jdbc:sqlite:./data/products.db"
+    driver: "org.sqlite.JDBC"
+  logging:
+    level: "DEBUG"
+```
 
 For development, you can enable development mode:
 ```bash
@@ -69,31 +90,80 @@ The project uses Kotlin's built-in testing framework with JUnit.
 ### Test Structure
 Tests are organized in the `src/test/kotlin` directory, mirroring the structure of the main source code.
 
-#### Unit Tests
-Unit tests focus on testing individual components in isolation. Example:
+#### Application Tests
+The project currently includes basic application tests that verify the HTTP endpoints are working correctly. Example:
 
 ```kotlin
-// Testing a repository
+class ApplicationTest {
+    @Test
+    fun testRoot() = testApplication {
+        environment {
+            config = MapApplicationConfig(
+                "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
+                "ecomm.database.driver" to "org.sqlite.JDBC"
+            )
+        }
+        application {
+            module()
+        }
+        client.get("/").apply {
+            assertEquals(HttpStatusCode.OK, status)
+        }
+    }
+}
+```
+
+#### Repository Tests (Example)
+When testing repositories, you should focus on testing individual components in isolation. Example:
+
+```kotlin
+// Example of how to test a repository
 class ProductRepositoryTest {
     @Test
-    fun testGetAllProducts() {
-        val products = ProductRepository.getAll()
+    fun testGetAllProducts() = testApplication {
+        // Set up test environment
+        environment {
+            config = MapApplicationConfig(
+                "ecomm.database.url" to "jdbc:sqlite:file::memory:?cache=shared",
+                "ecomm.database.driver" to "org.sqlite.JDBC"
+            )
+        }
+
+        // Initialize application
+        application {
+            module()
+        }
+
+        // Test repository methods
+        val repository: ProductRepository by dependencies
+        val products = repository.getAll()
         assertEquals(16, products.size)
     }
 }
 ```
 
-#### GraphQL Tests
+#### GraphQL Tests (Example)
 GraphQL endpoints can be tested using Ktor's `testApplication` function:
 
 ```kotlin
+// Example of how to test GraphQL endpoints
 class ProductQueryTest {
     @Test
     fun testProductsQuery() = testApplication {
+        // Set up test environment
+        environment {
+            config = MapApplicationConfig(
+                "ecomm.database.url" to "jdbc:sqlite:file::memory:?cache=shared",
+                "ecomm.database.driver" to "org.sqlite.JDBC"
+            )
+        }
+
+        // Initialize application
         application {
             module()
         }
-        
+
+        // Test GraphQL endpoint
         val response = client.post("/graphql") {
             contentType(ContentType.Application.Json)
             setBody("""
@@ -102,7 +172,7 @@ class ProductQueryTest {
                 }
             """.trimIndent())
         }
-        
+
         assertEquals(HttpStatusCode.OK, response.status)
         // Additional assertions...
     }
@@ -122,26 +192,30 @@ When adding new tests:
 
 ### Project Structure
 - `src/main/kotlin/dev/aoriani/ecomm/` - Main application code
-  - `Application.kt` - Application entry point and configuration
-  - `Routing.kt` - HTTP routing configuration
+  - `Application.kt` - Application entry point and configuration (includes routing configuration)
   - `graphql/` - GraphQL-related code
     - `models/` - Data models
     - `queries/` - GraphQL query resolvers
-    - `repository/` - Data repositories
+    - `exceptions/` - GraphQL-specific exceptions
+    - `schemageneratorhooks/` - Custom schema generator hooks
+  - `repository/` - Data repositories
+    - `database/` - Database-specific repository implementations
 
 ### GraphQL Development
 The project uses the ExpediaGroup GraphQL Kotlin library:
 
 1. Define data models in `graphql/models/` with `@GraphQLDescription` annotations
 2. Create query resolvers in `graphql/queries/` that implement the `Query` interface
-3. Access the GraphiQL interface at `/graphiql` when running the application
+3. Implement custom exceptions in `graphql/exceptions/` for GraphQL-specific error handling
+4. Create custom schema generator hooks in `graphql/schemageneratorhooks/` if needed
+5. Access the GraphiQL interface at `/graphiql` when running the application
 
 Example of adding a new GraphQL query:
 ```kotlin
 @GraphQLDescription("Root entry point for category-related queries")
-class CategoryQuery : Query {
+class CategoryQuery(private val repository: CategoryRepository) : Query {
     @GraphQLDescription("Retrieve all categories")
-    fun categories(): List<Category> = CategoryRepository.getAll()
+    suspend fun categories(): List<Category> = repository.getAll()
 }
 ```
 
@@ -150,8 +224,17 @@ Then register the query in `Application.kt`:
 install(GraphQL) {
     schema {
         packages = listOf("dev.aoriani.ecomm.graphql.models", "java.math") // Ensure all relevant model packages are listed
-        queries = listOf(ProductQuery(), CategoryQuery()) // Register your query instances here
+        val repository: CategoryRepository by dependencies
+        queries = listOf(ProductQuery(repository), CategoryQuery(repository)) // Inject repositories via dependencies
+        hooks = ProductSchemaGeneratorHooks // Use custom schema generator hooks if needed
     }
+}
+```
+
+Note that repositories are injected into query resolvers using Ktor's dependency injection system:
+```kotlin
+dependencies {
+    provide<CategoryRepository> { DatabaseCategoryRepositoryImpl }
 }
 ```
 
