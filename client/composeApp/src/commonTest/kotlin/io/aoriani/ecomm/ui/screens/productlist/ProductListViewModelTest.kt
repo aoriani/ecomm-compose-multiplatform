@@ -1,10 +1,6 @@
 package io.aoriani.ecomm.ui.screens.productlist
 
 import co.touchlab.kermit.ExperimentalKermitApi
-import co.touchlab.kermit.Logger
-import co.touchlab.kermit.Severity
-import co.touchlab.kermit.TestConfig
-import co.touchlab.kermit.TestLogWriter
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
@@ -19,17 +15,6 @@ import kotlin.test.assertIs
 @OptIn(ExperimentalKermitApi::class)
 class ProductListViewModelTest {
 
-    private val testLogWriter = TestLogWriter(
-        loggable = Severity.Verbose // accept everything
-    )
-    private val kermit = Logger(
-        TestConfig(
-            minSeverity = Severity.Debug,
-            logWriterList = listOf(testLogWriter)
-        )
-    )
-
-
     @Test
     fun `Verify that initial state of ProductListViewModel is Loading`() = runTest {
         val fakeProductRepository = FakeProductRepository(fetchProductsLambda = {
@@ -39,7 +24,6 @@ class ProductListViewModelTest {
         val testDispatcher = StandardTestDispatcher(testScheduler)
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
-            logger = kermit,
             dispatcher = testDispatcher
         )
         val state = viewModel.state.value
