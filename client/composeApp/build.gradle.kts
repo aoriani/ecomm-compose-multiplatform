@@ -24,7 +24,7 @@ kotlin {
     }
 
     compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xcontext-parameters")
     }
 
     sourceSets.all {
@@ -83,6 +83,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
+            implementation(libs.androidx.collection)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.compose)

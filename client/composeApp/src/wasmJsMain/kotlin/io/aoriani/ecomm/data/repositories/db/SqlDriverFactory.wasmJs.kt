@@ -1,6 +1,5 @@
 package io.aoriani.ecomm.data.repositories.db
 
-import app.cash.sqldelight.async.coroutines.awaitCreate
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.worker.createDefaultWebWorkerDriver
 
