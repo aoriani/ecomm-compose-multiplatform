@@ -14,7 +14,6 @@ import kotlin.time.Instant
  * @property creationTime The [Instant] when this cached entry was created.
  * @property timeToLive The [Duration] for which this cached entry is considered valid.
  * @property now A function that returns the current [Instant]. Defaults to [Clock.System.now]. This is primarily for testing purposes.
- * @property expired A boolean indicating whether the cached value has passed its time-to-live.
  */
 @OptIn(ExperimentalTime::class)
 class Cached<out T>(
@@ -23,5 +22,9 @@ class Cached<out T>(
     private val timeToLive: Duration,
     private val now: () -> Instant = Clock.System::now
 ) {
-    val expired: Boolean get() = (now() - creationTime) > timeToLive
+    /**
+     * Checks if the cached value has passed its time-to-live.
+     * @return `true` if the cached value is expired, `false` otherwise.
+     */
+    fun isExpired(): Boolean = (now() - creationTime) > timeToLive
 }
