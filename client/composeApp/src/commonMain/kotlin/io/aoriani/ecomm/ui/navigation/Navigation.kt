@@ -15,9 +15,11 @@ fun Navigation(
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.ProductList) {
-        productListScreen(navController)
-        productDetailsScreen(navController)
-        cartScreen(navController)
+        with(navController) {
+            productListScreen()
+            productDetailsScreen()
+            cartScreen()
+        }
     }
 
     LaunchedEffect(navController) {
