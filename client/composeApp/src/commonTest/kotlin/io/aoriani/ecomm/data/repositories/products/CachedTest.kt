@@ -5,6 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -15,15 +16,20 @@ class CachedTest {
     private val startTime = Instant.fromEpochMilliseconds(1000)
     private val ttl = 60.seconds
 
+    private fun createCached(
+        value: String = testValue,
+        creationTime: Instant = startTime,
+        timeToLive: Duration = ttl,
+        now: () -> Instant = { Instant.DISTANT_PAST } // Default to a non-interfering value
+    ): Cached<String> {
+        return Cached(value, creationTime, timeToLive, now)
+    }
+
     @Test
     fun `When Cached is initialized then value is accessible`() {
         val now = startTime
         // Act
-        val cached = Cached(
-            value = testValue,
-            creationTime = now,
-            timeToLive = ttl
-        )
+        val cached = createCached(creationTime = now)
 
         // Assert
         assertEquals(testValue, cached.value)
@@ -36,15 +42,10 @@ class CachedTest {
             { Instant.fromEpochMilliseconds(31000) } // 30 seconds (30,000 ms) after 1,000 ms
 
         // Act
-        val cached = Cached(
-            value = testValue,
-            creationTime = startTime,
-            timeToLive = ttl,
-            now = mockClock
-        )
+        val cached = createCached(now = mockClock)
 
         // Assert
-        assertFalse(cached.expired)
+        assertFalse(cached.isExpired())
     }
 
     @Test
@@ -54,15 +55,10 @@ class CachedTest {
             { Instant.fromEpochMilliseconds(71000) } // 70 seconds (70,000 ms) after 1,000 ms
 
         // Act
-        val cached = Cached(
-            value = testValue,
-            creationTime = startTime,
-            timeToLive = ttl,
-            now = mockClock
-        )
+        val cached = createCached(now = mockClock)
 
         // Assert
-        assertTrue(cached.expired)
+        assertTrue(cached.isExpired())
     }
 
     @Test
@@ -72,15 +68,10 @@ class CachedTest {
             { Instant.fromEpochMilliseconds(61000) } // 60 seconds (60,000 ms) after 1,000 ms
 
         // Act
-        val cached = Cached(
-            value = testValue,
-            creationTime = startTime,
-            timeToLive = ttl,
-            now = mockClock
-        )
+        val cached = createCached(now = mockClock)
 
         // Assert
-        assertFalse(cached.expired)
+        assertFalse(cached.isExpired())
     }
 
     @Test
@@ -90,14 +81,9 @@ class CachedTest {
             { Instant.fromEpochMilliseconds(61001) } // 60 seconds (60,000 ms) + 1 ms after 1,000 ms
 
         // Act
-        val cached = Cached(
-            value = testValue,
-            creationTime = startTime,
-            timeToLive = ttl,
-            now = mockClock
-        )
+        val cached = createCached(now = mockClock)
 
         // Assert
-        assertTrue(cached.expired)
+        assertTrue(cached.isExpired())
     }
 }
