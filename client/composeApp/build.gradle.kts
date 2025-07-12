@@ -98,6 +98,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
@@ -170,6 +171,28 @@ apollo {
             "com.apollographql.adapter.core.BigDecimalAdapter"
         )
     }
+}
+
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
+powerAssert {
+    functions = listOf(
+        "kotlin.test.assertContains",
+        "kotlin.test.assertContentEquals",
+        "kotlin.test.assertEquals",
+        "kotlin.test.assertFails",
+        "kotlin.test.assertFailsWith",
+        "kotlin.test.assertFalse",
+        "kotlin.test.assertIs",
+        "kotlin.test.assertIsNot",
+        "kotlin.test.assertNotEquals",
+        "kotlin.test.assertNotNull",
+        "kotlin.test.assertNotSame",
+        "kotlin.test.assertNull",
+        "kotlin.test.assertSame",
+        "kotlin.test.assertTrue",
+        "kotlin.test.expect",
+        "kotlin.test.fail"
+    )
 }
 
 sqldelight {
