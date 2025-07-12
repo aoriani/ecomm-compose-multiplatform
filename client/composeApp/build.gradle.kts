@@ -24,7 +24,7 @@ kotlin {
     }
 
     compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xcontext-parameters")
     }
 
     sourceSets.all {
@@ -165,9 +165,9 @@ apollo {
             endpointUrl.set("https://aoriani.dev/graphql")
         }
         mapScalar(
-            "BigDecimal",
-            "com.apollographql.adapter.core.BigDecimal",
-            "com.apollographql.adapter.core.BigDecimalAdapter"
+            graphQLName = "BigDecimal",
+            targetName = "com.apollographql.adapter.core.BigDecimal",
+            expression = "com.apollographql.adapter.core.BigDecimalAdapter"
         )
     }
 }

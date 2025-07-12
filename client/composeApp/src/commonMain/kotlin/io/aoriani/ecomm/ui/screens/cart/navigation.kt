@@ -5,7 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import io.aoriani.ecomm.ui.navigation.Routes
 
-internal fun NavGraphBuilder.cartScreen(navController: NavHostController) {
+context(navController: NavHostController)
+internal fun NavGraphBuilder.cartScreen() {
     composable<Routes.Cart> {
         CartScreen(navigateBack = { navController.popBackStack() })
     }
