@@ -9,7 +9,8 @@ import androidx.navigation.compose.composable
 import io.aoriani.ecomm.ui.navigation.Routes
 import org.koin.compose.koinInject
 
-internal fun NavGraphBuilder.productListScreen(navController: NavHostController) {
+context(navController: NavHostController)
+internal fun NavGraphBuilder.productListScreen() {
     composable<Routes.ProductList> {
         val viewModel: ProductListViewModel = viewModel(
             factory = ProductListViewModel.Companion.Factory(
