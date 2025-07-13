@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="menu_help">Help</string>
+    <string name="menu_help_mnemonic">h</string>
+    <string name="menu_item_about">About</string>
+    <string name="menu_item_about_mnemonic">h</string>
+    <string name="dialog_about_title">About</string>
+</resources>
