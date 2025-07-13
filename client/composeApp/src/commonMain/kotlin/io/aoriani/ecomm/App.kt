@@ -22,7 +22,7 @@ fun App(
                 modules(appModule)
             }
         ) {
-            Navigation(onNavHostReady)
+            Navigation(onNavHostReady = onNavHostReady)
         }
     }
 }
