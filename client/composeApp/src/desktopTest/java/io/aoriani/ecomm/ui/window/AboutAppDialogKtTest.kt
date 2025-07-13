@@ -1,19 +1,31 @@
 package io.aoriani.ecomm.ui.window
 
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import io.aoriani.ecomm.ui.test.TestTags
+import org.junit.Rule
 import org.junit.Test
 
 class AboutAppDialogKtTest {
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     @Test
     fun `Dialog visibility when isVisible is true`() {
         // Verify that the DialogWindow is rendered when the `isVisible` parameter is true.
-        // TODO implement desktopTest
+        composeTestRule.setContent {
+            AboutAppDialog(isVisible = true)
+        }
+        composeTestRule.onNodeWithTag(TestTags.aboutDialog).assertIsDisplayed()
     }
 
     @Test
     fun `Dialog invisibility when isVisible is false`() {
-        // Verify that the DialogWindow is not rendered when the `isVisible` parameter is false.
-        // TODO implement desktopTest
+        composeTestRule.setContent {
+            AboutAppDialog(isVisible = false)
+        }
+        composeTestRule.onNodeWithTag(TestTags.aboutDialog).assertDoesNotExist()
     }
 
     @Test
