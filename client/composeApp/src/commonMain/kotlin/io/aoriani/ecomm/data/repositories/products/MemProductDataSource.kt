@@ -21,24 +21,41 @@ class MemProductDataSource(private val nowProvider: () -> Instant) {
         return productPreviewListCache
     }
 
-    fun getProduct(id: String): CachedProduct?  {
+    fun getProduct(id: String): CachedProduct? {
         return productCache[id]
     }
 
     fun cache(productPreviews: List<ProductPreview>) {
         productPreviewListCache =
-            Cached(productPreviews, creationTime = nowProvider(), timeToLive = timeToLive)
+            Cached(
+                productPreviews,
+                creationTime = nowProvider(),
+                timeToLive = timeToLive,
+                now = nowProvider
+            )
     }
 
     fun cache(product: Product) {
         productCache[product.id] =
-            Cached(product, creationTime = nowProvider(), timeToLive = timeToLive)
+            Cached(
+                product,
+                creationTime = nowProvider(),
+                timeToLive = timeToLive,
+                now = nowProvider
+            )
     }
 
     fun trim() {
         if (productPreviewListCache?.isExpired() == true) productPreviewListCache = null
-        for ((key, value) in productCache) {
-            if (value.isExpired()) productCache.remove(key)
+
+        // Collect keys to remove first to avoid ConcurrentModificationException
+        val keysToRemove = productCache.entries
+            .filter { (_, value) -> value.isExpired() }
+            .map { it.key }
+
+        // Remove the expired entries
+        keysToRemove.forEach { key ->
+            productCache.remove(key)
         }
     }
 }
