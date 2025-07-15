@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import io.aoriani.ecomm.ui.test.TestTags
+import io.aoriani.ecomm.ui.test.TestTagsDesktop
 import org.junit.Rule
 import org.junit.Test
 
@@ -18,7 +18,7 @@ class AboutAppDialogKtTest {
         composeTestRule.setContent {
             AboutAppDialog(isVisible = true)
         }
-        composeTestRule.onNodeWithTag(TestTags.aboutDialog).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTagsDesktop.aboutDialog).assertIsDisplayed()
     }
 
     @Test
@@ -26,7 +26,7 @@ class AboutAppDialogKtTest {
         composeTestRule.setContent {
             AboutAppDialog(isVisible = true)
         }
-        composeTestRule.onNodeWithTag(TestTags.aboutDialog).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTagsDesktop.aboutDialog).assertIsDisplayed()
     }
 
     @Test
@@ -37,7 +37,7 @@ class AboutAppDialogKtTest {
         }
 
         // Verify that the dialog is displayed
-        composeTestRule.onNodeWithTag(TestTags.aboutDialog).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTagsDesktop.aboutDialog).assertIsDisplayed()
 
         // Verify that the text content is as expected
         // Based on the implementation in AboutAppDialog.kt, the text content is "TODO - Implement Content"

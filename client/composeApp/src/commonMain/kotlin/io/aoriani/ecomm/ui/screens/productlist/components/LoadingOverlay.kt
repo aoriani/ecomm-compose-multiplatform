@@ -12,8 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import io.aoriani.ecomm.ui.test.TestTags
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
 
 @Composable
 fun LoadingOverlay(
@@ -25,7 +26,8 @@ fun LoadingOverlay(
         content()
         if (isLoading) {
             Box(
-                modifier = Modifier.background(Color(0x80000000)).fillMaxSize(),
+                modifier = Modifier.background(Color(0x80000000)).fillMaxSize()
+                    .testTag(TestTags.loadingOverlay),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
