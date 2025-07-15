@@ -28,7 +28,7 @@ kotlin {
             // https://slack-chats.kotlinlang.org/t/23082710/i-am-trying-to-run-the-roboelectric-test-in-androidunittest-?utm_source=chatgpt.com
             // https://medium.com/publicis-sapient-france/testing-a-kotlin-multiplatform-app-with-compose-and-robolectric-45df4bef20e0
             // github.com/phansier/Coffeegram/pull/412/files
-            debugImplementation(libs.androidx.ui.test.manifest)
+            //debugImplementation(libs.androidx.ui.test.manifest)
         }
     }
 
@@ -85,7 +85,7 @@ kotlin {
         }
         androidUnitTest.dependencies {
             implementation(compose.uiTestJUnit4)
-            implementation(libs.androidx.ui.test.manifest)
+            //implementation(libs.androidx.ui.test.manifest)
             implementation(libs.roboeletric)
         }
         commonMain.dependencies {
