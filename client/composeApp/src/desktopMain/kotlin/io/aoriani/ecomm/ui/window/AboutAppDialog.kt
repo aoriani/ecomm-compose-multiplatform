@@ -10,7 +10,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.dialog_about_title
-import io.aoriani.ecomm.ui.test.TestTags
+import io.aoriani.ecomm.ui.test.TestTagsDesktop
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -28,7 +28,7 @@ fun AboutAppDialog(isVisible: Boolean, onCloseRequest: () -> Unit = {}) {
         ) {
             Text(
                 text = "TODO - Implement Content",
-                modifier = Modifier.testTag(TestTags.aboutDialog)
+                modifier = Modifier.testTag(TestTagsDesktop.aboutDialog)
             )
         }
     }

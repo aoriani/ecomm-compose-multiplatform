@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -21,6 +23,12 @@ kotlin {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+        }
+        dependencies {
+            // https://slack-chats.kotlinlang.org/t/23082710/i-am-trying-to-run-the-roboelectric-test-in-androidunittest-?utm_source=chatgpt.com
+            // https://medium.com/publicis-sapient-france/testing-a-kotlin-multiplatform-app-with-compose-and-robolectric-45df4bef20e0
+            // github.com/phansier/Coffeegram/pull/412/files
+            debugImplementation(libs.androidx.ui.test.manifest)
         }
     }
 
@@ -74,6 +82,11 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.sqldelight.android.driver)
+        }
+        androidUnitTest.dependencies {
+            implementation(compose.uiTestJUnit4)
+            implementation(libs.androidx.ui.test.manifest)
+            implementation(libs.roboeletric)
         }
         commonMain.dependencies {
 //            implementation(libs.kermit.koin)
@@ -160,6 +173,12 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
     }
 }
 
