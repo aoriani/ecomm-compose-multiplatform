@@ -20,13 +20,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="androidx.activity.ComponentActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!-- This was only added to enable robolectric compose testing -->
+        <!-- In pure android this is done by the ui-test-manifest package  -->
+        <activity
+            android:name="androidx.activity.ComponentActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
     </application>
 
 </manifest>
