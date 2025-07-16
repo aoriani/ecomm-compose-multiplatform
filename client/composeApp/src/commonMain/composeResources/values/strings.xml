@@ -3,4 +3,5 @@
     <string name="product_list_title">Chibby CEOs</string>
     <string name="cart_title">Cart</string>
     <string name="content_description_back">back</string>
+    <string name="content_description_cart">cart</string>
 </resources>

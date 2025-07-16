@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ecommerceapp.composeapp.generated.resources.Res
+import ecommerceapp.composeapp.generated.resources.content_description_cart
 import ecommerceapp.composeapp.generated.resources.product_list_title
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollbarIfSupported
@@ -42,7 +43,10 @@ fun ProductListScreen(
                     title = { Text(stringResource(Res.string.product_list_title)) },
                     actions = {
                         Button(onClick = navigateToCart) {
-                            Icon(Icons.Default.ShoppingCart, contentDescription = "Cart")
+                            Icon(
+                                Icons.Default.ShoppingCart,
+                                contentDescription = stringResource(Res.string.content_description_cart)
+                            )
                         }
                     }
                 )
