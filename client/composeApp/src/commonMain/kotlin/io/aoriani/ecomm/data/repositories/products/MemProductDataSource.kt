@@ -48,14 +48,16 @@ class MemProductDataSource(private val nowProvider: () -> Instant) {
     fun trim() {
         if (productPreviewListCache?.isExpired() == true) productPreviewListCache = null
 
-        // Collect keys to remove first to avoid ConcurrentModificationException
-        val keysToRemove = productCache.entries
-            .filter { (_, value) -> value.isExpired() }
-            .map { it.key }
+        // Remove expired entries
+        productCache.entries.removeIf { (_, value) -> value.isExpired() }
 
-        // Remove the expired entries
-        keysToRemove.forEach { key ->
-            productCache.remove(key)
+        // Enforce maxEntries limit
+        if (productCache.size > maxEntries) {
+            val iterator = productCache.keys.iterator()
+            while (productCache.size > maxEntries && iterator.hasNext()) {
+                iterator.next()
+                iterator.remove()
+            }
         }
     }
 }

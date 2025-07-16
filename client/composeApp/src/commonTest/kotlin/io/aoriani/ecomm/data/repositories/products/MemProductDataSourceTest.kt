@@ -7,6 +7,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
@@ -224,5 +225,50 @@ class MemProductDataSourceTest {
         assertNull(dataSource.getProduct(testProductId), "Should remove expired product")
         val secondResult = dataSource.getProduct(secondProductId)
         assertEquals(secondProduct, secondResult?.value, "Should keep non-expired product")
+    }
+
+    @Test
+    fun `trim removes oldest products when cache exceeds maxEntries`() {
+        // Arrange
+        val dataSource = createDataSource()
+        val products = (1..7).map {
+            testProduct.copy(id = "product-$it")
+        }
+        products.forEach { dataSource.cache(it) }
+
+        // Act
+        dataSource.trim()
+
+        // Assert
+        assertEquals(5, dataSource.getProductCount(), "Should trim cache to maxEntries")
+        assertNull(dataSource.getProduct("product-1"), "Should remove the oldest product")
+        assertNull(dataSource.getProduct("product-2"), "Should remove the second oldest product")
+        assertNotNull(dataSource.getProduct("product-3"), "Should keep the newer products")
+        assertNotNull(dataSource.getProduct("product-7"), "Should keep the newest product")
+    }
+
+    @Test
+    fun `trim does not remove anything when cache is within limits and not expired`() {
+        // Arrange
+        val dataSource = createDataSource()
+        val products = (1..5).map {
+            testProduct.copy(id = "product-$it")
+        }
+        products.forEach { dataSource.cache(it) }
+
+        // Act
+        dataSource.trim()
+
+        // Assert
+        assertEquals(5, dataSource.getProductCount(), "Should not remove any products")
+    }
+
+    private fun MemProductDataSource.getProductCount(): Int {
+        // This is a bit of a hack, but it's the easiest way to test the size of the cache
+        // without exposing the internal implementation.
+        val field = this::class.java.getDeclaredField("productCache")
+        field.isAccessible = true
+        val cache = field.get(this) as LinkedHashMap<*, *>
+        return cache.size
     }
 }
