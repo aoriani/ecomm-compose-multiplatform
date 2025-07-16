@@ -60,6 +60,22 @@ The project uses the Gradle Version Catalog for dependency management, located a
 - GraphQL configuration is in the Apollo section of `composeApp/build.gradle.kts`
 - SQLDelight configuration is in the SQLDelight section of `composeApp/build.gradle.kts`
 
+### `build.gradle.kts`
+
+The main build script for the `composeApp` module, located at `composeApp/build.gradle.kts`, is where all the magic happens. Here’s a breakdown of what it does:
+
+- **Plugins**: It applies essential plugins for Android, Kotlin Multiplatform, Compose, Apollo (GraphQL), and SQLDelight.
+- **Kotlin Configuration**: It sets up the different targets for the multiplatform project:
+  - `androidTarget`: Configures Android-specific settings, including compiler options and dependencies.
+  - `iosTarget`: Sets up iOS targets (X64, Arm64, Simulator) and creates the necessary framework.
+  - `jvm("desktop")`: Configures the desktop target.
+  - `wasmJs`: Configures the WebAssembly target, including webpack settings and NPM dependencies.
+- **Source Sets**: It defines the dependencies for each source set (`commonMain`, `androidMain`, `iosMain`, etc.), ensuring that each platform gets the right libraries.
+- **Android Configuration**: It includes standard Android settings like `namespace`, `compileSdk`, `defaultConfig`, and `buildTypes`.
+- **Apollo**: It configures the Apollo service, pointing to the GraphQL endpoint and setting up scalar mappings.
+- **SQLDelight**: It configures the SQLDelight database, setting the package name and enabling async code generation.
+- **Compose Desktop**: It sets up the desktop application, defining the main class and native distribution formats.
+
 ## Testing Information
 
 ### Test Structure
@@ -174,23 +190,24 @@ The project uses SQLDelight for local database caching:
 
 ### Navigation
 
-The project uses Compose Navigation:
+The project uses [Jetpack Navigation Compose](https://developer.android.com/jetpack/compose/navigation) for navigating between screens.
 
-- Routes are defined in `io.aoriani.ecomm.ui.navigation.Routes`
-- Navigation graph is in `io.aoriani.ecomm.ui.navigation.Navigation`
+- **Routes**: Defined in `io.aoriani.ecomm.ui.navigation.Routes`.
+- **Navigation Graph**: The navigation graph is set up in `io.aoriani.ecomm.ui.navigation.Navigation`, which defines all the screens and their transitions.
 
 ### Dependency Injection
 
-The project uses Koin for dependency injection:
+The project uses [Koin](https://insert-koin.io/) for dependency injection, which helps in managing dependencies in a structured and testable way.
 
-- Dependencies are defined as modules in `io.aoriani.ecomm.di.Deps`
-- The Koin container is initialized in the App composable
-- Dependencies are injected using `koinInject()` in Compose components
-- ViewModels receive dependencies through their factory constructors
+- **Modules**: Dependencies are organized into modules in `io.aoriani.ecomm.di.Deps`.
+- **Initialization**: The Koin container is initialized in the `App` composable, making dependencies available throughout the application.
+- **Injection**:
+  - In Compose components, dependencies are injected using `koinInject()`.
+  - ViewModels receive their dependencies through factory constructors, ensuring they are properly instantiated by Koin.
 
 ### Logging
 
-The project uses Kermit for logging:
+The project uses [Kermit](https://kermit.touchlab.co/) for logging, which provides a flexible and powerful logging solution for Kotlin Multiplatform.
 
 ```kotlin
 private val logger = Logger.withTag("YourClassName")
@@ -202,10 +219,18 @@ logger.e { "Error message" }
 
 ### Hot Reload
 
-The project supports Compose Hot Reload for faster development:
+The project supports [Compose Hot Reload](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-hot-reload.html) for faster development cycles. To enable it, use the following command:
 
 ```bash
-./gradlew :composeApp:enableComposeCompilerReports
+./gradlew -Pcompose.hotreload=true :composeApp:desktop:run
 ```
 
-This will generate reports in `build/compose_compiler` that can help optimize Compose performance.
+This will start the desktop application with Hot Reload enabled, allowing you to see changes in real-time without restarting the app.
+
+### WebAssembly Target (WasmJs)
+
+The project supports WebAssembly through the `wasmJs` target, allowing the application to run in modern web browsers.
+
+- **Configuration**: The `wasmJs` target is configured in `composeApp/build.gradle.kts`, including the browser and webpack settings.
+- **NPM Dependencies**: The project uses `npm` to manage JavaScript dependencies for the Wasm target, such as `sql.js` for the web worker.
+- **SQLDelight for Web**: The project uses a `web-worker-driver` for SQLDelight to run the database in a separate thread, ensuring the UI remains responsive.
