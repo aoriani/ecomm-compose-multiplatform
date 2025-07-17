@@ -288,7 +288,8 @@ private fun Application.configureDatabase() {
     val dbDriver = environment.config.property("ecomm.database.driver").getString()
     Database.connect(dbUrl, dbDriver)
     TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE // Or configure this too if needed
-    initializeDatabaseAndSeedIfEmpty()
+    val imageUrlBase = environment.config.property("app.images.base-url").getString()
+    initializeDatabaseAndSeedIfEmpty(imageUrlBase)
 }
 
 /**
