@@ -11,8 +11,5 @@ ecomm:
     driver: "org.sqlite.JDBC"
   logging:
     level: "DEBUG"
-
-app:
   images:
     base-url: "https://aoriani.dev/static/images"
-
