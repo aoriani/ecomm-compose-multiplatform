@@ -90,8 +90,8 @@ class DollarAmountTest {
         val originalAmount = DollarAmount("42.99")
 
         // Create a Json instance
-        val json = Json { 
-            ignoreUnknownKeys = true 
+        val json = Json {
+            ignoreUnknownKeys = true
             isLenient = true
         }
 
@@ -112,7 +112,8 @@ class DollarAmountTest {
         val anotherJsonString = json.encodeToString(DollarAmount.serializer(), anotherAmount)
         assertEquals("\"99.50\"", anotherJsonString)
 
-        val anotherDeserialized = json.decodeFromString(DollarAmount.serializer(), anotherJsonString)
+        val anotherDeserialized =
+            json.decodeFromString(DollarAmount.serializer(), anotherJsonString)
         assertEquals(anotherAmount.toString(), anotherDeserialized.toString())
     }
 }

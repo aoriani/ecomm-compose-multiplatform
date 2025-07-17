@@ -5,6 +5,7 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.runComposeUiTest
+import io.aoriani.ecomm.ui.screens.productlist.productlist
 import io.aoriani.ecomm.ui.test.TestTags
 import io.aoriani.ecomm.ui.test.UiTest
 import io.aoriani.ecomm.ui.test.setContentWithContext
@@ -20,16 +21,18 @@ class LoadingOverlayTest : UiTest() {
                 Text("Hello")
             }
         }
-        onNodeWithTag(TestTags.loadingOverlay).assertExists().assertIsDisplayed()
+        onNodeWithTag(TestTags.screens.productlist.loadingOverlay).assertExists()
+            .assertIsDisplayed()
     }
 
     @Test
-    fun `When isLoading is false then the loading overlay should not be displayed`() = runComposeUiTest {
-        setContentWithContext {
-            LoadingOverlay(isLoading = false) {
-                Text("Hello")
+    fun `When isLoading is false then the loading overlay should not be displayed`() =
+        runComposeUiTest {
+            setContentWithContext {
+                LoadingOverlay(isLoading = false) {
+                    Text("Hello")
+                }
             }
+            onNodeWithTag(TestTags.screens.productlist.loadingOverlay).assertDoesNotExist()
         }
-        onNodeWithTag(TestTags.loadingOverlay).assertDoesNotExist()
-    }
 }

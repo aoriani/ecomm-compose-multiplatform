@@ -26,6 +26,7 @@ class ProductDetailsViewModel(
                 title = route.name, imageUrl = route.imageUrl
             )
         )
+
     init {
         fetchProductDetails()
     }

@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import co.touchlab.kermit.Logger
-import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

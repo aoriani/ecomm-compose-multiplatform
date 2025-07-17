@@ -1,7 +1,10 @@
 package dev.aoriani.ecomm
 
 import io.ktor.client.request.get
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.http.withCharset
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.testApplication
 import kotlin.test.Test
@@ -22,6 +25,7 @@ class ApplicationTest {
         }
         client.get("/").apply {
             assertEquals(HttpStatusCode.Companion.OK, status)
+            assertEquals(ContentType.Text.Plain.withCharset(Charsets.UTF_8), this.contentType())
         }
     }
 

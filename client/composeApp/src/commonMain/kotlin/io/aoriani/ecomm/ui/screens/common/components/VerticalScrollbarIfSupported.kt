@@ -14,7 +14,10 @@ fun BoxScope.VerticalScrollbarIfSupported(scrollState: ScrollState, modifier: Mo
 }
 
 @Composable
-fun BoxScope.VerticalScrollbarIfSupported(scrollState: LazyGridState, modifier: Modifier = Modifier) {
+fun BoxScope.VerticalScrollbarIfSupported(
+    scrollState: LazyGridState,
+    modifier: Modifier = Modifier
+) {
     PlatformVerticalScrollbar(scrollState, modifier.align(Alignment.CenterEnd).fillMaxHeight())
 }
 

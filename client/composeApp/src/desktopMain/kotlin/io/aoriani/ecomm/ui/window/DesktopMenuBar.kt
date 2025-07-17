@@ -20,7 +20,8 @@ fun FrameWindowScope.DesktopMenuBar(onAboutMenuItemClicked: () -> Unit = {}) {
             Item(
                 stringResource(Res.string.menu_item_about),
                 mnemonic = stringResource(Res.string.menu_item_about_mnemonic).first(),
-                onClick = onAboutMenuItemClicked)
+                onClick = onAboutMenuItemClicked
+            )
         }
     }
 }

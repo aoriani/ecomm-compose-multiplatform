@@ -7,4 +7,5 @@ import androidx.compose.ui.test.ExperimentalTestApi
 actual abstract class UiTest
 
 @OptIn(markerClass = [ExperimentalTestApi::class])
-actual fun ComposeUiTest.setContentWithContext(composable: @Composable (() -> Unit))= setContent(composable)
+actual fun ComposeUiTest.setContentWithContext(composable: @Composable (() -> Unit)) =
+    setContent(composable)

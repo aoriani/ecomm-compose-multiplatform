@@ -26,7 +26,7 @@ class ProductListScreenTest : UiTest() {
             ProductListScreen(ProductListUiState.Loading)
         }
 
-        onNodeWithTag(TestTags.loadingOverlay).assertIsDisplayed()
+        onNodeWithTag(TestTags.screens.productlist.loadingOverlay).assertIsDisplayed()
     }
 
     @Test
