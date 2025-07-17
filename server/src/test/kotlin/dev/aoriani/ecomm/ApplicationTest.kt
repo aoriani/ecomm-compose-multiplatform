@@ -17,7 +17,8 @@ class ApplicationTest {
         environment {
             config = MapApplicationConfig(
                 "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
-                "ecomm.database.driver" to "org.sqlite.JDBC"
+                "ecomm.database.driver" to "org.sqlite.JDBC",
+                "app.images.base-url" to "http://localhost:8080/static/images" // Added for test configuration
             )
         }
         application {
