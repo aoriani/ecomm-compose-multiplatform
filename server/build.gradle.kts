@@ -47,4 +47,6 @@ dependencies {
     implementation(libs.graphql.java.extended.scalars)
     testImplementation(ktorLibs.server.testHost)
     testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

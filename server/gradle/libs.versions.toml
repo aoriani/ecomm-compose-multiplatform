@@ -3,7 +3,9 @@ expediagroup-graphql = "9.0.0-alpha.8"
 exposed                = "1.0.0-beta-4"
 kotlin-version         = "2.2.20-Beta1"
 kotlinx-serialization  = "1.9.0"
+kotlinx-coroutines-test = "1.8.1"
 logback-version        = "1.5.18"
+mockk                  = "1.14.4"
 sqlite                 = "3.50.1.0"
 
 [libraries]
@@ -26,6 +28,8 @@ sqlite-jdbc                   = { module = "org.xerial:sqlite-jdbc", version.ref
 # Kotlin & Serialization
 kotlin-test-junit             = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
 kotlinx-serialization-json    = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-coroutines-test       = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
+mockk                         = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 # Logging
 logback-classic               = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
