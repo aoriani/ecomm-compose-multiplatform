@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm
 
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -10,7 +11,7 @@ import io.ktor.server.testing.testApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ApplicationTest {
+class RootEndpointTest {
 
     @Test
     fun testRoot() = testApplication {
@@ -27,6 +28,7 @@ class ApplicationTest {
         client.get("/").apply {
             assertEquals(HttpStatusCode.Companion.OK, status)
             assertEquals(ContentType.Text.Plain.withCharset(Charsets.UTF_8), this.contentType())
+            assertEquals("Hello World!", this.bodyAsText())
         }
     }
 
