@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm.graphql.queries
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
+import com.expediagroup.graphql.generator.scalars.ID
 import com.expediagroup.graphql.server.operations.Query
 import dev.aoriani.ecomm.graphql.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.graphql.models.Product
@@ -22,9 +23,9 @@ class ProductQuery(private val repository: ProductRepository) : Query {
     @GraphQLDescription("Fetch a single product by its unique identifier. Throws ProductNotFoundException if not found.")
     suspend fun product(
         @GraphQLDescription("The unique ID of the product to retrieve. Cannot be blank.")
-        id: String
+        id: ID
     ): Product {
-        require(id.isNotBlank()) { "Product ID cannot be blank." }
-        return repository.getById(id) ?: throw ProductNotFoundException(id)
+        require(id.value.isNotBlank()) { "Product ID cannot be blank." }
+        return repository.getById(id.value) ?: throw ProductNotFoundException(id)
     }
 }

@@ -1,5 +1,6 @@
 package dev.aoriani.ecomm.repository.database
 
+import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.graphql.models.Product
 import dev.aoriani.ecomm.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,7 @@ object DatabaseProductRepositoryImpl : ProductRepository {
 
 private fun ProductEntity.toProduct(): Product {
     return Product(
-        id = id.value,
+        id = ID(id.value),
         name = name,
         price = price,
         description = description,

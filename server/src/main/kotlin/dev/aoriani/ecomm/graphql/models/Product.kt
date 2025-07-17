@@ -1,12 +1,13 @@
 package dev.aoriani.ecomm.graphql.models
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
+import com.expediagroup.graphql.generator.scalars.ID
 import java.math.BigDecimal
 
 @GraphQLDescription("Represents a product available in the e-commerce catalog")
 data class Product(
     @GraphQLDescription("Unique identifier of the product")
-    val id: String,
+    val id: ID,
 
     @GraphQLDescription("Name of the product")
     val name: String,

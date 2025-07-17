@@ -1,5 +1,6 @@
 package dev.aoriani.ecomm.graphql.queries
 
+import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.graphql.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.graphql.models.Product
 import dev.aoriani.ecomm.repository.ProductRepository
@@ -26,8 +27,26 @@ class ProductQueryTest {
     @Test
     fun `products should return all products from repository`() = runTest {
         val products = listOf(
-            Product("1", "Product A", BigDecimal("10.0"), "Description A", listOf("imageA.jpg"), "Material A", true, "USA"),
-            Product("2", "Product B", BigDecimal("20.0"), "Description B", listOf("imageB.jpg"), "Material B", false, "Germany")
+            Product(
+                ID("1"),
+                "Product A",
+                BigDecimal("10.0"),
+                "Description A",
+                listOf("imageA.jpg"),
+                "Material A",
+                true,
+                "USA"
+            ),
+            Product(
+                ID("2"),
+                "Product B",
+                BigDecimal("20.0"),
+                "Description B",
+                listOf("imageB.jpg"),
+                "Material B",
+                false,
+                "Germany"
+            )
         )
         coEvery { productRepository.getAll() } returns products
 
@@ -47,10 +66,19 @@ class ProductQueryTest {
 
     @Test
     fun `product should return product by ID`() = runTest {
-        val product = Product("1", "Product A", BigDecimal("10.0"), "Description A", listOf("imageA.jpg"), "Material A", true, "USA")
+        val product = Product(
+            ID("1"),
+            "Product A",
+            BigDecimal("10.0"),
+            "Description A",
+            listOf("imageA.jpg"),
+            "Material A",
+            true,
+            "USA"
+        )
         coEvery { productRepository.getById("1") } returns product
 
-        val result = productQuery.product("1")
+        val result = productQuery.product(ID("1"))
 
         assertEquals(product, result)
     }
@@ -60,17 +88,17 @@ class ProductQueryTest {
         coEvery { productRepository.getById("nonexistent") } returns null
 
         assertFailsWith<ProductNotFoundException> {
-            productQuery.product("nonexistent")
+            productQuery.product(ID("nonexistent"))
         }
     }
 
     @Test
     fun `product should throw IllegalArgumentException for blank ID`() = runTest {
         assertFailsWith<IllegalArgumentException> {
-            productQuery.product("")
+            productQuery.product(ID(""))
         }
         assertFailsWith<IllegalArgumentException> {
-            productQuery.product("   ")
+            productQuery.product(ID("   "))
         }
     }
 }

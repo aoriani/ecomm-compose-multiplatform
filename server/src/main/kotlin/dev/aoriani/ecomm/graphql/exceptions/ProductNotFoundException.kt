@@ -1,3 +1,5 @@
 package dev.aoriani.ecomm.graphql.exceptions
 
-class ProductNotFoundException(id: String) : RuntimeException("Product with ID '$id' not found.")
+import com.expediagroup.graphql.generator.scalars.ID
+
+class ProductNotFoundException(id: ID) : RuntimeException("Product with ID '$id' not found.")
