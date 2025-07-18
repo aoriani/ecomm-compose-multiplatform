@@ -12,6 +12,7 @@ import io.ktor.http.contentType
 import io.ktor.http.withCharset
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.ktor.utils.io.charsets.Charsets
 import io.mockk.coEvery
@@ -38,7 +39,7 @@ class GraphQlEndpointTest {
         return buildJsonObject {
             put("query", JsonPrimitive(query))
             variables?.let {
-                val variablesJson = buildJsonObject { 
+                val variablesJson = buildJsonObject {
                     for ((key, value) in variables) {
                         when (value) {
                             is String -> put(key, JsonPrimitive(value))
@@ -53,11 +54,16 @@ class GraphQlEndpointTest {
         }.toString()
     }
 
-    @Test
-    fun `When products query returns an empty list then it should return an empty list`() = testApplication {
-        val mockProductRepository: ProductRepository = mockk {
-            coEvery { getAll() } returns emptyList()
+    private fun ApplicationTestBuilder.configureAppWithMockedProducts(mockProductRepository: ProductRepository) {
+        application {
+            dependencies.provide<ProductRepository> {
+                mockProductRepository
+            }
+            module()
         }
+    }
+
+    private fun ApplicationTestBuilder.configureEnvironment() {
         environment {
             config = MapApplicationConfig(
                 "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
@@ -65,12 +71,15 @@ class GraphQlEndpointTest {
                 "ecomm.images.base-url" to "http://localhost:8080/static/images"
             )
         }
-        application {
-            dependencies.provide<ProductRepository> {
-                mockProductRepository
-            }
-            module()
+    }
+
+    @Test
+    fun `When products query returns an empty list then it should return an empty list`() = testApplication {
+        val mockProductRepository: ProductRepository = mockk {
+            coEvery { getAll() } returns emptyList()
         }
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
 
         val query = """
             query {
@@ -107,19 +116,8 @@ class GraphQlEndpointTest {
                 )
             )
         }
-        environment {
-            config = MapApplicationConfig(
-                "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
-                "ecomm.database.driver" to "org.sqlite.JDBC",
-                "ecomm.images.base-url" to "http://localhost:8080/static/images"
-            )
-        }
-        application {
-            dependencies.provide<ProductRepository> {
-                mockProductRepository
-            }
-            module()
-        }
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
 
         val query = """
             query {
@@ -157,19 +155,8 @@ class GraphQlEndpointTest {
                 countryOfOrigin = "USA"
             )
         }
-        environment {
-            config = MapApplicationConfig(
-                "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
-                "ecomm.database.driver" to "org.sqlite.JDBC",
-                "ecomm.images.base-url" to "http://localhost:8080/static/images"
-            )
-        }
-        application {
-            dependencies.provide<ProductRepository> {
-                mockProductRepository
-            }
-            module()
-        }
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
 
         val query = $$"""
             query GetProduct($id: ID!) {
@@ -198,19 +185,8 @@ class GraphQlEndpointTest {
         val mockProductRepository: ProductRepository = mockk {
             coEvery { getById("2") } returns null
         }
-        environment {
-            config = MapApplicationConfig(
-                "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
-                "ecomm.database.driver" to "org.sqlite.JDBC",
-                "ecomm.images.base-url" to "http://localhost:8080/static/images"
-            )
-        }
-        application {
-            dependencies.provide<ProductRepository> {
-                mockProductRepository
-            }
-            module()
-        }
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
 
         val query = $$"""
             query GetProduct($id: ID!) {
@@ -234,19 +210,8 @@ class GraphQlEndpointTest {
     @Test
     fun `When a malformed query is sent then it should return an error`() = testApplication {
         val mockProductRepository: ProductRepository = mockk()
-        environment {
-            config = MapApplicationConfig(
-                "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
-                "ecomm.database.driver" to "org.sqlite.JDBC",
-                "ecomm.images.base-url" to "http://localhost:8080/static/images"
-            )
-        }
-        application {
-            dependencies.provide<ProductRepository> {
-                mockProductRepository
-            }
-            module()
-        }
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
 
         val query = "query { products { id, name } }"
         val response = client.post("/graphql") {
