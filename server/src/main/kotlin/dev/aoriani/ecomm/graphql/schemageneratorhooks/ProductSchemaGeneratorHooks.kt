@@ -13,7 +13,7 @@ import kotlin.reflect.KType
  * Custom hooks for `graphql-kotlin` schema generation.
  * These hooks allow customization of the GraphQL schema generation process.
  */
-object ProductSchemaGeneratorHooks : SchemaGeneratorHooks {
+internal object ProductSchemaGeneratorHooks : SchemaGeneratorHooks {
 
     /**
      * Overrides the default GraphQL type generation for specific Kotlin classes.

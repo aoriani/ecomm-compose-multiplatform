@@ -10,9 +10,11 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.json.json
 import java.math.BigDecimal
 
+/**
+ * Defines the maximum length allowed for VARCHAR columns in the database.
+ * This constant is used to ensure consistency and prevent data truncation.
+ */
 private const val MAX_VARCHAR_LENGTH = 256
-
-
 
 /**
  * Represents the database table for storing product information.
@@ -33,7 +35,7 @@ private const val MAX_VARCHAR_LENGTH = 256
  * Primary Key:
  * The `id` column serves as the primary key of the table.
  */
-object ProductTable : IdTable<String>("products") {
+internal object ProductTable : IdTable<String>("products") {
     override val id: Column<EntityID<String>> = varchar(name = "id", length = MAX_VARCHAR_LENGTH).entityId()
     val name = varchar(name = "name", length = MAX_VARCHAR_LENGTH)
     val price = decimal(name = "price", precision = 20, scale = 2)
@@ -50,7 +52,7 @@ object ProductTable : IdTable<String>("products") {
  * Initializes the database schema for products.
  * Creates the [ProductTable] if it doesn't already exist.
  */
-fun ProductTable.initializeSchema() {
+internal fun ProductTable.initializeSchema() {
     transaction {
         SchemaUtils.create(this@initializeSchema)
     }
@@ -277,7 +279,7 @@ private fun ProductTable.doSeedData(imageUrlBase: String) {
  * Initializes the database by creating the schema and seeding it with sample data if the product table is currently empty.
  * This is the primary function called during application startup to set up the database.
  */
-fun initializeDatabaseAndSeedIfEmpty(imageUrlBase: String) {
+internal fun initializeDatabaseAndSeedIfEmpty(imageUrlBase: String) {
     ProductTable.initializeSchema() // Creates schema if it doesn't exist
 
     transaction {

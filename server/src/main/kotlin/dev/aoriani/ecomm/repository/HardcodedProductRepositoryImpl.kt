@@ -15,7 +15,7 @@ private const val IMAGE_URL_BASE = "https://aoriani.dev/static/images"
  * This repository is primarily used for demonstration and testing purposes, offering a static dataset
  * of products without requiring a database or external service.
  */
-object HardcodedProductRepositoryImpl: ProductRepository {
+internal object HardcodedProductRepositoryImpl: ProductRepository {
 
     private val products = listOf(
         Product(
