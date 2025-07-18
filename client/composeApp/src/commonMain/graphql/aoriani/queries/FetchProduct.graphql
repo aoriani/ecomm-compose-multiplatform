@@ -1,4 +1,4 @@
-query FetchProduct($productId: String!) {
+query FetchProduct($productId: ID!) {
     product(id: $productId){
         ...ProductBasic
         description

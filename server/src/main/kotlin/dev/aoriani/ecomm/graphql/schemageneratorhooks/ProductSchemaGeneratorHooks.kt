@@ -1,6 +1,8 @@
 package dev.aoriani.ecomm.graphql.schemageneratorhooks
 
 import com.expediagroup.graphql.generator.hooks.SchemaGeneratorHooks
+import com.expediagroup.graphql.generator.scalars.ID
+import graphql.Scalars
 import graphql.scalars.ExtendedScalars
 import graphql.schema.GraphQLType
 import java.math.BigDecimal
@@ -22,6 +24,7 @@ object ProductSchemaGeneratorHooks : SchemaGeneratorHooks {
      */
     override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {
         BigDecimal::class, Number::class -> ExtendedScalars.GraphQLBigDecimal
+        ID::class -> Scalars.GraphQLID
         else -> null
     }
 }

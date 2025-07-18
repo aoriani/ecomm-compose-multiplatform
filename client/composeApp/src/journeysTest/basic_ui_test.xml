@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<journey name="Basic Ui Test">
+    <description>A Journey that tests basic functionality of the ecommerce app</description>
+    <actions>
+        <action></action>
+    </actions>
+</journey>

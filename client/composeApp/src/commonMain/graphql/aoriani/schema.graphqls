@@ -39,7 +39,7 @@ type Product {
     "Detailed description of the product"
     description: String!
     "Unique identifier of the product"
-    id: String!
+    id: ID!
     "List of image URLs associated with the product"
     images: [String!]!
     "Indicates whether the product is currently in stock"
@@ -53,11 +53,11 @@ type Product {
 }
 
 type Query {
-    "Fetch a single product by its unique identifier"
+    "Fetch a single product by its unique identifier. Throws ProductNotFoundException if not found."
     product(
-        "The unique ID of the product to retrieve"
-        id: String!
-    ): Product
+        "The unique ID of the product to retrieve. Cannot be blank."
+        id: ID!
+    ): Product!
     "Retrieve all products available in the catalog"
     products: [Product!]!
 }
