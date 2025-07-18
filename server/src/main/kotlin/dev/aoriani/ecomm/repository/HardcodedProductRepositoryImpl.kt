@@ -4,8 +4,17 @@ import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.graphql.models.Product
 import java.math.BigDecimal
 
+/**
+ * Base URL for accessing product images.  This constant is used to construct
+ * the full URL for each product image.
+ */
 private const val IMAGE_URL_BASE = "https://aoriani.dev/static/images"
 
+/**
+ * A concrete implementation of [ProductRepository] that provides a hardcoded list of [Product] objects.
+ * This repository is primarily used for demonstration and testing purposes, offering a static dataset
+ * of products without requiring a database or external service.
+ */
 object HardcodedProductRepositoryImpl: ProductRepository {
 
     private val products = listOf(
@@ -203,6 +212,15 @@ object HardcodedProductRepositoryImpl: ProductRepository {
         )
     )
 
+    /**
+     * Retrieves all hardcoded products.
+     * @return A list of all [Product] objects available in the repository.
+     */
     override suspend fun getAll(): List<Product> = products
+    /**
+     * Retrieves a product by its unique [id].
+     * @param id The [ID] of the product to retrieve.
+     * @return The [Product] object if found, or `null` if no product matches the given [id].
+     */
     override suspend fun getById(id: String): Product? = products.firstOrNull { it.id.value == id }
 }
