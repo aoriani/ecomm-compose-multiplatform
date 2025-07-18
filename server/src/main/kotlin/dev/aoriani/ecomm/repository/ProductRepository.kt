@@ -5,7 +5,7 @@ import dev.aoriani.ecomm.graphql.models.Product
 /**
  * Interface for accessing product data.
  */
-internal interface ProductRepository {
+interface ProductRepository {
     /**
      * Retrieves all products.
      * @return A list of all [Product]s.

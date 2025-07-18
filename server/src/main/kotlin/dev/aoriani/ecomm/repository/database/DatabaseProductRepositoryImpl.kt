@@ -10,7 +10,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTrans
  * Exposed-based implementation of the [ProductRepository].
  * Uses [ProductEntity] and [ProductTable] to interact with the database.
  */
-internal object DatabaseProductRepositoryImpl : ProductRepository {
+object DatabaseProductRepositoryImpl : ProductRepository {
     /**
      * Retrieves all products from the database.
      * Operations are performed within a new suspended transaction on [Dispatchers.IO].
