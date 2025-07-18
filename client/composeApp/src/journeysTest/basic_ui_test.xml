@@ -2,6 +2,15 @@
 <journey name="Basic Ui Test">
     <description>A Journey that tests basic functionality of the ecommerce app</description>
     <actions>
-        <action></action>
+        <action>Wait for the app to launch and load all the list items. Verify that first item is
+            "Elon Musk" and that it is displaying the product's picture</action>
+        <action>Tap on the Bill Gates tile. Verify that it navigates to another screen that has
+            "Bill Gates" as title and has some description about the Bill Gates plush.</action>
+        <action>Tap on the back button. Verify that it returns to the previous screen showing all
+            the product tiles.</action>
+        <action>Tap on the cart button on the top right corner. Verify it navigates to the Cart
+            screen.</action>
+        <action>Tap on the left arrow button on the top left corner. Verify that it returns to the
+            previous screen showing all the product tiles.</action>
     </actions>
 </journey>
