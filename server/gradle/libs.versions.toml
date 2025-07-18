@@ -3,10 +3,10 @@ expediagroup-graphql = "9.0.0-alpha.8"
 exposed                = "1.0.0-beta-4"
 kotlin-version         = "2.2.20-Beta1"
 kotlinx-serialization  = "1.9.0"
-kotlinx-coroutines-test = "1.8.1"
+kotlinx-coroutines-test = "1.10.2"
 logback-version        = "1.5.18"
-mockk                  = "1.14.4"
-sqlite                 = "3.50.1.0"
+mockk                  = "1.14.5"
+sqlite                 = "3.50.2.0"
 
 [libraries]
 # GraphQL (Expedia Group)
