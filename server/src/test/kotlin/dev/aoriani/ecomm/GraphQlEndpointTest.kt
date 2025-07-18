@@ -20,7 +20,6 @@ import io.mockk.mockk
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -220,6 +219,109 @@ class GraphQlEndpointTest {
         }
 
         assertEquals(HttpStatusCode.OK, response.status)
+        val jsonResponse = json.parseToJsonElement(response.bodyAsText())
+        assertNotNull(jsonResponse.jsonObject["errors"])
+    }
+
+    @Test
+    fun `When product query with existing product then it should return all the product fields`() = testApplication {
+        val mockProductRepository: ProductRepository = mockk {
+            coEvery { getById("1") } returns Product(
+                id = ID("1"),
+                name = "Product 1",
+                description = "Description 1",
+                price = BigDecimal.TEN,
+                images = listOf("http://localhost:8080/static/images/image1.jpg"),
+                material = "Cotton",
+                inStock = true,
+                countryOfOrigin = "USA"
+            )
+        }
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
+
+        val query = $$"""
+            query GetProduct($id: ID!) {
+                product(id: $id) {
+                    id
+                    name
+                    description
+                    price
+                    images
+                    material
+                    inStock
+                    countryOfOrigin
+                }
+            }
+        """.trimIndent()
+        val variables = mapOf("id" to "1")
+        val response = client.post("/graphql") {
+            contentType(ContentType.Application.Json)
+            setBody(buildGraphQLRequest(query, variables))
+        }
+        assertEquals(HttpStatusCode.OK, response.status)
+
+        val jsonResponse = json.parseToJsonElement(response.bodyAsText())
+        val product = jsonResponse.jsonObject["data"]?.jsonObject?.get("product")?.jsonObject
+        assertNotNull(product)
+        assertEquals("1", product["id"]?.jsonPrimitive?.content)
+        assertEquals("Product 1", product["name"]?.jsonPrimitive?.content)
+        assertEquals("Description 1", product["description"]?.jsonPrimitive?.content)
+        assertEquals(BigDecimal.TEN, product["price"]?.jsonPrimitive?.content?.toBigDecimal())
+        assertEquals("http://localhost:8080/static/images/image1.jpg", product["images"]?.jsonArray?.get(0)?.jsonPrimitive?.content)
+        assertEquals("Cotton", product["material"]?.jsonPrimitive?.content)
+        assertEquals(true, product["inStock"]?.jsonPrimitive?.content?.toBoolean())
+        assertEquals("USA", product["countryOfOrigin"]?.jsonPrimitive?.content)
+    }
+
+    @Test
+    fun `When product repository throws an exception then it should return an error`() = testApplication {
+        val mockProductRepository: ProductRepository = mockk {
+            coEvery { getById("1") } throws RuntimeException("Database error")
+        }
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
+
+        val query = $$"""
+            query GetProduct($id: ID!) {
+                product(id: $id) {
+                    id
+                    name
+                }
+            }
+        """.trimIndent()
+        val variables = mapOf("id" to "1")
+        val response = client.post("/graphql") {
+            contentType(ContentType.Application.Json)
+            setBody(buildGraphQLRequest(query, variables))
+        }
+        assertEquals(HttpStatusCode.OK, response.status)
+
+        val jsonResponse = json.parseToJsonElement(response.bodyAsText())
+        assertNotNull(jsonResponse.jsonObject["errors"])
+    }
+
+    @Test
+    fun `When product query with blank id then it should return an error`() = testApplication {
+        val mockProductRepository: ProductRepository = mockk()
+        configureEnvironment()
+        configureAppWithMockedProducts(mockProductRepository)
+
+        val query = $$"""
+            query GetProduct($id: ID!) {
+                product(id: $id) {
+                    id
+                    name
+                }
+            }
+        """.trimIndent()
+        val variables = mapOf("id" to "")
+        val response = client.post("/graphql") {
+            contentType(ContentType.Application.Json)
+            setBody(buildGraphQLRequest(query, variables))
+        }
+        assertEquals(HttpStatusCode.OK, response.status)
+
         val jsonResponse = json.parseToJsonElement(response.bodyAsText())
         assertNotNull(jsonResponse.jsonObject["errors"])
     }
