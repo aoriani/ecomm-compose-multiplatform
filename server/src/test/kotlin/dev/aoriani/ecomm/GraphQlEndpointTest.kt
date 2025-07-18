@@ -54,7 +54,7 @@ class GraphQlEndpointTest {
     }
 
     @Test
-    fun testProductsQuery_emptyList() = testApplication {
+    fun `When products query returns an empty list then it should return an empty list`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
             coEvery { getAll() } returns emptyList()
         }
@@ -92,7 +92,7 @@ class GraphQlEndpointTest {
     }
 
     @Test
-    fun testProductsQuery_withProducts() = testApplication {
+    fun `When products query returns products then it should return the products`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
             coEvery { getAll() } returns listOf(
                 Product(
@@ -144,7 +144,7 @@ class GraphQlEndpointTest {
     }
 
     @Test
-    fun testProductQuery_existingProduct() = testApplication {
+    fun `When product query with existing product then it should return the product`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
             coEvery { getById("1") } returns Product(
                 id = ID("1"),
@@ -194,7 +194,7 @@ class GraphQlEndpointTest {
     }
 
     @Test
-    fun testProductQuery_nonExistingProduct() = testApplication {
+    fun `When product query with non-existing product then it should return null`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
             coEvery { getById("2") } returns null
         }
@@ -232,7 +232,7 @@ class GraphQlEndpointTest {
     }
 
     @Test
-    fun testMalformedQuery() = testApplication {
+    fun `When a malformed query is sent then it should return an error`() = testApplication {
         val mockProductRepository: ProductRepository = mockk()
         environment {
             config = MapApplicationConfig(
