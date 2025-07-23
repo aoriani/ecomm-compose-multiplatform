@@ -3,8 +3,7 @@ package dev.aoriani.ecomm.repository.database
 import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.graphql.models.Product
 import dev.aoriani.ecomm.repository.ProductRepository
-import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.r2dbc.transactions.suspendedTransactionAsync
 
 /**
  * Exposed-based implementation of the [ProductRepository].
@@ -16,9 +15,9 @@ object DatabaseProductRepositoryImpl : ProductRepository {
      * Operations are performed within a new suspended transaction on [Dispatchers.IO].
      * @return A list of all [Product]s.
      */
-    override suspend fun getAll(): List<Product> = newSuspendedTransaction(Dispatchers.IO) {
+    override suspend fun getAll(): List<Product> = suspendedTransactionAsync {
         ProductEntity.all().map(ProductEntity::toProduct)
-    }
+    }.await()
 
     /**
      * Retrieves a product by its unique identifier from the database.
@@ -26,9 +25,9 @@ object DatabaseProductRepositoryImpl : ProductRepository {
      * @param id The unique ID of the product.
      * @return The [Product] if found, otherwise null.
      */
-    override suspend fun getById(id: String): Product? = newSuspendedTransaction(Dispatchers.IO) {
+    override suspend fun getById(id: String): Product? = suspendedTransactionAsync {
         ProductEntity.findById(id)?.toProduct()
-    }
+    }.await()
 }
 
 private fun ProductEntity.toProduct(): Product {
