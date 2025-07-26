@@ -91,7 +91,7 @@ fun ProductPrice(price: DollarAmount) {
 }
 
 
-@Preview
+@Preview(name = "Product Tile", showBackground = true)
 @Composable
 fun ProductTilePreview() {
     MaterialTheme {

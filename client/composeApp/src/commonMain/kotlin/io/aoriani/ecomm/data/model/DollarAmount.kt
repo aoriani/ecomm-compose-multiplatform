@@ -35,21 +35,33 @@ expect class DollarAmount(value: String) {
 
     /**
      * Returns the string representation of this [DollarAmount].
+     * This should be a canonical representation, suitable for equality checks and hashing.
+     * For example, it might always include two decimal places (e.g., "10.00", "123.45").
      */
     override fun toString(): String
 
     /**
      * Checks if this [DollarAmount] is equal to another object.
-     * Two [DollarAmount] instances are considered equal if their string representations are equal.
+     *
+     * Two [DollarAmount] instances are considered equal if they represent the same monetary value.
+     * This is determined by comparing their canonical string representations (typically, the value
+     * returned by [toString]). For an object to be equal to a [DollarAmount], it must also be
+     * an instance of [DollarAmount].
+     *
      * @param other The object to compare with.
-     * @return `true` if the objects are equal, `false` otherwise.
+     * @return `true` if `other` is a [DollarAmount] representing the same monetary value as this instance,
+     *         `false` otherwise.
      */
     override fun equals(other: Any?): Boolean
 
     /**
-     * Returns the hash code of this [DollarAmount].
-     * The hash code is based on the string representation of the dollar amount.
-     * @return The hash code.
+     * Returns the hash code for this [DollarAmount].
+     *
+     * The hash code is calculated based on its canonical string representation (typically, the value
+     * returned by [toString]), ensuring that two [DollarAmount] instances considered equal by
+     * the [equals] method will have the same hash code.
+     *
+     * @return The hash code for this dollar amount.
      */
     override fun hashCode(): Int
 }

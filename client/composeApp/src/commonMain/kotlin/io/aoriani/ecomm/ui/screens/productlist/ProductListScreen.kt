@@ -78,7 +78,7 @@ fun ProductListScreen(
     }
 }
 
-@Preview
+@Preview(group = "Product List", name = "Loading", showBackground = true)
 @Composable
 fun ProductListScreenPreview() {
     MaterialTheme {

@@ -72,10 +72,9 @@ fun ProductDetailsScreen(
     }
 }
 
-
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun ProductListScreenPreview() {
+fun ProductDetailsScreenPreview() {
     MaterialTheme {
         ProductDetailsScreen(
             state = ProductDetailsUiState.Loaded(
