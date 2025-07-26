@@ -55,4 +55,11 @@ actual class DollarAmount private constructor(private val delegate: NSDecimalNum
 
         return numberFormatter.stringFromNumber(delegate) ?: delegate.toString()
     }
+
+    actual override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (other !is DollarAmount) return false
+        return delegate.isEqual(other.delegate)
+    }
 }

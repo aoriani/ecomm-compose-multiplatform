@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalComposeLibrary::class)
+@file:OptIn(ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -33,7 +33,11 @@ kotlin {
     }
 
     compilerOptions {
-        freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xcontext-parameters")
+        freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes",
+            "-Xcontext-parameters",
+            "-Xnested-type-aliases"
+        )
     }
 
     sourceSets.all {
@@ -200,16 +204,6 @@ apollo {
     }
 }
 
-sqldelight {
-    databases {
-        create("ProductDatabase") {
-            packageName.set("io.aoriani.ecomm.data.repositories.db")
-            generateAsync.set(true)
-        }
-    }
-    linkSqlite = true
-}
-
 compose.desktop {
     application {
         mainClass = "io.aoriani.ecomm.MainKt"
@@ -220,4 +214,38 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+powerAssert {
+    functions = setOf(
+        "kotlin.test.assertEquals",
+        "kotlin.test.assertNotEquals",
+        "kotlin.test.assertTrue",
+        "kotlin.test.assertFalse",
+        "kotlin.test.assertContains",
+        "kotlin.test.assertNotContains",
+        "kotlin.test.assertNotNull",
+        "kotlin.test.assertNull",
+        "kotlin.test.assertIs",
+        "kotlin.test.assertIsNot",
+        "kotlin.test.assertSame",
+        "kotlin.test.assertNotSame",
+        "kotlin.test.assertContentEquals",
+        "kotlin.test.assertContentNotEquals",
+        "kotlin.test.assertFails",
+        "kotlin.test.assertFailsWith",
+        "kotlin.test.assertTimeout",
+        "kotlin.test.assertTimeoutPreemptively",
+        "kotlin.test.expect",
+    )
+}
+
+sqldelight {
+    databases {
+        create("ProductDatabase") {
+            packageName.set("io.aoriani.ecomm.data.repositories.db")
+            generateAsync.set(true)
+        }
+    }
+    linkSqlite = true
 }

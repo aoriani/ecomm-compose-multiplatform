@@ -45,4 +45,11 @@ actual class DollarAmount private constructor(private val delegate: BigDecimal) 
     actual override fun toString(): String {
         return delegate.setScale(2, RoundingMode.HALF_EVEN).toString()
     }
+
+    actual override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (other !is DollarAmount) return false
+        return delegate.compareTo(other.delegate) == 0
+    }
 }

@@ -37,7 +37,20 @@ expect class DollarAmount(value: String) {
      * Returns the string representation of this [DollarAmount].
      */
     override fun toString(): String
+
+    /**
+     * Checks if this [DollarAmount] is equal to another object.
+     * Two [DollarAmount] instances are considered equal if their string representations are equal.
+     * @param other The object to compare with.
+     * @return `true` if the objects are equal, `false` otherwise.
+     */
+    override fun equals(other: Any?): Boolean
 }
+
+/**
+ * A [DollarAmount] instance representing zero dollars.
+ */
+val DollarAmount.Companion.ZERO: DollarAmount get() = DollarAmount("0")
 
 /**
  * Custom KSerializer for [DollarAmount].
