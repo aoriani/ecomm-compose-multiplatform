@@ -45,6 +45,13 @@ expect class DollarAmount(value: String) {
      * @return `true` if the objects are equal, `false` otherwise.
      */
     override fun equals(other: Any?): Boolean
+
+    /**
+     * Returns the hash code of this [DollarAmount].
+     * The hash code is based on the string representation of the dollar amount.
+     * @return The hash code.
+     */
+    override fun hashCode(): Int
 }
 
 /**

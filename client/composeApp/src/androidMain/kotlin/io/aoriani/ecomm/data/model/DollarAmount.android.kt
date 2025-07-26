@@ -52,4 +52,7 @@ actual class DollarAmount private constructor(private val delegate: BigDecimal) 
         if (other !is DollarAmount) return false
         return delegate.compareTo(other.delegate) == 0
     }
+    actual override fun hashCode(): Int {
+        return delegate.stripTrailingZeros().hashCode()
+    }
 }
