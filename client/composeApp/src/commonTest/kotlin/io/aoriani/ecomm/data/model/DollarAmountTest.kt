@@ -176,60 +176,124 @@ class DollarAmountTest {
         assertFalse(amount1a.equals("100.00"), "amount1a (100.00) should not be equal to a String \"100.00\"")
 
         // Test case 7: Negative values
-        assertTrue(amount3a.equals(amount3b), "amount3a (-50.25) should be equal to amount3b (-50.25)")
+        assertTrue(amount3a == amount3b, "amount3a (-50.25) should be equal to amount3b (-50.25)")
         assertEquals(amount3a, amount3b, "amount3a (-50.25) should be equal to amount3b (-50.25) (assertEquals)")
-        assertFalse(amount1a.equals(amount3a), "amount1a (100.00) should not be equal to amount3a (-50.25)")
+        assertFalse(amount1a == amount3a, "amount1a (100.00) should not be equal to amount3a (-50.25)")
 
         // Test case 8: Zero values - comparing different initial representations of zero
-        assertTrue(amount4a.equals(amount4b), "amount4a (0) should be equal to amount4b (0.00)")
+        assertTrue(amount4a == amount4b, "amount4a (0) should be equal to amount4b (0.00)")
         assertEquals(amount4a, amount4b, "amount4a (0) should be equal to amount4b (0.00) (assertEquals)")
-        assertTrue(amount4a.equals(amount4c), "amount4a (0) should be equal to amount4c (DollarAmount.ZERO)")
+        assertTrue(amount4a == amount4c, "amount4a (0) should be equal to amount4c (DollarAmount.ZERO)")
         assertEquals(amount4a, amount4c, "amount4a (0) should be equal to amount4c (DollarAmount.ZERO) (assertEquals)")
-        assertTrue(DollarAmount.ZERO.equals(DollarAmount("0.00")), "DollarAmount.ZERO should be equal to DollarAmount(\"0.00\")")
+        assertTrue(DollarAmount.ZERO == DollarAmount("0.00"), "DollarAmount.ZERO should be equal to DollarAmount(\"0.00\")")
 
         // Test case 9: Transitivity (if a=b and b=c, then a=c)
         val valA = DollarAmount("50.00")
         val valB = DollarAmount("50.00")
         val valC = DollarAmount("50") // Normalizes to "50.00"
-        assertTrue(valA.equals(valB), "Transitivity: valA (50.00) should be equal to valB (50.00)")
-        assertTrue(valB.equals(valC), "Transitivity: valB (50.00) should be equal to valC (50)")
-        assertTrue(valA.equals(valC), "Transitivity: valA (50.00) should be equal to valC (50)")
+        assertTrue(valA == valB, "Transitivity: valA (50.00) should be equal to valB (50.00)")
+        assertTrue(valB == valC, "Transitivity: valB (50.00) should be equal to valC (50)")
+        assertTrue(valA == valC, "Transitivity: valA (50.00) should be equal to valC (50)")
 
         // Test case 10: Consistency (multiple invocations of equals yield the same result)
-        assertTrue(amount1a.equals(amount1b), "Consistency: amount1a.equals(amount1b) first call")
-        assertTrue(amount1a.equals(amount1b), "Consistency: amount1a.equals(amount1b) second call")
-        assertFalse(amount1a.equals(amount2), "Consistency: amount1a.equals(amount2) first call")
-        assertFalse(amount1a.equals(amount2), "Consistency: amount1a.equals(amount2) second call")
+        assertTrue(amount1a == amount1b, "Consistency: amount1a.equals(amount1b) first call")
+        assertTrue(amount1a == amount1b, "Consistency: amount1a.equals(amount1b) second call")
+        assertFalse(amount1a == amount2, "Consistency: amount1a.equals(amount2) first call")
+        assertFalse(amount1a == amount2, "Consistency: amount1a.equals(amount2) second call")
 
         // Test case 11: Normalization cases from `To string` test
         val toStringTest1 = DollarAmount("10.5") // Normalizes to "10.50"
         val toStringTest2 = DollarAmount("10.50")
-        assertTrue(toStringTest1.equals(toStringTest2), "DollarAmount('10.5') should equal DollarAmount('10.50')")
+        assertTrue(toStringTest1 == toStringTest2, "DollarAmount('10.5') should equal DollarAmount('10.50')")
         assertEquals(toStringTest1, toStringTest2, "DollarAmount('10.5') vs DollarAmount('10.50') (assertEquals)")
 
         val toStringTest3 = DollarAmount("10") // Normalizes to "10.00"
         val toStringTest4 = DollarAmount("10.00")
-        assertTrue(toStringTest3.equals(toStringTest4), "DollarAmount('10') should equal DollarAmount('10.00')")
+        assertTrue(toStringTest3 == toStringTest4, "DollarAmount('10') should equal DollarAmount('10.00')")
         assertEquals(toStringTest3, toStringTest4, "DollarAmount('10') vs DollarAmount('10.00') (assertEquals)")
 
-        // Test case 12: Rounding cases from `To string` test
-//        val rounding1 = DollarAmount("10.567") // Normalizes to "10.57"
-//        val rounding2 = DollarAmount("10.57")
-//        assertTrue(rounding1.equals(rounding2), "DollarAmount('10.567') should equal DollarAmount('10.57')")
-//        assertEquals(rounding1, rounding2, "DollarAmount('10.567') vs DollarAmount('10.57') (assertEquals)")
-
-        // Test case 13: Values with excessive or missing trailing zeros, assuming normalization
+        // Test case 12: Values with excessive or missing trailing zeros, assuming normalization
         val amountWithTrailingZeros = DollarAmount("75.50000") // Should normalize to "75.50"
         val amountStandard = DollarAmount("75.50")
         val amountNoTrailingDecimal = DollarAmount("75.5")      // Should normalize to "75.50"
 
-        assertTrue(amountStandard.equals(amountWithTrailingZeros), "DollarAmount('75.50') should equal DollarAmount('75.50000')")
+        assertTrue(amountStandard == amountWithTrailingZeros, "DollarAmount('75.50') should equal DollarAmount('75.50000')")
         assertEquals(amountStandard, amountWithTrailingZeros)
 
-        assertTrue(amountStandard.equals(amountNoTrailingDecimal), "DollarAmount('75.50') should equal DollarAmount('75.5')")
+        assertTrue(amountStandard == amountNoTrailingDecimal, "DollarAmount('75.50') should equal DollarAmount('75.5')")
         assertEquals(amountStandard, amountNoTrailingDecimal)
 
-        assertTrue(amountWithTrailingZeros.equals(amountNoTrailingDecimal), "DollarAmount('75.50000') should equal DollarAmount('75.5')")
+        assertTrue(amountWithTrailingZeros == amountNoTrailingDecimal, "DollarAmount('75.50000') should equal DollarAmount('75.5')")
         assertEquals(amountWithTrailingZeros, amountNoTrailingDecimal)
+    }
+
+    @Test
+    fun `hashCode method works correctly`() {
+        // Test case 1: Consistency - hashCode should return the same value on multiple calls
+        val amount1 = DollarAmount("123.45")
+        val hashCode1a = amount1.hashCode()
+        val hashCode1b = amount1.hashCode()
+        assertEquals(hashCode1a, hashCode1b, "hashCode should be consistent for the same object")
+
+        // Test case 2: Equality implies same hashCode
+        // Two objects equal by `equals()` must have the same hashCode
+        val amount2a = DollarAmount("100.00")
+        val amount2b = DollarAmount("100.00") // Identical value
+        val amount2c = DollarAmount("100")    // Normalizes to "100.00"
+        val amount2d = DollarAmount("100.0")  // Normalizes to "100.00"
+
+        assertTrue(amount2a == amount2b, "amount2a should be equal to amount2b")
+        assertEquals(amount2a.hashCode(), amount2b.hashCode(), "Equal objects (amount2a, amount2b) must have same hashCode")
+
+        assertTrue(amount2a == amount2c, "amount2a should be equal to amount2c (normalization)")
+        assertEquals(amount2a.hashCode(), amount2c.hashCode(), "Equal objects (amount2a, amount2c) due to normalization must have same hashCode")
+
+        assertTrue(amount2a == amount2d, "amount2a should be equal to amount2d (normalization)")
+        assertEquals(amount2a.hashCode(), amount2d.hashCode(), "Equal objects (amount2a, amount2d) due to normalization must have same hashCode")
+
+        // Test with negative values
+        val amount3a = DollarAmount("-50.25")
+        val amount3b = DollarAmount("-50.25")
+        assertTrue(amount3a == amount3b, "amount3a should be equal to amount3b (negative)")
+        assertEquals(amount3a.hashCode(), amount3b.hashCode(), "Equal negative objects must have same hashCode")
+
+        // Test with zero values
+        val amount4a = DollarAmount("0")
+        val amount4b = DollarAmount("0.00")
+        val amount4c = DollarAmount.ZERO
+        assertTrue(amount4a == amount4b, "amount4a should be equal to amount4b (zero)")
+        assertEquals(amount4a.hashCode(), amount4b.hashCode(), "Equal zero objects (amount4a, amount4b) must have same hashCode")
+        assertTrue(amount4a == amount4c, "amount4a should be equal to amount4c (DollarAmount.ZERO)")
+        assertEquals(amount4a.hashCode(), amount4c.hashCode(), "Equal zero objects (amount4a, DollarAmount.ZERO) must have same hashCode")
+
+        // Test case 3: Different objects, different hashCodes (generally)
+        // This is not a strict requirement (collisions can happen), but good for hash table performance.
+        // We'll test a few distinct values.
+        val amount5 = DollarAmount("99.99")
+        val amount6 = DollarAmount("0.01")
+
+        // It's possible for different objects to have the same hash code (collision).
+        // However, if they are not equal, their hash codes *can* be different.
+        // The primary contract is: if a.equals(b), then a.hashCode() == b.hashCode().
+        // The reverse is not guaranteed.
+        if (amount1 != amount5) { // Ensure they are not equal before asserting on hashCode
+            // We cannot assertNotEquals for hashCodes due to possible collisions,
+            // but we can check if they are equal when the objects themselves are not.
+            // This is more of an observation than a strict test of the hashCode contract.
+            // A more robust test would involve checking distribution for a large set if needed.
+        }
+
+        // Check hashCodes for some values used in `Equals method works correctly`
+        val eqAmount1a = DollarAmount("100.00")
+        val eqAmount1c = DollarAmount("100") // Normalizes to "100.00"
+        assertEquals(eqAmount1a.hashCode(), eqAmount1c.hashCode(), "hashCode for '100.00' and '100' should be equal")
+
+        val eqAmountToString1 = DollarAmount("10.5") // Normalizes to "10.50"
+        val eqAmountToString2 = DollarAmount("10.50")
+        assertEquals(eqAmountToString1.hashCode(), eqAmountToString2.hashCode(), "hashCode for '10.5' and '10.50' should be equal")
+
+        val eqAmountTrailingZeros = DollarAmount("75.50000") // Normalizes to "75.50"
+        val eqAmountStandard = DollarAmount("75.50")
+        assertEquals(eqAmountTrailingZeros.hashCode(), eqAmountStandard.hashCode(), "hashCode for '75.50000' and '75.50' should be equal")
     }
 }

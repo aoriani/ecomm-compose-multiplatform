@@ -67,4 +67,8 @@ actual class DollarAmount private constructor(private val delegate: Big) {
         if (other !is DollarAmount) return false
         return delegate.eq(other.delegate)
     }
+
+    actual override fun hashCode(): Int {
+        return delegate.toString().hashCode()
+    }
 }

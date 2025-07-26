@@ -56,10 +56,24 @@ actual class DollarAmount private constructor(private val delegate: NSDecimalNum
         return numberFormatter.stringFromNumber(delegate) ?: delegate.toString()
     }
 
+    /**
+     * Checks if this [DollarAmount] is equal to another object.
+     * @param other The object to compare with.
+     * @return `true` if the objects are equal, `false` otherwise.
+     */
     actual override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         if (other !is DollarAmount) return false
         return delegate.isEqual(other.delegate)
     }
+
+    /**
+     * Returns the hash code of this [DollarAmount].
+     * @return The hash code.
+     */
+    actual override fun hashCode(): Int {
+        return delegate.hash().toInt()
+    }
+
 }
