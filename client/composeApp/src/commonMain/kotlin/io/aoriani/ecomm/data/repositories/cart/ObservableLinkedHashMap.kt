@@ -37,22 +37,49 @@ internal class ObservableLinkedHashMap<K, V>(private val delegateMap: LinkedHash
      */
     var onChangeListener: OnChangeListener<V>? = null
 
+    /**
+     * Clears all key-value pairs from the map.
+     * After clearing, the [onChangeListener] is invoked with an empty list.
+     */
     override fun clear() {
         delegateMap.clear()
         onChangeListener?.onChange(values.toList())
     }
 
+    /**
+     * Removes the specified [key] and its corresponding value from the map.
+     * If the key was present, the [onChangeListener] is invoked after removal.
+     *
+     * @param key The key to be removed.
+     * @return The previous value associated with the key, or `null` if the key was not present.
+     */
     override fun remove(key: K): V? {
         val result = delegateMap.remove(key)
         onChangeListener?.onChange(values.toList())
         return result
     }
 
+    /**
+     * Copies all of the mappings from the specified [from] map to this map.
+     * These mappings will replace any mappings that this map had for any of the keys currently in the specified map.
+     * After all mappings are copied, the [onChangeListener] is invoked.
+     *
+     * @param from The map whose mappings are to be placed in this map.
+     */
     override fun putAll(from: Map<out K, V>) {
         delegateMap.putAll(from)
         onChangeListener?.onChange(values.toList())
     }
 
+    /**
+     * Associates the specified [value] with the specified [key] in the map.
+     * If the map previously contained a mapping for the key, the old value is replaced.
+     * After the mapping is updated, the [onChangeListener] is invoked.
+     *
+     * @param key The key with which the specified value is to be associated.
+     * @param value The value to be associated with the specified key.
+     * @return The previous value associated with the key, or `null` if the key was not present.
+     */
     override fun put(key: K, value: V): V? =
         delegateMap.put(key, value).also { onChangeListener?.onChange(values.toList()) }
 }

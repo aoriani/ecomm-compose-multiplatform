@@ -46,6 +46,18 @@ actual class DollarAmount private constructor(private val delegate: BigDecimal) 
         return delegate.setScale(2, RoundingMode.HALF_EVEN).toString()
     }
 
+    /**
+     * Checks if this [DollarAmount] is equal to another object.
+     *
+     * Two [DollarAmount] instances are considered equal if their underlying [BigDecimal]
+     * representations are numerically equal (i.e., `compareTo` returns 0).
+     * For an object to be equal to a [DollarAmount], it must also be
+     * an instance of [DollarAmount].
+     *
+     * @param other The object to compare with.
+     * @return `true` if `other` is a [DollarAmount] representing the same monetary value as this instance,
+     *         `false` otherwise.
+     */
     actual override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -53,6 +65,15 @@ actual class DollarAmount private constructor(private val delegate: BigDecimal) 
         return delegate.compareTo(other.delegate) == 0
     }
 
+    /**
+     * Returns the hash code for this [DollarAmount].
+     *
+     * The hash code is calculated based on the underlying [BigDecimal] value after stripping trailing zeros.
+     * This ensures that two [DollarAmount] instances considered equal by the [equals] method
+     * (i.e., having numerically equal [BigDecimal] values) will have the same hash code.
+     *
+     * @return The hash code for this dollar amount.
+     */
     actual override fun hashCode(): Int {
         return delegate.stripTrailingZeros().hashCode()
     }

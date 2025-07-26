@@ -6,6 +6,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import co.touchlab.kermit.Logger as KermitLogger
 
+@Suppress("FunctionName")
 fun KtorClient() = HttpClient {
     install(Logging) {
         level = LogLevel.ALL

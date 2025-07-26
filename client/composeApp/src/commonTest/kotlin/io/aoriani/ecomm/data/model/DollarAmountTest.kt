@@ -3,9 +3,9 @@ package io.aoriani.ecomm.data.model
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
-import kotlin.test.assertFalse
 
 class DollarAmountTest {
 

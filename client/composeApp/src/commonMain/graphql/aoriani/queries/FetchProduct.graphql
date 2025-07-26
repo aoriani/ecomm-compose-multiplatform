@@ -1,5 +1,5 @@
 query FetchProduct($productId: ID!) {
-    product(id: $productId){
+    product(id: $productId) {
         ...ProductBasic
         description
         material

@@ -36,7 +36,7 @@ fun CartScreen(navigateBack: () -> Unit = {}) {
     }
 }
 
-@Preview
+@Preview(name = "Cart Screen", showBackground = true)
 @Composable
 fun CartScreenPreview() {
     MaterialTheme {

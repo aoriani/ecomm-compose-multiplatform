@@ -61,6 +61,18 @@ actual class DollarAmount private constructor(private val delegate: Big) {
         return delegate.toFixed(2, Big.roundHalfEven)
     }
 
+    /**
+     * Checks if this [DollarAmount] is equal to another object.
+     *
+     * Two [DollarAmount] instances are considered equal if their underlying `Big.js`
+     * representations are numerically equal (as determined by `Big.eq()`).
+     * For an object to be equal to a [DollarAmount], it must also be
+     * an instance of [DollarAmount].
+     *
+     * @param other The object to compare with.
+     * @return `true` if `other` is a [DollarAmount] representing the same monetary value as this instance,
+     *         `false` otherwise.
+     */
     actual override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -68,7 +80,18 @@ actual class DollarAmount private constructor(private val delegate: Big) {
         return delegate.eq(other.delegate)
     }
 
+    /**
+     * Returns the hash code for this [DollarAmount].
+     *
+     * The hash code is calculated based on the string representation of its underlying `Big.js` value.
+     * This ensures that two [DollarAmount] instances considered equal by the [equals] method
+     * will have the same hash code.
+     *
+     * @return The hash code for this dollar amount.
+     */
     actual override fun hashCode(): Int {
+        // The most straightforward way to ensure consistency with an `eq` method
+        // from an external JS library is to base the hashCode on the canonical string representation.
         return delegate.toString().hashCode()
     }
 }

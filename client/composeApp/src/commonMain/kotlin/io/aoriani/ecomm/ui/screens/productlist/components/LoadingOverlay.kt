@@ -39,7 +39,7 @@ fun LoadingOverlay(
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun LoadingOverlayLoadingPreview() {
     MaterialTheme {
