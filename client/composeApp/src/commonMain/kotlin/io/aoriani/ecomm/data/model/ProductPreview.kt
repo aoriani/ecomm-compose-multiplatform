@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProductPreview(
-    val id: String,
-    val name: String,
-    val price: DollarAmount,
-    val thumbnailUrl: String?,
-)
+    override val id: ProductBasic.Id,
+    override val name: String,
+    override val price: DollarAmount,
+    override val thumbnailUrl: String?,
+): ProductBasic

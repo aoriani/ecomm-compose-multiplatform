@@ -5,12 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
-    val id: String,
-    val name: String,
-    val price: DollarAmount,
+    override val id: ProductBasic.Id,
+    override val name: String,
+    override val price: DollarAmount,
     val description: String,
     val material: String,
     val countryOfOrigin: String,
     val inStock: Boolean,
     val images: ImmutableList<String>,
-)
+): ProductBasic {
+    override val thumbnailUrl: String? get() = images.firstOrNull()
+}
