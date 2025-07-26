@@ -33,10 +33,9 @@ import io.ktor.server.request.uri
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import org.jetbrains.exposed.v1.jdbc.Database
-import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
+import org.jetbrains.exposed.r2dbc.R2dbcDatabase
+import org.jetbrains.exposed.r2dbc.transactions.transaction
 import org.slf4j.event.Level
-import java.sql.Connection
 
 /**
  * A list of HTTP methods that are permitted for Cross-Origin Resource Sharing (CORS) requests.
@@ -285,11 +284,11 @@ private fun Application.configureDatabase() {
         provide<ProductRepository> { DatabaseProductRepositoryImpl }
     }
     val dbUrl = environment.config.property("ecomm.database.url").getString()
-    val dbDriver = environment.config.property("ecomm.database.driver").getString()
-    Database.connect(dbUrl, dbDriver)
-    TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE // Or configure this too if needed
+    val db = R2dbcDatabase.connect(url = dbUrl)
     val imageUrlBase = environment.config.property("ecomm.images.base-url").getString()
-    initializeDatabaseAndSeedIfEmpty(imageUrlBase)
+    transaction(db) {
+        initializeDatabaseAndSeedIfEmpty(imageUrlBase)
+    }
 }
 
 /**
