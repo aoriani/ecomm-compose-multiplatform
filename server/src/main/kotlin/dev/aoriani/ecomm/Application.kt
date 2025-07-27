@@ -17,6 +17,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.EngineMain
+import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.compression.Compression
 import io.ktor.server.plugins.compression.gzip
@@ -37,6 +38,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 import org.slf4j.event.Level
 import java.sql.Connection
+import java.util.UUID
 
 /**
  * A list of HTTP methods that are permitted for Cross-Origin Resource Sharing (CORS) requests.
@@ -120,6 +122,7 @@ fun main(args: Array<String>) {
 fun Application.module() {
     configureDatabase()
     configureCallLogging()
+    configureCallId()
     configureCompressionAndCaching()
     configureCors()
     configureGraphQL()
@@ -305,5 +308,24 @@ private fun Application.configureDatabase() {
 private fun Application.configureStatusPages() {
     install(StatusPages) {
         defaultGraphQLStatusPages()
+    }
+}
+
+/**
+ * Configures the CallId plugin for the application.
+ *
+ * This method installs the `CallId` plugin, which is responsible for generating
+ * and tracking unique IDs for each incoming request. It can extract the call ID
+ * from the `X-Request-ID` header if present, or generate a new UUID if not.
+ * The generated or extracted call ID is then available throughout the request
+ * processing lifecycle.
+ */
+private fun Application.configureCallId() {
+    install(CallId) {
+        header("X-Request-ID")
+        generate { UUID.randomUUID().toString() }
+        verify { callId: String ->
+            callId.isNotEmpty()
+        }
     }
 }

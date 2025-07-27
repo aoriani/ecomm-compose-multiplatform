@@ -91,10 +91,10 @@ ViewModel tests are crucial for verifying the UI logic and state management. The
 
 ```mermaid
 flowchart TD
-    A[Start] --> B{Arrange: Create Fake Repository & Test Dispatcher}
-    B --> C{Act: Initialize ViewModel}
-    C --> D{Act: Advance Coroutines}
-    D --> E{Assert: Check ViewModel State}
+    A[Start] --> B[Arrange: Create Fake Repository & Test Dispatcher]
+    B --> C[Act: Initialize ViewModel]
+    C --> D[Act: Advance Coroutines]
+    D --> E[Assert: Check ViewModel State]
     E --> F[End]
 ```
 

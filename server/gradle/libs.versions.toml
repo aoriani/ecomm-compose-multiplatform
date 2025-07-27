@@ -4,11 +4,24 @@ exposed                = "1.0.0-beta-4"
 kotlin-version         = "2.2.20-Beta1"
 kotlinx-serialization  = "1.9.0"
 kotlinx-coroutines-test = "1.10.2"
+ktor = "3.2.2"
 logback-version        = "1.5.18"
 mockk                  = "1.14.5"
 sqlite                 = "3.50.2.0"
 
 [libraries]
+# Ktor
+ktor-server-core              = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty             = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-call-logging      = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+ktor-server-conditional-headers = { module = "io.ktor:ktor-server-conditional-headers", version.ref = "ktor" }
+ktor-server-di                = { module = "io.ktor:ktor-server-di", version.ref = "ktor" }
+ktor-server-cors              = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
+ktor-server-compression       = { module = "io.ktor:ktor-server-compression", version.ref = "ktor" }
+ktor-server-config-yaml       = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor" }
+ktor-server-test-host         = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+ktor-server-call-id           = { module = "io.ktor:ktor-server-call-id", version.ref = "ktor" }
+
 # GraphQL (Expedia Group)
 expedia-ktor-server-graphql   = { group = "com.expediagroup", name = "graphql-kotlin-ktor-server", version.ref = "expediagroup-graphql" }
 expedia-hooks-provider        = { group = "com.expediagroup", name = "graphql-kotlin-hooks-provider", version.ref = "expediagroup-graphql" }

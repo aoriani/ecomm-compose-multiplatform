@@ -35,6 +35,8 @@ dependencies {
     implementation(ktorLibs.server.cors)
     implementation(ktorLibs.server.compression)
     implementation(ktorLibs.server.config.yaml)
+    implementation(ktorLibs.server.callId)
+    implementation(ktorLibs.server.callId)
     implementation(libs.logback.classic)
     implementation(libs.expedia.ktor.server.graphql)
     implementation(libs.expedia.hooks.provider)
