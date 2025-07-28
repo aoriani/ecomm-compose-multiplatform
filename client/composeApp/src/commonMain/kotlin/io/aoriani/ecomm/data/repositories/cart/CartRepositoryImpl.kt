@@ -36,7 +36,7 @@ class CartRepositoryImpl : CartRepository {
         }
     }
 
-    override fun add(product: ProductBasic) {
+    override suspend fun add(product: ProductBasic) {
         if (product.id in items) {
             items[product.id] =
                 items.getValue(product.id).let { it.copy(quantity = it.quantity + 1) }
@@ -46,7 +46,7 @@ class CartRepositoryImpl : CartRepository {
         }
     }
 
-    override fun update(productId: ProductBasic.Id, quantity: Int) {
+    override suspend fun update(productId: ProductBasic.Id, quantity: Int) {
         if (productId in items) {
             if (quantity == 0) {
                 items.remove(productId)
@@ -56,15 +56,15 @@ class CartRepositoryImpl : CartRepository {
         }
     }
 
-    override fun remove(productId: ProductBasic.Id) {
+    override suspend fun remove(productId: ProductBasic.Id) {
         if (productId in items) {
             items.remove(productId)
         }
     }
 
-    override fun clear() {
+    override suspend fun clear() {
         items.clear()
     }
 }
 
-fun ProductBasic.toCartItem(quantity: Int = 1) = CartItem(id, name, price, quantity)
+private fun ProductBasic.toCartItem(quantity: Int = 1) = CartItem(id, name, price, quantity)

@@ -2,6 +2,8 @@ package io.aoriani.ecomm.di
 
 import io.aoriani.ecomm.data.network.ApolloClient
 import io.aoriani.ecomm.data.network.KtorClient
+import io.aoriani.ecomm.data.repositories.cart.CartRepository
+import io.aoriani.ecomm.data.repositories.cart.CartRepositoryImpl
 import io.aoriani.ecomm.data.repositories.db.DollarAmountAdapter
 import io.aoriani.ecomm.data.repositories.db.ProductDatabase
 import io.aoriani.ecomm.data.repositories.db.SqlDriverFactory
@@ -9,6 +11,7 @@ import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import io.aoriani.ecomm.data.repositories.products.ProductRepositoryImpl
 import io.aoriani.ecomm.data.repositories.products.datasources.ProductDataSource
 import io.aoriani.ecomm.data.repositories.products.datasources.graphql.GraphQlProductDataSource
+import io.aoriani.ecomm.domain.AddToCartUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -34,4 +37,6 @@ val appModule = module {
     single { ApolloClient(get(named(BACKEND_BASE_URL)), get()) }
     singleOf(::GraphQlProductDataSource) bind ProductDataSource::class
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
+    singleOf(::CartRepositoryImpl) bind CartRepository::class
+    factoryOf(::AddToCartUseCase)
 }
