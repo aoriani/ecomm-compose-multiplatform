@@ -24,7 +24,7 @@ internal fun NavGraphBuilder.productListScreen() {
             navigateToProductDetails = { product ->
                 navController.navigate(
                     Routes.ProductDetails(
-                        id = product.id,
+                        id = product.id.value,
                         name = product.name,
                         imageUrl = product.thumbnailUrl
                     )

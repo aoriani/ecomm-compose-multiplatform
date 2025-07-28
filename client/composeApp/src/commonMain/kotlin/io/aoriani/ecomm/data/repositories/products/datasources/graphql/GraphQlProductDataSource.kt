@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.exception.ApolloException
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
+import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import io.aoriani.ecomm.data.repositories.products.datasources.ProductDataSource
@@ -70,14 +71,14 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
 }
 
 private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = ProductPreview(
-    id = productBasic.id,
+    id = ProductBasic.Id(productBasic.id),
     name = productBasic.name,
     price = DollarAmount(productBasic.price.toString()),
     thumbnailUrl = productBasic.images.firstOrNull(),
 )
 
 private fun FetchProductQuery.Product.toProductModel(): Product = Product(
-    id = productBasic.id,
+    id = ProductBasic.Id(productBasic.id),
     name = productBasic.name,
     price = DollarAmount(productBasic.price.toString()),
     description = description,

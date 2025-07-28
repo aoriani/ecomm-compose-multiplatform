@@ -25,6 +25,7 @@ import coil3.compose.AsyncImage
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.compose_multiplatform
 import io.aoriani.ecomm.data.model.DollarAmount
+import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -97,7 +98,7 @@ fun ProductTilePreview() {
     MaterialTheme {
         ProductTile(
             ProductPreview(
-                id = "id",
+                id = ProductBasic.Id("id"),
                 name = "Product Name",
                 price = DollarAmount("10.0"),
                 thumbnailUrl = "https://picsum.photos/200/300"

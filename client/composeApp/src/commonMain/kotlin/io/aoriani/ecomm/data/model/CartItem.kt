@@ -9,6 +9,6 @@ package io.aoriani.ecomm.data.model
  * @property quantity The number of units of this item in the cart.
  * @property totalPrice The total price for this item (unitPrice * quantity).
  */
-data class CartItem(val id: String, val name: String, val unitPrice: DollarAmount, val quantity: Int) {
+data class CartItem(val id: ProductBasic.Id, val name: String, val unitPrice: DollarAmount, val quantity: Int) {
     val totalPrice: DollarAmount inline get() = unitPrice * quantity
 }

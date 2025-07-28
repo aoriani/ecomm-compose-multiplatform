@@ -1,14 +1,24 @@
 package io.aoriani.ecomm.data.model
 
+import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
+
 /**
  * Represents the basic information of a product.
  * This interface defines the essential properties that any product representation should have.
  */
 interface ProductBasic {
+
     /**
-     * Type alias for the product identifier, which is a String.
+     * Represents the unique identifier of a product.
+     *
+     * This value class wraps a String to provide type safety for product IDs.
+     *
+     * @property value The string representation of the product ID.
      */
-    typealias Id = String
+    @Serializable
+    @JvmInline
+    value class Id(val value: String)
 
     /** The unique identifier of the product. */
     val id: Id

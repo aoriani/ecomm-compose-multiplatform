@@ -27,8 +27,8 @@ class AddToCartUseCaseTest {
             addedProducts.add(product)
         }
 
-        override suspend fun update(productId: String, quantity: Int) = Unit
-        override suspend fun remove(productId: String) = Unit
+        override suspend fun update(productId: ProductBasic.Id, quantity: Int) = Unit
+        override suspend fun remove(productId: ProductBasic.Id) = Unit
 
         override suspend fun clear() = Unit
         fun getAddedProducts(): List<ProductBasic> = addedProducts
@@ -40,7 +40,7 @@ class AddToCartUseCaseTest {
         val fakeCartRepository = FakeCartRepository()
         val addToCartUseCase = AddToCartUseCase(fakeCartRepository)
         val productToAdd = object : ProductBasic {
-            override val id: String = "1"
+            override val id: ProductBasic.Id = ProductBasic.Id("1")
             override val name: String = "Test Product"
             override val price: DollarAmount = DollarAmount("19.99")
             override val thumbnailUrl: String? = "test_image_url"

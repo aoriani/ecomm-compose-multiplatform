@@ -2,6 +2,7 @@ package io.aoriani.ecomm.ui.screens.productlist
 
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
+import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import kotlinx.collections.immutable.ImmutableList
@@ -39,13 +40,13 @@ class ProductListViewModelTest {
         // Arrange
         val mockProducts = persistentListOf(
             ProductPreview(
-                id = "1",
+                id = ProductBasic.Id("1"),
                 name = "Test Product 1",
                 price = DollarAmount("10.99"),
                 thumbnailUrl = "https://example.com/image1.jpg"
             ),
             ProductPreview(
-                id = "2",
+                id = ProductBasic.Id("2"),
                 name = "Test Product 2",
                 price = DollarAmount("20.99"),
                 thumbnailUrl = "https://example.com/image2.jpg"
@@ -109,7 +110,7 @@ class ProductListViewModelTest {
         // Arrange
         val mockProducts = persistentListOf(
             ProductPreview(
-                id = "1",
+                id = ProductBasic.Id("1"),
                 name = "Test Product",
                 price = DollarAmount("15.99"),
                 thumbnailUrl = "https://example.com/image.jpg"

@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
 import io.aoriani.ecomm.data.model.DollarAmount
+import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.ui.test.UiTest
 import io.aoriani.ecomm.ui.test.setContentWithContext
@@ -27,7 +28,7 @@ class ProductTileTest : UiTest() {
         setContentWithContext {
             ProductTile(
                 ProductPreview(
-                    id = "id",
+                    id = ProductBasic.Id("id"),
                     name = productName,
                     price = DollarAmount(productPrice),
                     thumbnailUrl = "thumbnailUrl"

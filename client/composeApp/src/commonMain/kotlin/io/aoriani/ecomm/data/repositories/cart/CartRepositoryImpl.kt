@@ -23,15 +23,13 @@ class CartRepositoryImpl : CartRepository {
         get() = _state.asStateFlow()
 
     private val items = ObservableLinkedHashMap<ProductBasic.Id, CartItem>().apply {
-        onChangeListener = object : ObservableLinkedHashMap.OnChangeListener<CartItem> {
-            override fun onChange(values: List<CartItem>) {
-                _state.update {
-                    CartRepository.State(
-                        items = values.toPersistentList(),
-                        subTotal = values.fold(DollarAmount.ZERO) { acc, item -> acc + item.totalPrice },
-                        count = values.sumOf { it.quantity }
-                    )
-                }
+        onChangeListener = ObservableLinkedHashMap.OnChangeListener { cartItems ->
+            _state.update {
+                CartRepository.State(
+                    items = cartItems.toPersistentList(),
+                    subTotal = cartItems.fold(DollarAmount.ZERO) { acc, item -> acc + item.totalPrice },
+                    count = cartItems.sumOf { it.quantity }
+                )
             }
         }
     }

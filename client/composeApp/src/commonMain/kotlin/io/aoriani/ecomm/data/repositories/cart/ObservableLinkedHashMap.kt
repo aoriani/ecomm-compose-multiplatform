@@ -16,7 +16,7 @@ internal class ObservableLinkedHashMap<K, V>(private val delegateMap: LinkedHash
     /**
      * Interface definition for a callback to be invoked when the map changes.
      */
-    interface OnChangeListener<V> {
+    fun interface OnChangeListener<V> {
         fun onChange(values: List<V>)
     }
 

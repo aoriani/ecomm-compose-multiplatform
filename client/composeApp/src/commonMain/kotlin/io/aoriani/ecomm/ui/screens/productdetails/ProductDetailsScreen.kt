@@ -21,6 +21,7 @@ import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_back
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
+import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollbarIfSupported
 import io.aoriani.ecomm.ui.screens.productdetails.components.ProductImage
 import kotlinx.collections.immutable.persistentListOf
@@ -79,7 +80,7 @@ fun ProductDetailsScreenPreview() {
         ProductDetailsScreen(
             state = ProductDetailsUiState.Loaded(
                 product = Product(
-                    id = "id",
+                    id = ProductBasic.Id("id"),
                     name = "Product Name",
                     price = DollarAmount("10.0"),
                     description = "Product Description",
