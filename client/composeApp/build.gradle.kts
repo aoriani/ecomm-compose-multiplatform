@@ -24,12 +24,6 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
-        dependencies {
-            // https://slack-chats.kotlinlang.org/t/23082710/i-am-trying-to-run-the-roboelectric-test-in-androidunittest-?utm_source=chatgpt.com
-            // https://medium.com/publicis-sapient-france/testing-a-kotlin-multiplatform-app-with-compose-and-robolectric-45df4bef20e0
-            // github.com/phansier/Coffeegram/pull/412/files
-            //debugImplementation(libs.androidx.ui.test.manifest)
-        }
     }
 
     compilerOptions {
