@@ -45,8 +45,8 @@ The application is configured via `src/main/resources/application.yaml`. Key con
 - Server port: Set via the `PORT` environment variable or defaults to 8080
 - Application module: `dev.aoriani.ecomm.ApplicationKt.module`
 - Database configuration:
-  - URL: `jdbc:sqlite:./data/products.db`
-  - Driver: `org.sqlite.JDBC`
+  - URL: "jdbc:h2:./data/products"
+  - Driver: "org.h2.Driver"
 - Logging level: Set to `DEBUG` by default
 
 Example configuration:
