@@ -29,14 +29,14 @@ Represents a product available in the e-commerce catalog.
 
 | Field           | Type         | Description                                     |
 | :-------------- | :----------- | :---------------------------------------------- |
-| `countryOfOrigin` | `String!`    | Country where the product was manufactured      |
-| `description`     | `String!`    | Detailed description of the product             |
 | `id`            | `ID!`        | Unique identifier of the product                |
-| `images`        | `[String!]!` | List of image URLs associated with the product  |
-| `inStock`       | `Boolean!`   | Indicates whether the product is currently in stock |
-| `material`      | `String!`    | Material composition of the product             |
 | `name`          | `String!`    | Name of the product                             |
 | `price`         | `BigDecimal!`| Price of the product in USD                     |
+| `description`     | `String!`    | Detailed description of the product             |
+| `images`        | `[String!]!` | List of image URLs associated with the product  |
+| `material`      | `String!`    | Material composition of the product             |
+| `inStock`       | `Boolean!`   | Indicates whether the product is currently in stock |
+| `countryOfOrigin` | `String!`    | Country where the product was manufactured      |
 
 ## Queries
 
@@ -46,8 +46,9 @@ The root query type for fetching data.
 
 | Field     | Arguments | Return Type  | Description                                                              |
 | :-------- | :-------- | :----------- | :----------------------------------------------------------------------- |
-| `product` | `id: ID!` | `Product!`   | Fetch a single product by its unique identifier. Throws `ProductNotFoundException` if not found. |
 | `products`|           | `[Product!]!`| Retrieve all products available in the catalog                           |
+| `product` | `id: ID!` | `Product`   | Fetch a single product by its unique identifier. Throws `ProductNotFoundException` if not found. |
+
 
 ## Scalars
 

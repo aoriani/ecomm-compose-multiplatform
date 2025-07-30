@@ -37,6 +37,22 @@ The project consists of two main components:
 
 Comprehensive documentation for this project, including detailed explanations of the architecture, modules, and setup, is available on [DeepWiki](https://deepwiki.com/aoriani/ecomm-compose-multiplatform).
 
+### Detailed Documentation
+
+*   **Client:**
+    *   [Client README](client/README.md)
+    *   [GraphQL Schema](client/composeApp/src/commonMain/graphql/GRAPHQL_SCHEMA.md)
+    *   [Data Models](client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/data/model/IMPLEMENTATION.md)
+    *   [Cart Repository](client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/data/repositories/cart/IMPLEMENTATION.md)
+    *   [Database](client/composeApp/src/commonMain/sqldelight/io/aoriani/ecomm/data/repositories/db/ProductDatabase.md)
+    *   [Navigation](client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/ui/navigation/NAVIGATION.md)
+    *   [Product Details Screen DFA](client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/ui/screens/productdetails/dfa.md)
+    *   [Product List Screen DFA](client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/ui/screens/productlist/dfa.md)
+    *   [Testing Guidelines](client/TESTING_GUIDELINES.md)
+*   **Server:**
+    *   [Server README](server/README.md)
+    *   [Database](server/src/main/kotlin/dev/aoriani/ecomm/repository/database/DATABASE.md)
+
 ## Technologies Used
 
 *   **Backend:**
@@ -51,7 +67,7 @@ Comprehensive documentation for this project, including detailed explanations of
     *   Kotlin/Wasm (for Web target)
     *   Gradle (Build tool)
 *   **Database:**
-    *   **Server:** SQLite (for local development/demo purposes)
+    *   **Server:** H2 (for local development/demo purposes)
     *   **Client:** SQLite (via SQLDelight for local caching)
 *   **Other Tools:**
     *   Docker (for containerization of the server)
@@ -190,7 +206,7 @@ query {
 
 The client application needs to connect to the backend GraphQL API to function.
 
-*   **Backend URL Configuration:** The GraphQL server URL is currently hardcoded in `client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/di/Deps.kt`.
+*   **Backend URL Configuration:** The GraphQL server URL is configured in `client/composeApp/src/commonMain/kotlin/io/aoriani/ecomm/di/Deps.kt`. The project uses Koin for dependency injection.
 *   **Development:** When running the server locally, the client should point to `http://localhost:8080/graphql` (or `http://10.0.2.2:8080/graphql` for Android emulators accessing the host machine's localhost). You may need to modify this URL in the `Deps.kt` file if your local server runs on a different port or address.
 *   **Production:** For a production build, this URL must be updated to point to the deployed backend service.
 
@@ -300,6 +316,10 @@ If you're planning a larger contribution, it's a good idea to open an issue firs
 *   Follow standard Kotlin coding conventions (see [Kotlin Official Style Guide](https://kotlinlang.org/docs/coding-conventions.html)).
 *   Use Detekt for static analysis (if configured in the project).
 *   Maintain consistency with the existing codebase.
+
+### Testing Guidelines
+
+*   Follow the testing guidelines specified in the `client/TESTING_GUIDELINES.md` and `server/README.md` files.
 
 ## License
 

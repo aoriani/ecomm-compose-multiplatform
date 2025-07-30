@@ -104,7 +104,6 @@ Represents a detailed product, extending `ProductBasic` with comprehensive infor
 
 A value class representing a monetary amount in dollars. It's an `expect` class, meaning its actual implementation is platform-specific (e.g., for handling currency precision and operations). It includes serialization logic to handle string representations.
 
--   **`value: String`**: The string representation of the dollar amount.
 -   **`plus(other: DollarAmount): DollarAmount`**: Adds two `DollarAmount` instances.
 -   **`times(other: Int): DollarAmount`**: Multiplies a `DollarAmount` by an integer.
 
