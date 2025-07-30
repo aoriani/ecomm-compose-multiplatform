@@ -7,8 +7,8 @@ ktor:
 
 ecomm:
   database:
-    url: "jdbc:sqlite:./data/products.db"
-    driver: "org.sqlite.JDBC"
+    url: "jdbc:h2:./data/products"
+    driver: "org.h2.Driver"
   logging:
     level: "DEBUG"
   images:

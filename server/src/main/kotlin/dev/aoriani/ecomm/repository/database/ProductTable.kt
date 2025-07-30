@@ -2,6 +2,7 @@ package dev.aoriani.ecomm.repository.database
 
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.Slf4jSqlDebugLogger
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
@@ -54,6 +55,7 @@ internal object ProductTable : IdTable<String>("products") {
  */
 internal fun ProductTable.initializeSchema() {
     transaction {
+        addLogger(Slf4jSqlDebugLogger)
         SchemaUtils.create(this@initializeSchema)
     }
 }
@@ -63,7 +65,7 @@ internal fun ProductTable.initializeSchema() {
  * This function should be called within a transaction.
  * It populates the table with a predefined list of tech personality plushies.
  */
-private fun ProductTable.doSeedData(imageUrlBase: String) {
+private fun doSeedData(imageUrlBase: String) {
     // Data seeding logic starts here
     ProductTable.upsert {
         it[id] = "elon_musk_plush"
@@ -283,9 +285,10 @@ internal fun initializeDatabaseAndSeedIfEmpty(imageUrlBase: String) {
     ProductTable.initializeSchema() // Creates schema if it doesn't exist
 
     transaction {
+        addLogger(Slf4jSqlDebugLogger)
         val isProductTableEmpty = ProductEntity.all().empty()
         if (isProductTableEmpty) {
-            ProductTable.doSeedData(imageUrlBase)
+            doSeedData(imageUrlBase)
         }
     }
 }

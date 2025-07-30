@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.exposed.dao)
     implementation(libs.exposed.json)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.h2.jdbc)
     implementation(libs.sqlite.jdbc)
     implementation(libs.graphql.java.extended.scalars)
     testImplementation(ktorLibs.server.testHost)

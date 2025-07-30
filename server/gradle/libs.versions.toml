@@ -7,6 +7,7 @@ kotlinx-coroutines-test = "1.10.2"
 logback-version        = "1.5.18"
 mockk                  = "1.14.5"
 sqlite                 = "3.50.2.0"
+h2                     = "2.3.232"
 
 [libraries]
 # GraphQL (Expedia Group)
@@ -24,6 +25,9 @@ exposed-json                  = { module = "org.jetbrains.exposed:exposed-json",
 
 # Database (SQLite)
 sqlite-jdbc                   = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+
+# Database (H2)
+h2-jdbc                       = { module = "com.h2database:h2", version.ref = "h2"}
 
 # Kotlin & Serialization
 kotlin-test-junit             = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
