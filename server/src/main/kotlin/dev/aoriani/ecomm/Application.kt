@@ -76,7 +76,8 @@ private val ALLOWED_CORS_HEADERS = listOf(
  */
 private val ALLOWED_CORS_HOSTS = mapOf(
     "localhost:8080" to listOf("http"),
-    "aoriani.dev" to listOf("https")
+    "aoriani.dev" to listOf("https"),
+    "api.aoriani.dev" to listOf("https")
 )
 
 /**

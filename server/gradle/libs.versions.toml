@@ -1,6 +1,6 @@
 [versions]
 expediagroup-graphql = "9.0.0-alpha.8"
-exposed                = "1.0.0-beta-4"
+exposed                = "1.0.0-beta-5"
 kotlin-version         = "2.2.20-Beta2"
 kotlinx-serialization  = "1.9.0"
 kotlinx-coroutines-test = "1.10.2"
