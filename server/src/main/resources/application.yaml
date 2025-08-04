@@ -12,4 +12,4 @@ ecomm:
   logging:
     level: "DEBUG"
   images:
-    base-url: "https://aoriani.dev/static/images"
+    base-url: "https://api.aoriani.dev/static/images"

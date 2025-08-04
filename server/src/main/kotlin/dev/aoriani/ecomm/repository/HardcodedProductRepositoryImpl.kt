@@ -8,7 +8,7 @@ import java.math.BigDecimal
  * Base URL for accessing product images.  This constant is used to construct
  * the full URL for each product image.
  */
-private const val IMAGE_URL_BASE = "https://aoriani.dev/static/images"
+private const val IMAGE_URL_BASE = "https://api.aoriani.dev/static/images"
 
 /**
  * A concrete implementation of [ProductRepository] that provides a hardcoded list of [Product] objects.
