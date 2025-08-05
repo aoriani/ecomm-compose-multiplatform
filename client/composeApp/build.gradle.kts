@@ -243,3 +243,12 @@ sqldelight {
     }
     linkSqlite = true
 }
+
+val copyPwaFiles = task<Copy>("copyPwaFiles") {
+    from("src/pwa/resources")
+    into("build/dist/wasmJs/productionExecutable")
+}
+
+tasks.named("wasmJsProductionExecutableCompileSync") {
+    dependsOn(copyPwaFiles)
+}
