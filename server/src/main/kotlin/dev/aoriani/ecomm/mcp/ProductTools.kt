@@ -84,12 +84,12 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
 
 
     /**
-     * Definition of the MCP “get_products” tool.
+     * Definition of the MCP “get_products_list” tool.
      * Fetches all available products. No input parameters.
      * Returns a JSON array of products matching [productListSchema].
      */
     private val getProductsListToolDef = Tool(
-        name = "get_products",
+        name = "get_products_list",
         description = """
                     This tool retrieves a list of all products available in the catalog. It takes no input parameters 
                     and returns an array of product objects as defined by the product schema.
@@ -163,16 +163,13 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      *  - an error message if the id is missing or not found.
      */
     private suspend fun getProduct(request: CallToolRequest): CallToolResult {
-        val idArgument = request.arguments["id"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }
-            ?: return CallToolResult(content = listOf(TextContent("id is required")), isError = true)
-        val product = productRepository.getById(idArgument)
-        return if (product != null) {
-            CallToolResult(
-                content = listOf(TextContent(product.toString())),
-                structuredContent = Json.encodeToJsonElement(product).jsonObject
-            )
-        } else {
-            CallToolResult(content = listOf(TextContent("No product for id:=$idArgument")), isError = true)
-        }
+        return request.arguments["id"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let { id ->
+            productRepository.getById(id)?.let { product ->
+                CallToolResult(
+                    content = listOf(TextContent(product.toString())),
+                    structuredContent = Json.encodeToJsonElement(product).jsonObject
+                )
+            } ?: CallToolResult(content = listOf(TextContent("No product for id:=$id")), isError = true)
+        } ?: CallToolResult(content = listOf(TextContent("Product ID is missing in the request.")), isError = true)
     }
 }
