@@ -88,7 +88,7 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      * Fetches all available products. No input parameters.
      * Returns a JSON array of products matching [productListSchema].
      */
-    private val getProductsToolDef = Tool(
+    private val getProductsListToolDef = Tool(
         name = "get_products",
         description = """
                     This tool retrieves a list of all products available in the catalog. It takes no input parameters 
@@ -132,7 +132,7 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      * @param mcpServer the server to which tools will be added.
      */
     fun installTools(mcpServer: Server) {
-        mcpServer.addTool(getProductsToolDef, ::getProducts)
+        mcpServer.addTool(getProductsListToolDef, ::getProductsList)
         mcpServer.addTool(getProductToolDef, ::getProduct)
     }
 
@@ -144,7 +144,7 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      *  - content: a list of text representations of all products.
      *  - structuredContent: JSON object with key “products” mapping to an array of product objects.
      */
-    private suspend fun getProducts(request: CallToolRequest): CallToolResult {
+    private suspend fun getProductsList(request: CallToolRequest): CallToolResult {
         val products = productRepository.getAll()
         val content = products.map { TextContent(it.toString()) }
         return CallToolResult(
