@@ -1,13 +1,14 @@
 [versions]
-expediagroup-graphql = "9.0.0-alpha.8"
-exposed                = "1.0.0-beta-5"
-kotlin-version         = "2.2.20-Beta2"
-kotlinx-serialization  = "1.9.0"
+expediagroup-graphql    = "9.0.0-alpha.8"
+exposed                 = "1.0.0-beta-5"
+kotlin-version          = "2.2.20-Beta2"
+kotlinx-serialization   = "1.9.0"
 kotlinx-coroutines-test = "1.10.2"
-logback-version        = "1.5.18"
-mockk                  = "1.14.5"
-sqlite                 = "3.50.2.0"
-h2                     = "2.3.232"
+logback-version         = "1.5.18"
+mockk                   = "1.14.5"
+sqlite                  = "3.50.2.0"
+h2                      = "2.3.232"
+mcp                     = "0.6.0"
 
 [libraries]
 # GraphQL (Expedia Group)
@@ -37,6 +38,9 @@ mockk                         = { module = "io.mockk:mockk", version.ref = "mock
 
 # Logging
 logback-classic               = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
+
+# Model Context Protocol
+mcp-kotlin-sdk                = { module = "io.modelcontextprotocol:kotlin-sdk", version.ref = "mcp"}
 
 [plugins]
 expediagroup-graphql  = { id = "com.expediagroup.graphql", version.ref = "expediagroup-graphql" }
