@@ -7,6 +7,7 @@ import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.ktor.graphiQLRoute
 import dev.aoriani.ecomm.graphql.schemageneratorhooks.ProductSchemaGeneratorHooks
 import dev.aoriani.ecomm.graphql.queries.ProductQuery
+import dev.aoriani.ecomm.mcp.ProductMcpTools
 import dev.aoriani.ecomm.repository.ProductRepository
 import dev.aoriani.ecomm.repository.database.DatabaseProductRepositoryImpl
 import dev.aoriani.ecomm.repository.database.initializeDatabaseAndSeedIfEmpty
@@ -33,6 +34,18 @@ import io.ktor.server.request.uri
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.modelcontextprotocol.kotlin.sdk.CallToolResult
+import io.modelcontextprotocol.kotlin.sdk.Implementation
+import io.modelcontextprotocol.kotlin.sdk.ServerCapabilities
+import io.modelcontextprotocol.kotlin.sdk.TextContent
+import io.modelcontextprotocol.kotlin.sdk.Tool
+import io.modelcontextprotocol.kotlin.sdk.server.Server
+import io.modelcontextprotocol.kotlin.sdk.server.ServerOptions
+import io.modelcontextprotocol.kotlin.sdk.server.mcp
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonArray
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 import org.slf4j.event.Level
@@ -57,6 +70,7 @@ private val ALLOWED_CORS_METHODS = listOf(
     HttpMethod.Get, HttpMethod.Post, HttpMethod.Put, HttpMethod.Delete,
     HttpMethod.Patch, HttpMethod.Options
 )
+
 /**
  * A list of HTTP headers that are allowed for CORS (Cross-Origin Resource Sharing) requests.
  * These headers enable proper communication between different origins by explicitly permitting
@@ -65,6 +79,7 @@ private val ALLOWED_CORS_METHODS = listOf(
 private val ALLOWED_CORS_HEADERS = listOf(
     HttpHeaders.ContentType, HttpHeaders.Authorization, "X-Requested-With"
 )
+
 /**
  * A map defining the hosts and their associated schemes that are allowed for Cross-Origin Resource Sharing (CORS).
  *
@@ -86,10 +101,12 @@ private val ALLOWED_CORS_HOSTS = mapOf(
  * Used to define the base endpoint for root-level requests.
  */
 private const val ROOT_ROUTE = "/"
+
 /**
  * Specifies the base route path for serving static resources within the application.
  */
 private const val STATIC_ROUTE = "/static"
+
 /**
  * The directory name where static resources are located.
  * Used in configuring the routing for serving static files in the application.
@@ -125,6 +142,7 @@ fun Application.module() {
     configureCompressionAndCaching()
     configureCors()
     configureGraphQL()
+    configureMcp()
     configureRouting()
     configureStatusPages()
 }
@@ -289,9 +307,26 @@ private fun Application.configureDatabase() {
     val dbUrl = environment.config.property("ecomm.database.url").getString()
     val dbDriver = environment.config.property("ecomm.database.driver").getString()
     Database.connect(dbUrl, dbDriver)
-    TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE // Or configure this too if needed
+    TransactionManager.manager.defaultIsolationLevel =
+        Connection.TRANSACTION_SERIALIZABLE // Or configure this too if needed
     val imageUrlBase = environment.config.property("ecomm.images.base-url").getString()
     initializeDatabaseAndSeedIfEmpty(imageUrlBase)
+}
+
+private fun Application.configureMcp() {
+    mcp {
+        Server(
+            serverInfo = Implementation("ecomm-mcp-server", "0.0.1"),
+            options = ServerOptions(
+                capabilities = ServerCapabilities(
+                    tools = ServerCapabilities.Tools(listChanged = null)
+                )
+            )
+        ).apply {
+            val repository: ProductRepository by dependencies
+            ProductMcpTools(repository).installTools(this)
+        }
+    }
 }
 
 /**

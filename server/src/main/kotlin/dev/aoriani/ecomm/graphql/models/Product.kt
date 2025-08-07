@@ -2,31 +2,35 @@ package dev.aoriani.ecomm.graphql.models
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.generator.scalars.ID
+import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
+@Serializable
 @GraphQLDescription("Represents a product available in the e-commerce catalog")
 data class Product(
-    @GraphQLDescription("Unique identifier of the product")
+    @property:GraphQLDescription("Unique identifier of the product")
+    @Serializable(with = IDSerializer::class)
     val id: ID,
 
-    @GraphQLDescription("Name of the product")
+    @property:GraphQLDescription("Name of the product")
     val name: String,
 
-    @GraphQLDescription("Price of the product in USD")
+    @property:GraphQLDescription("Price of the product in USD")
+    @Serializable(with = BigDecimalPriceSerializer::class)
     val price: BigDecimal,
 
-    @GraphQLDescription("Detailed description of the product")
+    @property:GraphQLDescription("Detailed description of the product")
     val description: String,
 
-    @GraphQLDescription("List of image URLs associated with the product")
+    @property:GraphQLDescription("List of image URLs associated with the product")
     val images: List<String>,
 
-    @GraphQLDescription("Material composition of the product")
+    @property:GraphQLDescription("Material composition of the product")
     val material: String,
 
-    @GraphQLDescription("Indicates whether the product is currently in stock")
+    @property:GraphQLDescription("Indicates whether the product is currently in stock")
     val inStock: Boolean,
 
-    @GraphQLDescription("Country where the product was manufactured")
+    @property:GraphQLDescription("Country where the product was manufactured")
     val countryOfOrigin: String
 )

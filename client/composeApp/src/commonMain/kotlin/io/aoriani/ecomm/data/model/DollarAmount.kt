@@ -75,7 +75,7 @@ val DollarAmount.Companion.ZERO: DollarAmount get() = DollarAmount("0")
  * Custom KSerializer for [DollarAmount].
  * Serializes and deserializes [DollarAmount] as a string.
  */
-class DollarAmountAsStringSerializer : KSerializer<DollarAmount> {
+object DollarAmountAsStringSerializer : KSerializer<DollarAmount> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("io.aoriani.ecomm.data.model.DollarAmount", PrimitiveKind.STRING)
 
@@ -89,5 +89,4 @@ class DollarAmountAsStringSerializer : KSerializer<DollarAmount> {
     override fun deserialize(decoder: Decoder): DollarAmount {
         return DollarAmount(decoder.decodeString())
     }
-
 }
