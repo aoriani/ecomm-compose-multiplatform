@@ -2,7 +2,6 @@ package dev.aoriani.ecomm.repository
 
 import dev.aoriani.ecomm.graphql.models.Product
 
-
 /**
  * Interface for accessing product data.
  */
