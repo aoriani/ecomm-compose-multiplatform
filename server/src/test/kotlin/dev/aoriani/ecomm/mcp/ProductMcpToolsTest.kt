@@ -6,7 +6,6 @@ import dev.aoriani.ecomm.repository.ProductRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
 import io.modelcontextprotocol.kotlin.sdk.Tool
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import java.math.BigDecimal
@@ -20,7 +19,6 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -29,21 +27,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProductMcpToolsTest {
-
-    // Helper to invoke private suspend handlers using reflection
-    private suspend fun callHandler(
-        target: Any,
-        name: String,
-        request: CallToolRequest
-    ): CallToolResult {
-        val fn = target::class.declaredMemberFunctions.first { it.name == name }
-        fn.isAccessible = true
-        @Suppress("UNCHECKED_CAST")
-        return fn.callSuspend(target, request) as CallToolResult
-    }
 
     private fun extractText(content: Any): String {
         return try {
@@ -67,14 +54,14 @@ class ProductMcpToolsTest {
         }
     }
 
-    private fun getStringProp(target: Any, prop: String): String? {
-        val capitalized = prop.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    private fun getStringProperty(target: Any, propertyName: String): String? {
+        val capitalized = propertyName.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         val getter = target::class.declaredMemberFunctions.firstOrNull { it.name == "get$capitalized" }
         if (getter != null) {
             getter.isAccessible = true
             return getter.call(target) as? String
         }
-        val p = target::class.declaredMemberProperties.firstOrNull { it.name == prop }
+        val p = target::class.declaredMemberProperties.firstOrNull { it.name == propertyName }
         if (p != null) {
             p.isAccessible = true
             @Suppress("UNCHECKED_CAST")
@@ -120,11 +107,11 @@ class ProductMcpToolsTest {
         val repo = FakeProductRepository(
             get_all = { sampleFakeProducts },
             get_by_id = { id -> sampleFakeProducts.find { it.id.value == id } })
-        val sut = ProductMcpTools(repo)
+        val mcpTools = ProductMcpTools(repo)
         val request = mockk<CallToolRequest>(relaxed = true)
 
         // Act
-        val result = callHandler(sut, "getProductsList", request)
+        val result = mcpTools.getProductsList(request)
 
         // Assert
         assertNotEquals(result.isError, true)
@@ -132,7 +119,7 @@ class ProductMcpToolsTest {
         // Unstructured content should include product names via toString()
         result.content.forEachIndexed { index, c ->
             val text = extractText(c)
-            kotlin.test.assertTrue(text.contains(sampleFakeProducts[index].name))
+           assertTrue(text.contains(sampleFakeProducts[index].name))
         }
         val expectedJson = buildJsonObject {
             put("products", Json.encodeToJsonElement(sampleFakeProducts))
@@ -144,15 +131,15 @@ class ProductMcpToolsTest {
     fun `Tools definitions expose expected names`() {
         // Arrange
         val repo = FakeProductRepository()
-        val sut = ProductMcpTools(repo)
+        val mcpTools = ProductMcpTools(repo)
 
         // Act
-        val toolDefs = sut::class.declaredMemberProperties
+        val toolDefs = mcpTools::class.declaredMemberProperties
             .filter { it.name.endsWith("ToolDef") }
             .onEach { it.isAccessible = true }
-            .mapNotNull { it.getter.call(sut) }
+            .mapNotNull { it.getter.call(mcpTools) }
 
-        val names = toolDefs.mapNotNull { getStringProp(it, "name") }.toSet()
+        val names = toolDefs.mapNotNull { getStringProperty(it, "name") }.toSet()
 
         // Assert
         assertEquals(setOf("get_products_list", "get_product"), names)
@@ -162,12 +149,12 @@ class ProductMcpToolsTest {
     fun `When inspecting get_products_list schema then products array items are object with properties`() {
         // Arrange
         val repo = FakeProductRepository()
-        val sut = ProductMcpTools(repo)
+        val mcpTools = ProductMcpTools(repo)
 
         // Act
-        val listToolProp = sut::class.declaredMemberProperties.first { it.name == "getProductsListToolDef" }
+        val listToolProp = mcpTools::class.declaredMemberProperties.first { it.name == "getProductsListToolDef" }
         listToolProp.isAccessible = true
-        val listToolDef = listToolProp.getter.call(sut)!!
+        val listToolDef = listToolProp.getter.call(mcpTools)!!
 
         val outputSchemaProp = listToolDef::class.declaredMemberProperties.first { it.name == "outputSchema" }
         outputSchemaProp.isAccessible = true
@@ -180,17 +167,17 @@ class ProductMcpToolsTest {
         // Assert
         val productsSchema = properties["products"]?.jsonObject
         assertNotNull(productsSchema)
-        assertEquals("array", productsSchema!!["type"]?.jsonPrimitive?.content)
+        assertEquals("array", productsSchema["type"]?.jsonPrimitive?.content)
 
         val items = productsSchema["items"]?.jsonObject
         assertNotNull(items)
-        assertEquals("object", items!!["type"]?.jsonPrimitive?.content)
+        assertEquals("object", items["type"]?.jsonPrimitive?.content)
 
         val itemProps = items["properties"]?.jsonObject
         assertNotNull(itemProps)
         kotlin.test.assertTrue(
             setOf("id", "name", "price", "description", "images", "material", "inStock", "countryOfOrigin")
-                .all { it in itemProps!!.keys }
+                .all { it in itemProps.keys }
         )
     }
 
@@ -198,7 +185,7 @@ class ProductMcpToolsTest {
     fun `When installTools is invoked then both tools are registered on the server`() = runTest {
         // Arrange
         val repo = FakeProductRepository()
-        val sut = ProductMcpTools(repo)
+        val mcpTools = ProductMcpTools(repo)
         val server = mockk<Server>()
         val registered = mutableListOf<String>()
         every { server.addTool(any<Tool>(), any()) } answers {
@@ -207,7 +194,7 @@ class ProductMcpToolsTest {
         }
 
         // Act
-        sut.installTools(server)
+        mcpTools.installTools(server)
 
         // Assert
         assertEquals(setOf("get_products_list", "get_product"), registered.toSet())
@@ -217,12 +204,12 @@ class ProductMcpToolsTest {
     fun `When inspecting get_product input schema then id is required and string`() {
         // Arrange
         val repo = FakeProductRepository()
-        val sut = ProductMcpTools(repo)
+        val mcpTools = ProductMcpTools(repo)
 
         // Act
-        val toolProp = sut::class.declaredMemberProperties.first { it.name == "getProductToolDef" }
+        val toolProp = mcpTools::class.declaredMemberProperties.first { it.name == "getProductToolDef" }
         toolProp.isAccessible = true
-        val toolDef = toolProp.getter.call(sut)!!
+        val toolDef = toolProp.getter.call(mcpTools)!!
 
         val inputSchemaProp = toolDef::class.declaredMemberProperties.first { it.name == "inputSchema" }
         inputSchemaProp.isAccessible = true
@@ -246,25 +233,27 @@ class ProductMcpToolsTest {
     @Test
     fun `When get_product is called with existing id then returns that product`() = runTest {
         // Arrange
-        val products = sampleFakeProducts
-        val targetId = products.first().id.value
+        val product = sampleFakeProducts.first()
+        val targetId = product.id.value
         val repo =
-            FakeProductRepository(get_all = { products }, get_by_id = { products.find { it.id.value == targetId } })
-        val sut = ProductMcpTools(repo)
+            FakeProductRepository(
+                get_all = { sampleFakeProducts },
+                get_by_id = { sampleFakeProducts.find { it.id.value == targetId } })
+        val mcpTools = ProductMcpTools(repo)
         val request = mockk<CallToolRequest>(relaxed = true)
         every { request.arguments } returns buildJsonObject {
             put("id", JsonPrimitive(targetId))
         }
 
         // Act
-        val result = callHandler(sut, "getProduct", request)
+        val result = mcpTools.getProduct(request)
 
         // Assert
         assertNotEquals(result.isError, true)
         assertEquals(1, result.content.size)
         // Unstructured content should include product name via toString()
-        kotlin.test.assertTrue(extractText(result.content.first()).contains(products.first().name))
-        val expected = Json.encodeToJsonElement(products.first()).jsonObject
+        assertTrue(extractText(result.content.first()).contains(product.name))
+        val expected = Json.encodeToJsonElement(product).jsonObject
         assertEquals(expected, result.structuredContent)
     }
 
@@ -272,12 +261,12 @@ class ProductMcpToolsTest {
     fun `When get_product is called with missing id then returns error`() = runTest {
         // Arrange
         val repo = FakeProductRepository()
-        val sut = ProductMcpTools(repo)
+        val mcpTools = ProductMcpTools(repo)
         val request = mockk<CallToolRequest>(relaxed = true)
-        every { request.arguments } returns buildJsonObject { }
+        every { request.arguments } returns JsonObject(emptyMap())
 
         // Act
-        val result = callHandler(sut, "getProduct", request)
+        val result = mcpTools.getProduct(request)
 
         // Assert
         assertEquals(result.isError, true)
@@ -288,14 +277,14 @@ class ProductMcpToolsTest {
     fun `When get_product is called with unknown id then returns error`() = runTest {
         // Arrange
         val repo = FakeProductRepository(get_all = { sampleFakeProducts })
-        val sut = ProductMcpTools(repo)
+        val mcpTools = ProductMcpTools(repo)
         val request = mockk<CallToolRequest>(relaxed = true)
         every { request.arguments } returns buildJsonObject {
             put("id", JsonPrimitive("does-not-exist"))
         }
 
         // Act
-        val result = callHandler(sut, "getProduct", request)
+        val result = mcpTools.getProduct(request)
 
         // Assert
         assertEquals(result.isError, true)

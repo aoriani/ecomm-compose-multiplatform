@@ -28,7 +28,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class GraphQlEndpointTest {
 
@@ -96,7 +95,7 @@ class GraphQlEndpointTest {
         assertEquals(ContentType.Application.Json.withCharset(Charsets.UTF_8), response.contentType())
 
         val jsonResponse = json.parseToJsonElement(response.bodyAsText())
-        assertTrue(jsonResponse.jsonObject["data"]?.jsonObject?.get("products")?.jsonArray?.isEmpty() == true)
+        assertEquals(jsonResponse.jsonObject["data"]?.jsonObject?.get("products")?.jsonArray?.isEmpty(), true)
     }
 
     @Test
