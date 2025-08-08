@@ -6,6 +6,7 @@ import dev.aoriani.ecomm.repository.ProductRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.TextContent
 import io.modelcontextprotocol.kotlin.sdk.Tool
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import java.math.BigDecimal
@@ -19,7 +20,6 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 import kotlin.test.Test
@@ -31,28 +31,6 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProductMcpToolsTest {
-
-    private fun extractText(content: Any): String {
-        return try {
-            val prop = content::class.declaredMemberFunctions.firstOrNull { it.name == "getText" }
-                ?: content::class.declaredMemberFunctions.firstOrNull { it.name == "component1" }
-            if (prop != null) {
-                prop.isAccessible = true
-                (prop.call(content) as? String) ?: content.toString()
-            } else {
-                val textProp =
-                    content::class.declaredMemberFunctions.firstOrNull { it.name.lowercase().contains("text") }
-                if (textProp != null) {
-                    textProp.isAccessible = true
-                    (textProp.call(content) as? String) ?: content.toString()
-                } else {
-                    content.toString()
-                }
-            }
-        } catch (_: Throwable) {
-            content.toString()
-        }
-    }
 
     private fun getStringProperty(target: Any, propertyName: String): String? {
         val p = target::class.declaredMemberProperties.firstOrNull { it.name == propertyName }
@@ -112,8 +90,8 @@ class ProductMcpToolsTest {
         assertEquals(sampleFakeProducts.size, result.content.size)
         // Unstructured content should include product names via toString()
         result.content.forEachIndexed { index, c ->
-            val text = extractText(c)
-           assertTrue(text.contains(sampleFakeProducts[index].name))
+            val text = (c as TextContent).text
+            assertEquals(text?.contains(sampleFakeProducts[index].name), true)
         }
         val expectedJson = buildJsonObject {
             put("products", Json.encodeToJsonElement(sampleFakeProducts))
@@ -141,25 +119,12 @@ class ProductMcpToolsTest {
 
     @Test
     fun `When inspecting get_products_list schema then products array items are object with properties`() {
-        // Arrange
         val repo = FakeProductRepository()
         val mcpTools = ProductMcpTools(repo)
-
-        // Act
-        val listToolProp = mcpTools::class.declaredMemberProperties.first { it.name == "getProductsListToolDef" }
-        listToolProp.isAccessible = true
-        val listToolDef = listToolProp.getter.call(mcpTools)!!
-
-        val outputSchemaProp = listToolDef::class.declaredMemberProperties.first { it.name == "outputSchema" }
-        outputSchemaProp.isAccessible = true
-        val outputSchema = outputSchemaProp.getter.call(listToolDef)!!
-
-        val propertiesProp = outputSchema::class.declaredMemberProperties.first { it.name == "properties" }
-        propertiesProp.isAccessible = true
-        val properties = propertiesProp.getter.call(outputSchema) as JsonObject
+        val outputSchemaProperties = mcpTools.getProductsListToolDef.outputSchema?.properties!!
 
         // Assert
-        val productsSchema = properties["products"]?.jsonObject
+        val productsSchema = outputSchemaProperties["products"]?.jsonObject
         assertNotNull(productsSchema)
         assertEquals("array", productsSchema["type"]?.jsonPrimitive?.content)
 
@@ -169,7 +134,7 @@ class ProductMcpToolsTest {
 
         val itemProps = items["properties"]?.jsonObject
         assertNotNull(itemProps)
-        kotlin.test.assertTrue(
+        assertTrue(
             setOf("id", "name", "price", "description", "images", "material", "inStock", "countryOfOrigin")
                 .all { it in itemProps.keys }
         )
@@ -196,32 +161,12 @@ class ProductMcpToolsTest {
 
     @Test
     fun `When inspecting get_product input schema then id is required and string`() {
-        // Arrange
         val repo = FakeProductRepository()
         val mcpTools = ProductMcpTools(repo)
+        val toolDef = mcpTools.getProductToolDef
 
-        // Act
-        val toolProp = mcpTools::class.declaredMemberProperties.first { it.name == "getProductToolDef" }
-        toolProp.isAccessible = true
-        val toolDef = toolProp.getter.call(mcpTools)!!
-
-        val inputSchemaProp = toolDef::class.declaredMemberProperties.first { it.name == "inputSchema" }
-        inputSchemaProp.isAccessible = true
-        val inputSchema = inputSchemaProp.getter.call(toolDef)!!
-
-        val requiredProp = inputSchema::class.declaredMemberProperties.firstOrNull { it.name == "required" }
-        requiredProp!!.isAccessible = true
-        @Suppress("UNCHECKED_CAST")
-        val required = requiredProp.getter.call(inputSchema) as? List<String>
-
-        val propertiesProp = inputSchema::class.declaredMemberProperties.firstOrNull { it.name == "properties" }
-        propertiesProp!!.isAccessible = true
-        val properties = propertiesProp.getter.call(inputSchema) as JsonObject
-
-        // Assert
-        kotlin.test.assertTrue(required!!.contains("id"))
-        val idSchema = properties["id"]!!.jsonObject
-        assertEquals("string", idSchema["type"]?.jsonPrimitive?.content)
+        assertEquals(toolDef.inputSchema.required?.contains("id"), true)
+        assertEquals("string", toolDef.inputSchema.properties["id"]?.jsonObject["type"]?.jsonPrimitive?.content)
     }
 
     @Test
@@ -246,7 +191,7 @@ class ProductMcpToolsTest {
         assertNotEquals(result.isError, true)
         assertEquals(1, result.content.size)
         // Unstructured content should include product name via toString()
-        assertTrue(extractText(result.content.first()).contains(product.name))
+        assertEquals(((result.content.first() as TextContent).text)?.contains(product.name), true)
         val expected = Json.encodeToJsonElement(product).jsonObject
         assertEquals(expected, result.structuredContent)
     }

@@ -95,7 +95,8 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      * Fetches all available products. No input parameters.
      * Returns a JSON array of products matching [productListSchema].
      */
-    private val getProductsListToolDef = Tool(
+    @VisibleForTesting
+    internal val getProductsListToolDef = Tool(
         name = "get_products_list",
         description = """
                     Retrieves all products in the catalog. Takes no input parameters and returns an object with a
@@ -116,7 +117,8 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      * Output:
      * - a product object matching [productSchema], or an error if not found.
      */
-    private val getProductToolDef = Tool(
+    @VisibleForTesting
+    internal val getProductToolDef = Tool(
         name = "get_product",
         description = """
                     This tool retrieves details of a single product identified by a unique product ID. It takes the 
