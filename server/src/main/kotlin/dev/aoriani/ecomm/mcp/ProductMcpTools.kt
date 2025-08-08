@@ -45,7 +45,6 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
         })
         put("price", buildJsonObject {
             put("type", JsonPrimitive("number"))
-            put("format", JsonPrimitive("double"))
             put("description", JsonPrimitive("Unit price of the product."))
         })
         put("description", buildJsonObject {
