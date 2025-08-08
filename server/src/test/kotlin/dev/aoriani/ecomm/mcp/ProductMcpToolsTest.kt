@@ -55,12 +55,6 @@ class ProductMcpToolsTest {
     }
 
     private fun getStringProperty(target: Any, propertyName: String): String? {
-        val capitalized = propertyName.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-        val getter = target::class.declaredMemberFunctions.firstOrNull { it.name == "get$capitalized" }
-        if (getter != null) {
-            getter.isAccessible = true
-            return getter.call(target) as? String
-        }
         val p = target::class.declaredMemberProperties.firstOrNull { it.name == propertyName }
         if (p != null) {
             p.isAccessible = true
