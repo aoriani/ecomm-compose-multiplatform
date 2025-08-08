@@ -14,6 +14,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.putJsonObject
+import org.jetbrains.annotations.VisibleForTesting
 
 /**
  * MCP tools provider for product-related operations.
@@ -150,7 +151,8 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      *  - content: a list of text representations of all products.
      *  - structuredContent: JSON object with key "products" mapping to an array of product objects.
      */
-    private suspend fun getProductsList(request: CallToolRequest): CallToolResult {
+    @VisibleForTesting
+    internal suspend fun getProductsList(@Suppress("UNUSED_PARAMETER") request: CallToolRequest): CallToolResult {
         val products = productRepository.getAll()
         val content = products.map { TextContent(it.toString()) }
         return CallToolResult(
@@ -168,7 +170,8 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      *  - the matching product as text and JSON, or
      *  - an error message if the id is missing or not found.
      */
-    private suspend fun getProduct(request: CallToolRequest): CallToolResult {
+    @VisibleForTesting
+    internal suspend fun getProduct(request: CallToolRequest): CallToolResult {
         return request.arguments["id"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let { id ->
             productRepository.getById(id)?.let { product ->
                 CallToolResult(
