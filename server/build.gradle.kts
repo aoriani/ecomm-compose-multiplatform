@@ -51,4 +51,6 @@ dependencies {
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    // Needed to reflectively call private suspend handlers from tests
+    testImplementation(kotlin("reflect"))
 }
