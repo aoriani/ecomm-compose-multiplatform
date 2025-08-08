@@ -2,7 +2,6 @@ package dev.aoriani.ecomm.mcp
 
 import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.graphql.models.Product
-import dev.aoriani.ecomm.repository.ProductRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
@@ -64,14 +63,6 @@ class ProductMcpToolsTest {
             countryOfOrigin = "CA"
         ),
     )
-
-    private class FakeProductRepository(
-        val get_all: () -> List<Product> = { emptyList() },
-        val get_by_id: (String) -> Product? = { null }
-    ) : ProductRepository {
-        override suspend fun getAll(): List<Product> = get_all()
-        override suspend fun getById(id: String): Product? = get_by_id(id)
-    }
 
     @Test
     fun `When get_products_list is called then returns products array in structuredContent`() = runTest {

@@ -30,7 +30,7 @@ Welcome to the E-Commerce Full-Stack Application! This project demonstrates a mo
 
 The project consists of two main components:
 
-*   **Backend Server:** A robust backend built with [Ktor](https://ktor.io/), a framework for building asynchronous servers and clients in Kotlin. It exposes a GraphQL API for managing products, orders, and other e-commerce functionalities.
+*   **Backend Server:** A robust backend built with [Ktor](https://ktor.io/), a framework for building asynchronous servers and clients in Kotlin. It exposes a GraphQL API for managing products, orders, and other e-commerce functionalities. It also includes a Model Context Protocol (MCP) server to allow AI models to interact with the application's data.
 *   **Client Application:** A [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/) application targeting Android, iOS, Desktop (Windows, macOS, Linux), and Web (via Kotlin/Wasm). The UI is built using [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/), allowing for a shared codebase across platforms while delivering native performance and look-and-feel.
 
 ## Documentation
@@ -51,6 +51,7 @@ Comprehensive documentation for this project, including detailed explanations of
     *   [Testing Guidelines](client/TESTING_GUIDELINES.md)
 *   **Server:**
     *   [Server README](server/README.md)
+    *   [Model Context Protocol (MCP) Server](server/MCP.md)
     *   [Database](server/src/main/kotlin/dev/aoriani/ecomm/repository/database/DATABASE.md)
 
 ## Technologies Used
@@ -59,6 +60,7 @@ Comprehensive documentation for this project, including detailed explanations of
     *   Kotlin
     *   Ktor (Web framework)
     *   GraphQL Kotlin (for GraphQL API)
+    *   Model Context Protocol (MCP) Kotlin SDK
     *   Gradle (Build tool)
 *   **Client:**
     *   Kotlin Multiplatform

@@ -198,6 +198,7 @@ When adding new tests:
     - `queries/` - GraphQL query resolvers
     - `exceptions/` - GraphQL-specific exceptions
     - `schemageneratorhooks/` - Custom schema generator hooks
+  - `mcp/` - Model Context Protocol tools
   - `repository/` - Data repositories
     - `database/` - Database-specific repository implementations
 
@@ -237,6 +238,12 @@ dependencies {
     provide<CategoryRepository> { DatabaseCategoryRepositoryImpl }
 }
 ```
+
+### Model Context Protocol (MCP) Server
+
+This project includes a Model Context Protocol (MCP) server that allows AI models like Gemini to interact with the application's data in a structured way. The server exposes a set of tools for querying product information.
+
+For detailed documentation on the MCP server, its architecture, and the available tools, please see [MCP.md](MCP.md).
 
 ### Code Style
 - Follow Kotlin conventions and idioms
