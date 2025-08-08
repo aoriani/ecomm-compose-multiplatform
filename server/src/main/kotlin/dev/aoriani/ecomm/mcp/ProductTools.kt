@@ -73,12 +73,18 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
     }
 
     /**
-     * JSON schema for a list of products, wrapping an array of objects defined by [productSchema].
+     * JSON schema for a list of products. The top-level output is an object
+     * with a single property "products", which is an array of product objects
+     * whose items conform to [productSchema].
      */
     private val productListSchema = buildJsonObject {
         put("products", buildJsonObject {
             put("type", JsonPrimitive("array"))
-            put("items", productSchema)
+            // Each item is an object with the product properties
+            put("items", buildJsonObject {
+                put("type", JsonPrimitive("object"))
+                put("properties", productSchema)
+            })
         })
     }
 
@@ -91,8 +97,8 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
     private val getProductsListToolDef = Tool(
         name = "get_products_list",
         description = """
-                    This tool retrieves a list of all products available in the catalog. It takes no input parameters 
-                    and returns an array of product objects as defined by the product schema.
+                    Retrieves all products in the catalog. Takes no input parameters and returns an object with a
+                    'products' array, where each item is a product object as defined by the product schema.
                 """.trimIndent(),
         inputSchema = Tool.Input(),
         outputSchema = Tool.Output(properties = productListSchema),
@@ -137,12 +143,12 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
     }
 
     /**
-     * Handler for the “get_products” tool call.
+     * Handler for the “get_products_list” tool call.
      *
      * @param request the incoming tool request (ignored here).
      * @return a [CallToolResult] containing:
      *  - content: a list of text representations of all products.
-     *  - structuredContent: JSON object with key “products” mapping to an array of product objects.
+     *  - structuredContent: JSON object with key "products" mapping to an array of product objects.
      */
     private suspend fun getProductsList(request: CallToolRequest): CallToolResult {
         val products = productRepository.getAll()
