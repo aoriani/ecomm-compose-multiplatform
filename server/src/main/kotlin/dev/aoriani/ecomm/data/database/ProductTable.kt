@@ -1,4 +1,4 @@
-package dev.aoriani.ecomm.repository.database
+package dev.aoriani.ecomm.data.database
 
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.Column
@@ -18,23 +18,23 @@ import java.math.BigDecimal
 private const val MAX_VARCHAR_LENGTH = 256
 
 /**
- * Represents the database table for storing product information.
- * This object defines the schema for the `products` table and its corresponding columns.
- * Each column in this table maps to a specific attribute of a product and supports
- * interactions with the database using Exposed DSL.
+ * Database table mapping for product records (package dev.aoriani.ecomm.data.database).
  *
- * Columns:
- * - `id`: The unique identifier for the product.
- * - `name`: The name of the product.
- * - `price`: The price of the product, represented as a decimal value with a precision of 20 and a scale of 2.
- * - `description`: A text field containing a detailed description of the product.
- * - `material`: The material of the product.
- * - `images`: A JSON array storing URLs or references to product images.
- * - `inStock`: A boolean indicating whether the product is in stock.
- * - `countryOfOrigin`: The country where the product originates.
+ * Backed by Exposed v1 [IdTable] targeting the "products" table, this object declares the
+ * schema and Kotlin property delegates used by DAO entities.
+ *
+ * Columns (DB name -> Kotlin property):
+ * - id -> id: primary key, VARCHAR(256)
+ * - name -> name: VARCHAR(256)
+ * - price -> price: DECIMAL(20, 2) mapped to [BigDecimal]
+ * - description -> description: TEXT
+ * - material -> material: VARCHAR(256)
+ * - images -> images: JSON array of String using [Json]
+ * - in_stock -> inStock: BOOLEAN
+ * - country_of_origin -> countryOfOrigin: VARCHAR(256)
  *
  * Primary Key:
- * The `id` column serves as the primary key of the table.
+ * - [primaryKey] is [PrimaryKey] on [id].
  */
 internal object ProductTable : IdTable<String>("products") {
     override val id: Column<EntityID<String>> = varchar(name = "id", length = MAX_VARCHAR_LENGTH).entityId()
@@ -275,7 +275,6 @@ private fun doSeedData(imageUrlBase: String) {
         it[countryOfOrigin] = "India"
     }
 }
-
 
 /**
  * Initializes the database by creating the schema and seeding it with sample data if the product table is currently empty.
