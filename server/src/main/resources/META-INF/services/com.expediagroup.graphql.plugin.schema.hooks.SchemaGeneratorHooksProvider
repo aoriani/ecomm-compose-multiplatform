@@ -1,1 +1,1 @@
-dev.aoriani.ecomm.graphql.schemageneratorhooks.ProductSchemaGeneratorHooksProvider
+dev.aoriani.ecomm.presentation.graphql.hooks.ProductSchemaGeneratorHooksProvider

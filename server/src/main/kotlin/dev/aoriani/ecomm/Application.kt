@@ -5,12 +5,12 @@ import com.expediagroup.graphql.server.ktor.defaultGraphQLStatusPages
 import com.expediagroup.graphql.server.ktor.graphQLGetRoute
 import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.ktor.graphiQLRoute
-import dev.aoriani.ecomm.graphql.schemageneratorhooks.ProductSchemaGeneratorHooks
-import dev.aoriani.ecomm.graphql.queries.ProductQuery
+import dev.aoriani.ecomm.presentation.graphql.hooks.ProductSchemaGeneratorHooks
+import dev.aoriani.ecomm.presentation.graphql.queries.ProductQuery
 import dev.aoriani.ecomm.mcp.ProductMcpTools
-import dev.aoriani.ecomm.repository.ProductRepository
-import dev.aoriani.ecomm.repository.database.DatabaseProductRepositoryImpl
+import dev.aoriani.ecomm.data.repositories.DatabaseProductRepositoryImpl
 import dev.aoriani.ecomm.data.database.initializeDatabaseAndSeedIfEmpty
+import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod

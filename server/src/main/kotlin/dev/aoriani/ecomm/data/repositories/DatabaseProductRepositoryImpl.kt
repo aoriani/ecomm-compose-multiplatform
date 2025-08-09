@@ -1,15 +1,15 @@
-package dev.aoriani.ecomm.repository.database
+package dev.aoriani.ecomm.data.repositories
 
-import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.data.database.ProductEntity
-import dev.aoriani.ecomm.graphql.models.Product
-import dev.aoriani.ecomm.repository.ProductRepository
+import dev.aoriani.ecomm.domain.models.Product
+import dev.aoriani.ecomm.domain.models.ProductNotFoundException
+import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
 
 /**
  * Exposed-based implementation of the [ProductRepository].
- * Uses [dev.aoriani.ecomm.data.database.ProductEntity] and [dev.aoriani.ecomm.data.database.ProductTable] to interact with the database.
+ * Uses [ProductEntity] and [dev.aoriani.ecomm.data.database.ProductTable] to interact with the database.
  */
 object DatabaseProductRepositoryImpl : ProductRepository {
     /**
@@ -17,8 +17,8 @@ object DatabaseProductRepositoryImpl : ProductRepository {
      * Operations are performed within a new suspended transaction on [Dispatchers.IO].
      * @return A list of all [Product]s.
      */
-    override suspend fun getAll(): List<Product> = newSuspendedTransaction(Dispatchers.IO) {
-        ProductEntity.all().map(ProductEntity::toProduct)
+    override suspend fun getAll(): Result<List<Product>> = newSuspendedTransaction(Dispatchers.IO) {
+        Result.success(ProductEntity.all().map(ProductEntity::toProduct))
     }
 
     /**
@@ -27,14 +27,16 @@ object DatabaseProductRepositoryImpl : ProductRepository {
      * @param id The unique ID of the product.
      * @return The [Product] if found, otherwise null.
      */
-    override suspend fun getById(id: String): Product? = newSuspendedTransaction(Dispatchers.IO) {
-        ProductEntity.findById(id)?.toProduct()
+    override suspend fun getById(id: String): Result<Product> = newSuspendedTransaction(Dispatchers.IO) {
+        ProductEntity.findById(id)?.toProduct()?.let { Result.success(it) } ?: Result.failure(
+            ProductNotFoundException("Product with id $id not found")
+        )
     }
 }
 
 private fun ProductEntity.toProduct(): Product {
     return Product(
-        id = ID(id.value),
+        id = id.value,
         name = name,
         price = price,
         description = description,

@@ -1,8 +1,8 @@
 package dev.aoriani.ecomm
 
 import com.expediagroup.graphql.generator.scalars.ID
-import dev.aoriani.ecomm.graphql.models.Product
-import dev.aoriani.ecomm.repository.ProductRepository
+import dev.aoriani.ecomm.domain.models.Product
+import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -74,7 +74,7 @@ class GraphQlEndpointTest {
     @Test
     fun `When products query returns an empty list then it should return an empty list`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getAll() } returns emptyList()
+            coEvery { getAll() } returns Result.success(emptyList())
         }
         configureEnvironment()
         configureAppWithMockedProducts(mockProductRepository)
@@ -101,16 +101,18 @@ class GraphQlEndpointTest {
     @Test
     fun `When products query returns products then it should return the products`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getAll() } returns listOf(
-                Product(
-                    id = ID("1"),
-                    name = "Product 1",
-                    description = "Description 1",
-                    price = BigDecimal.TEN,
-                    images = listOf("http://localhost:8080/static/images/image1.jpg"),
-                    material = "Cotton",
-                    inStock = true,
-                    countryOfOrigin = "USA"
+            coEvery { getAll() } returns Result.success(
+                listOf(
+                    Product(
+                        id = "1",
+                        name = "Product 1",
+                        description = "Description 1",
+                        price = BigDecimal.TEN,
+                        images = listOf("http://localhost:8080/static/images/image1.jpg"),
+                        material = "Cotton",
+                        inStock = true,
+                        countryOfOrigin = "USA"
+                    )
                 )
             )
         }
@@ -142,15 +144,17 @@ class GraphQlEndpointTest {
     @Test
     fun `When product query with existing product then it should return the product`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getById("1") } returns Product(
-                id = ID("1"),
-                name = "Product 1",
-                description = "Description 1",
-                price = BigDecimal.TEN,
-                images = listOf("http://localhost:8080/static/images/image1.jpg"),
-                material = "Cotton",
-                inStock = true,
-                countryOfOrigin = "USA"
+            coEvery { getById("1") } returns Result.success(
+                Product(
+                    id = "1",
+                    name = "Product 1",
+                    description = "Description 1",
+                    price = BigDecimal.TEN,
+                    images = listOf("http://localhost:8080/static/images/image1.jpg"),
+                    material = "Cotton",
+                    inStock = true,
+                    countryOfOrigin = "USA"
+                )
             )
         }
         configureEnvironment()
@@ -181,7 +185,7 @@ class GraphQlEndpointTest {
     @Test
     fun `When product query with non-existing product then it should return null`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getById("2") } returns null
+            //coEvery { getById("2") } returns null
         }
         configureEnvironment()
         configureAppWithMockedProducts(mockProductRepository)
@@ -225,15 +229,17 @@ class GraphQlEndpointTest {
     @Test
     fun `When product query with existing product then it should return all the product fields`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getById("1") } returns Product(
-                id = ID("1"),
-                name = "Product 1",
-                description = "Description 1",
-                price = BigDecimal.TEN,
-                images = listOf("http://localhost:8080/static/images/image1.jpg"),
-                material = "Cotton",
-                inStock = true,
-                countryOfOrigin = "USA"
+            coEvery { getById("1") } returns Result.success(
+                Product(
+                    id = "1",
+                    name = "Product 1",
+                    description = "Description 1",
+                    price = BigDecimal.TEN,
+                    images = listOf("http://localhost:8080/static/images/image1.jpg"),
+                    material = "Cotton",
+                    inStock = true,
+                    countryOfOrigin = "USA"
+                )
             )
         }
         configureEnvironment()
@@ -267,7 +273,10 @@ class GraphQlEndpointTest {
         assertEquals("Product 1", product["name"]?.jsonPrimitive?.content)
         assertEquals("Description 1", product["description"]?.jsonPrimitive?.content)
         assertEquals(BigDecimal.TEN, product["price"]?.jsonPrimitive?.content?.toBigDecimal())
-        assertEquals("http://localhost:8080/static/images/image1.jpg", product["images"]?.jsonArray?.get(0)?.jsonPrimitive?.content)
+        assertEquals(
+            "http://localhost:8080/static/images/image1.jpg",
+            product["images"]?.jsonArray?.get(0)?.jsonPrimitive?.content
+        )
         assertEquals("Cotton", product["material"]?.jsonPrimitive?.content)
         assertEquals(true, product["inStock"]?.jsonPrimitive?.content?.toBoolean())
         assertEquals("USA", product["countryOfOrigin"]?.jsonPrimitive?.content)

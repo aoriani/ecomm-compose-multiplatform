@@ -1,6 +1,6 @@
 package dev.aoriani.ecomm.mcp
 
-import dev.aoriani.ecomm.repository.ProductRepository
+import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
 import io.modelcontextprotocol.kotlin.sdk.CallToolResult
 import io.modelcontextprotocol.kotlin.sdk.TextContent
@@ -154,7 +154,7 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
      */
     @VisibleForTesting
     internal suspend fun getProductsList(@Suppress("UNUSED_PARAMETER") request: CallToolRequest): CallToolResult {
-        val products = productRepository.getAll()
+        val products = productRepository.getAll().getOrNull() ?: emptyList()
         val content = products.map { TextContent(it.toString()) }
         return CallToolResult(
             content = content,
@@ -174,12 +174,12 @@ class ProductMcpTools(private val productRepository: ProductRepository) {
     @VisibleForTesting
     internal suspend fun getProduct(request: CallToolRequest): CallToolResult {
         return request.arguments["id"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let { id ->
-            productRepository.getById(id)?.let { product ->
+            productRepository.getById(id).let { product ->
                 CallToolResult(
                     content = listOf(TextContent(product.toString())),
                     structuredContent = Json.encodeToJsonElement(product).jsonObject
                 )
-            } ?: CallToolResult(content = listOf(TextContent("No product for id:=$id")), isError = true)
+            }
         } ?: CallToolResult(content = listOf(TextContent("Product ID is missing in the request.")), isError = true)
     }
 }

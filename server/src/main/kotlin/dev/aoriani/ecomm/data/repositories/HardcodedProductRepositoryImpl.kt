@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm.data.repositories
 
 import dev.aoriani.ecomm.domain.models.Product
+import dev.aoriani.ecomm.domain.models.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import java.math.BigDecimal
 
@@ -228,5 +229,8 @@ object HardcodedProductRepositoryImpl : ProductRepository {
      * @param id The [String] identifier of the product to retrieve.
      * @return Result containing the matching [Product] if found, or Result.success(null) if no product matches the given id.
      */
-    override suspend fun getById(id: String): Result<Product?> = Result.success(products.firstOrNull { it.id == id })
+    override suspend fun getById(id: String): Result<Product> {
+        return products.firstOrNull { it.id == id }?.let { Result.success(it) } ?: Result.failure(
+            ProductNotFoundException("Product with id $id not found"))
+    }
 }
