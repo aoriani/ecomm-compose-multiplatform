@@ -1,9 +1,10 @@
 package dev.aoriani.ecomm.graphql.queries
 
 import com.expediagroup.graphql.generator.scalars.ID
-import dev.aoriani.ecomm.graphql.exceptions.ProductNotFoundException
-import dev.aoriani.ecomm.graphql.models.Product
-import dev.aoriani.ecomm.repository.ProductRepository
+import dev.aoriani.ecomm.domain.models.Product
+import dev.aoriani.ecomm.domain.models.ProductNotFoundException
+import dev.aoriani.ecomm.domain.repositories.ProductRepository
+import dev.aoriani.ecomm.presentation.graphql.queries.ProductQuery
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlin.test.BeforeTest

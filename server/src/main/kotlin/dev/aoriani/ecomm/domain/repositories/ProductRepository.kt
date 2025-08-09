@@ -27,5 +27,5 @@ interface ProductRepository {
      * or `null` wrapped in a successful result if no product matches the given ID.
      * The result is a failure if an error occurs during lookup.
      */
-    suspend fun getById(id: String): Result<Product?>
+    suspend fun getById(id: String): Result<Product>
 }

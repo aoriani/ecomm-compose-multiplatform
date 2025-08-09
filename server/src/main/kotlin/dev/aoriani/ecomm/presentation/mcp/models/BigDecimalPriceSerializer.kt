@@ -1,4 +1,4 @@
-package dev.aoriani.ecomm.graphql.models
+package dev.aoriani.ecomm.presentation.mcp.models
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

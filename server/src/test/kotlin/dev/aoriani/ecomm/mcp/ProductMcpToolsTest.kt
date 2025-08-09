@@ -1,7 +1,6 @@
 package dev.aoriani.ecomm.mcp
 
 import com.expediagroup.graphql.generator.scalars.ID
-import dev.aoriani.ecomm.graphql.models.Product
 import dev.aoriani.ecomm.util.fakes.FakeProductRepository
 import io.mockk.every
 import io.mockk.mockk

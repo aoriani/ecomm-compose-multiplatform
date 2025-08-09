@@ -1,22 +1,19 @@
-package dev.aoriani.ecomm.graphql.models
+package dev.aoriani.ecomm.presentation.graphql.models
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.generator.scalars.ID
-import kotlinx.serialization.Serializable
+import dev.aoriani.ecomm.domain.models.Product as DomainProduct
 import java.math.BigDecimal
 
-@Serializable
 @GraphQLDescription("Represents a product available in the e-commerce catalog")
 data class Product(
     @property:GraphQLDescription("Unique identifier of the product")
-    @Serializable(with = IDSerializer::class)
     val id: ID,
 
     @property:GraphQLDescription("Name of the product")
     val name: String,
 
     @property:GraphQLDescription("Price of the product in USD")
-    @Serializable(with = BigDecimalPriceSerializer::class)
     val price: BigDecimal,
 
     @property:GraphQLDescription("Detailed description of the product")
@@ -33,4 +30,15 @@ data class Product(
 
     @property:GraphQLDescription("Country where the product was manufactured")
     val countryOfOrigin: String
+)
+
+fun DomainProduct.toGraphQlProduct(): Product = Product(
+    id = ID(this.id),
+    name = this.name,
+    price = this.price,
+    description = this.description,
+    images = this.images,
+    material = this.material,
+    inStock = this.inStock,
+    countryOfOrigin = this.countryOfOrigin
 )
