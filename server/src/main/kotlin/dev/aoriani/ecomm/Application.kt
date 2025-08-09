@@ -10,7 +10,7 @@ import dev.aoriani.ecomm.graphql.queries.ProductQuery
 import dev.aoriani.ecomm.mcp.ProductMcpTools
 import dev.aoriani.ecomm.repository.ProductRepository
 import dev.aoriani.ecomm.repository.database.DatabaseProductRepositoryImpl
-import dev.aoriani.ecomm.repository.database.initializeDatabaseAndSeedIfEmpty
+import dev.aoriani.ecomm.data.database.initializeDatabaseAndSeedIfEmpty
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -34,18 +34,11 @@ import io.ktor.server.request.uri
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
 import io.modelcontextprotocol.kotlin.sdk.Implementation
 import io.modelcontextprotocol.kotlin.sdk.ServerCapabilities
-import io.modelcontextprotocol.kotlin.sdk.TextContent
-import io.modelcontextprotocol.kotlin.sdk.Tool
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import io.modelcontextprotocol.kotlin.sdk.server.ServerOptions
 import io.modelcontextprotocol.kotlin.sdk.server.mcp
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.putJsonArray
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 import org.slf4j.event.Level

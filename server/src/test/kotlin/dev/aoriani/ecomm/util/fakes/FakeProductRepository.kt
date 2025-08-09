@@ -1,4 +1,4 @@
-package dev.aoriani.ecomm.mcp
+package dev.aoriani.ecomm.util.fakes
 
 import dev.aoriani.ecomm.graphql.models.Product
 import dev.aoriani.ecomm.repository.ProductRepository

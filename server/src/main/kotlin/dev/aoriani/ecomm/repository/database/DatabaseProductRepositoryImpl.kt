@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm.repository.database
 
 import com.expediagroup.graphql.generator.scalars.ID
+import dev.aoriani.ecomm.data.database.ProductEntity
 import dev.aoriani.ecomm.graphql.models.Product
 import dev.aoriani.ecomm.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers
@@ -8,7 +9,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTrans
 
 /**
  * Exposed-based implementation of the [ProductRepository].
- * Uses [ProductEntity] and [ProductTable] to interact with the database.
+ * Uses [dev.aoriani.ecomm.data.database.ProductEntity] and [dev.aoriani.ecomm.data.database.ProductTable] to interact with the database.
  */
 object DatabaseProductRepositoryImpl : ProductRepository {
     /**
