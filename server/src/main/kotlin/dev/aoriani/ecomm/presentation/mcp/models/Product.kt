@@ -3,8 +3,6 @@ package dev.aoriani.ecomm.presentation.mcp.models
 import com.xemantic.ai.tool.schema.meta.Description
 import com.xemantic.ai.tool.schema.meta.Title
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonObject
 import java.math.BigDecimal
 import dev.aoriani.ecomm.domain.models.Product as DomainProduct
 
@@ -48,47 +46,23 @@ data class Product(
 
     @Description("Country where the product was manufactured.")
     val countryOfOrigin: String
-) {
-    companion object {
-        val schema = buildJsonObject {
-            put("id", buildJsonObject {
-                put("type", JsonPrimitive("string"))
-                put("description", JsonPrimitive("Unique identifier for the product."))
-            })
-            put("name", buildJsonObject {
-                put("type", JsonPrimitive("string"))
-                put("description", JsonPrimitive("Name of the product."))
-            })
-            put("price", buildJsonObject {
-                put("type", JsonPrimitive("number"))
-                put("description", JsonPrimitive("Unit price of the product."))
-            })
-            put("description", buildJsonObject {
-                put("type", JsonPrimitive("string"))
-                put("description", JsonPrimitive("Detailed text description of the product."))
-            })
-            put("images", buildJsonObject {
-                put("type", JsonPrimitive("array"))
-                put("items", buildJsonObject {
-                    put("type", JsonPrimitive("string"))
-                })
-                put("description", JsonPrimitive("Array of image URLs for the product."))
-            })
-            put("material", buildJsonObject {
-                put("type", JsonPrimitive("string"))
-                put("description", JsonPrimitive("Material the product is made of."))
-            })
-            put("inStock", buildJsonObject {
-                put("type", JsonPrimitive("boolean"))
-                put("description", JsonPrimitive("Indicates if the product is in stock."))
-            })
-            put("countryOfOrigin", buildJsonObject {
-                put("type", JsonPrimitive("string"))
-                put("description", JsonPrimitive("Country where the product is made."))
-            })
-        }
-    }
-}
+)
+
+@Serializable
+@Title("Products")
+@Description("Represents the list of product available in the e-commerce catalog.")
+data class Products(
+    @Description("List of products.")
+    val products: List<Product>
+)
+
+@Serializable
+@Title("GetProductByIdRequest")
+@Description("Request to get a product by its unique identifier.")
+data class GetProductByIdRequest(
+    @Description("The unique identifier of the product to retrieve.")
+    val id: String
+)
 
 fun DomainProduct.toMcpProduct(): Product = Product(
     id = this.id,
@@ -100,3 +74,4 @@ fun DomainProduct.toMcpProduct(): Product = Product(
     inStock = this.inStock,
     countryOfOrigin = this.countryOfOrigin
 )
+
