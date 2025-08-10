@@ -11,6 +11,8 @@ import dev.aoriani.ecomm.mcp.ProductMcpTools
 import dev.aoriani.ecomm.data.repositories.DatabaseProductRepositoryImpl
 import dev.aoriani.ecomm.data.database.initializeDatabaseAndSeedIfEmpty
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
+import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
+import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -156,9 +158,15 @@ fun Application.module() {
 private fun Application.configureGraphQL() {
     install(GraphQL) {
         schema {
-            packages = listOf("dev.aoriani.ecomm.graphql.models", "java.math")
-            val repository: ProductRepository by dependencies
-            queries = listOf(ProductQuery(repository))
+            packages = listOf("dev.aoriani.ecomm.presentation.graphql.models", "java.math")
+            val getAllProductsUseCase: GetAllProductsUseCase by dependencies
+            val getProductByIdUseCase: GetProductByIdUseCase by dependencies
+            queries = listOf(
+                ProductQuery(
+                    getAllProducts = getAllProductsUseCase,
+                    getProductById = getProductByIdUseCase
+                )
+            )
             hooks = ProductSchemaGeneratorHooks
         }
     }
@@ -296,6 +304,8 @@ private fun Application.configureRouting() {
 private fun Application.configureDatabase() {
     dependencies {
         provide<ProductRepository> { DatabaseProductRepositoryImpl }
+        provide<GetAllProductsUseCase> { GetAllProductsUseCase(DatabaseProductRepositoryImpl) }
+        provide<GetProductByIdUseCase> { GetProductByIdUseCase(DatabaseProductRepositoryImpl) }
     }
     val dbUrl = environment.config.property("ecomm.database.url").getString()
     val dbDriver = environment.config.property("ecomm.database.driver").getString()

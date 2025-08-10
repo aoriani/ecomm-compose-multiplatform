@@ -1,5 +1,7 @@
 package dev.aoriani.ecomm.presentation.mcp.models
 
+import com.xemantic.ai.tool.schema.meta.Description
+import com.xemantic.ai.tool.schema.meta.Title
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -18,14 +20,33 @@ import dev.aoriani.ecomm.domain.models.Product as DomainProduct
  * @property countryOfOrigin Country where the product was manufactured
  */
 @Serializable
+@Title("Product")
+@Description("Represents a product available in the e-commerce catalog.")
 data class Product(
+
+    @Description("Unique identifier for the product.")
     val id: String,
+
+    @Description("Name of the product.")
     val name: String,
-    @Serializable(with = BigDecimalPriceSerializer::class) val price: BigDecimal,
+
+    @Serializable(with = BigDecimalPriceSerializer::class)
+    @Description("Unit price of the product.")
+    val price: BigDecimal,
+
+    @Description("Detailed text description of the product.")
     val description: String,
+
+    @Description("Array of image URLs for the product.")
     val images: List<String>,
+
+    @Description("Material composition of the product.")
     val material: String,
+
+    @Description("Indicates whether the product is currently in stock.")
     val inStock: Boolean,
+
+    @Description("Country where the product was manufactured.")
     val countryOfOrigin: String
 ) {
     companion object {
