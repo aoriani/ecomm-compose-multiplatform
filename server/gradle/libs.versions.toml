@@ -9,6 +9,7 @@ mockk                   = "1.14.5"
 sqlite                  = "3.50.2.0"
 h2                      = "2.3.232"
 mcp                     = "0.6.0"
+json-schema             = "1.1.2"
 
 [libraries]
 # GraphQL (Expedia Group)
@@ -41,6 +42,9 @@ logback-classic               = { module = "ch.qos.logback:logback-classic", ver
 
 # Model Context Protocol
 mcp-kotlin-sdk                = { module = "io.modelcontextprotocol:kotlin-sdk", version.ref = "mcp"}
+
+# Xemantic
+json-schema-gen               = { module = "com.xemantic.ai:xemantic-ai-tool-schema", version.ref = "json-schema"}
 
 [plugins]
 expediagroup-graphql  = { id = "com.expediagroup.graphql", version.ref = "expediagroup-graphql" }

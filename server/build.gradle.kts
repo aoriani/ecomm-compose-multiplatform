@@ -18,7 +18,7 @@ application {
 
 graphql {
     schema {
-        packages = listOf("dev.aoriani.ecomm.graphql")
+        packages = listOf("dev.aoriani.ecomm.presentation.graphql")
     }
 }
 
@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.h2.jdbc)
     implementation(libs.sqlite.jdbc)
     implementation(libs.graphql.java.extended.scalars)
+    implementation(libs.json.schema.gen)
     testImplementation(ktorLibs.server.testHost)
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.mockk)

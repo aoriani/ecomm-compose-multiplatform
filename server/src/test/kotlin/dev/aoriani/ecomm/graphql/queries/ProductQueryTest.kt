@@ -4,6 +4,9 @@ import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.domain.models.Product
 import dev.aoriani.ecomm.domain.models.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
+import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
+import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
+import dev.aoriani.ecomm.presentation.graphql.models.toGraphQlProduct
 import dev.aoriani.ecomm.presentation.graphql.queries.ProductQuery
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -16,51 +19,58 @@ import kotlinx.coroutines.test.runTest
 
 class ProductQueryTest {
 
-    private lateinit var productRepository: ProductRepository
-    private lateinit var productQuery: ProductQuery
+    private lateinit var mockGetAllProductsUseCase: GetAllProductsUseCase
+    private lateinit var mockGetProductByIdUseCase: GetProductByIdUseCase
+    private lateinit var mockProductRepository: ProductRepository
+    private lateinit var mockProductQuery: ProductQuery
 
     @BeforeTest
     fun setup() {
-        productRepository = mockk()
-        productQuery = ProductQuery(productRepository)
+        mockProductRepository = mockk()
+        mockGetAllProductsUseCase = GetAllProductsUseCase(mockProductRepository)
+        mockGetProductByIdUseCase = GetProductByIdUseCase(mockProductRepository)
+        mockProductQuery = ProductQuery(
+            getAllProducts = mockGetAllProductsUseCase,
+            getProductById = mockGetProductByIdUseCase
+        )
     }
 
     @Test
     fun `products should return all products from repository`() = runTest {
         val products = listOf(
             Product(
-                ID("1"),
-                "Product A",
-                BigDecimal("10.0"),
-                "Description A",
-                listOf("imageA.jpg"),
-                "Material A",
-                true,
-                "USA"
+                id = "1",
+                name = "Product A",
+                price = BigDecimal("10.0"),
+                description = "Description A",
+                images = listOf("imageA.jpg"),
+                material = "Material A",
+                inStock = true,
+                countryOfOrigin = "USA"
             ),
             Product(
-                ID("2"),
-                "Product B",
-                BigDecimal("20.0"),
-                "Description B",
-                listOf("imageB.jpg"),
-                "Material B",
-                false,
-                "Germany"
+                id = "2",
+                name = "Product B",
+                price = BigDecimal("20.0"),
+                description = "Description B",
+                images = listOf("imageB.jpg"),
+                material = "Material B",
+                inStock = false,
+                countryOfOrigin = "Germany"
             )
         )
-        coEvery { productRepository.getAll() } returns products
+        coEvery { mockProductRepository.getAll() } returns Result.success(products)
 
-        val result = productQuery.products()
+        val result = mockProductQuery.products()
 
-        assertEquals(products, result)
+        assertEquals(products.map { it.toGraphQlProduct() }, result)
     }
 
     @Test
     fun `products should return empty list if no products in repository`() = runTest {
-        coEvery { productRepository.getAll() } returns emptyList()
+        coEvery { mockProductRepository.getAll() } returns Result.success(emptyList())
 
-        val result = productQuery.products()
+        val result = mockProductQuery.products()
 
         assertEquals(emptyList(), result)
     }
@@ -68,38 +78,38 @@ class ProductQueryTest {
     @Test
     fun `product should return product by ID`() = runTest {
         val product = Product(
-            ID("1"),
-            "Product A",
-            BigDecimal("10.0"),
-            "Description A",
-            listOf("imageA.jpg"),
-            "Material A",
-            true,
-            "USA"
+            id = "1",
+            name = "Product A",
+            price = BigDecimal("10.0"),
+            description = "Description A",
+            images = listOf("imageA.jpg"),
+            material = "Material A",
+            inStock = true,
+            countryOfOrigin = "USA"
         )
-        coEvery { productRepository.getById("1") } returns product
+        coEvery { mockProductRepository.getById("1") } returns Result.success(product)
 
-        val result = productQuery.product(ID("1"))
+        val result = mockProductQuery.product(ID("1"))
 
-        assertEquals(product, result)
+        assertEquals(product.toGraphQlProduct(), result)
     }
 
     @Test
     fun `product should throw ProductNotFoundException if product not found`() = runTest {
-        coEvery { productRepository.getById("nonexistent") } returns null
+        coEvery { mockProductRepository.getById("nonexistent") } returns Result.failure(ProductNotFoundException("nonexistent"))
 
         assertFailsWith<ProductNotFoundException> {
-            productQuery.product(ID("nonexistent"))
+            mockProductQuery.product(ID("nonexistent"))
         }
     }
 
     @Test
     fun `product should throw IllegalArgumentException for blank ID`() = runTest {
         assertFailsWith<IllegalArgumentException> {
-            productQuery.product(ID(""))
+            mockProductQuery.product(ID(""))
         }
         assertFailsWith<IllegalArgumentException> {
-            productQuery.product(ID("   "))
+            mockProductQuery.product(ID("   "))
         }
     }
 }
