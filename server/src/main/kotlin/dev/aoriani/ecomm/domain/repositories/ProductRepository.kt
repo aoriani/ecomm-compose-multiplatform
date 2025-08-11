@@ -20,12 +20,11 @@ interface ProductRepository {
     suspend fun getAll(): Result<List<Product>>
 
     /**
-     * Retrieves a product by its unique identifier.
+     * Retrieves a product by its unique identifier from the repository.
      *
-     * @param id The unique ID of the product.
-     * @return A [Result] containing the [Product] if found,
-     * or `null` wrapped in a successful result if no product matches the given ID.
-     * The result is a failure if an error occurs during lookup.
+     * @param id The unique identifier of the product to retrieve.
+     * @return A [Result] containing the requested [Product] if found, or a failure if the product does not exist
+     *         or an error occurs during retrieval.
      */
     suspend fun getById(id: String): Result<Product>
 }
