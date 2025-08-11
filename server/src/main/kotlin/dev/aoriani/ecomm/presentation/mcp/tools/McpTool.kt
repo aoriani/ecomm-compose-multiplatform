@@ -7,8 +7,8 @@ import kotlin.reflect.KClass
 interface McpTool {
     val name: String
     val description: String
-    val input: KClass<*>?
-    val output: KClass<*>?
+    val input: KClass<out Any>?
+    val output: KClass<out Any>?
 
     suspend fun execute(request: CallToolRequest): CallToolResult
 }
