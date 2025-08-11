@@ -1,16 +1,8 @@
 package dev.aoriani.ecomm
 
-import dev.aoriani.ecomm.config.configureCaching
-import dev.aoriani.ecomm.config.configureCallLogging
-import dev.aoriani.ecomm.config.configureCompression
-import dev.aoriani.ecomm.config.configureCors
-import dev.aoriani.ecomm.config.configureDatabase
-import dev.aoriani.ecomm.config.configureGraphQL
-import dev.aoriani.ecomm.config.configureMcp
-import dev.aoriani.ecomm.config.configureRouting
-import dev.aoriani.ecomm.config.configureStatusPages
-import io.ktor.server.application.Application
-import io.ktor.server.netty.EngineMain
+import dev.aoriani.ecomm.config.*
+import io.ktor.server.application.*
+import io.ktor.server.netty.*
 
 /**
  * Entry point of the application.

@@ -9,16 +9,16 @@ import io.ktor.server.plugins.compression.matchContentType
 import io.ktor.server.plugins.compression.minimumSize
 
 /**
- * Configures response compression.
+ * Configure HTTP response compression.
  *
- * This method installs:
- * - The `Compression` feature to optimize data transfer size by compressing HTTP responses
+ * Installs Ktor's `Compression` plugin with:
+ * - Gzip encoder (priority 1.0)
+ * - Minimum body size of 1 KiB before compressing
+ * - Content types limited to `text/ *` and `application/json`
  *
- * The compression configuration includes:
- * - GZIP compression with priority 1.0 (highest)
- * - Minimum size threshold of 1 KB before compressing
- * - Content type matching for text and JSON responses
- *
+ * Negotiates compression based on the `Accept-Encoding` request header and
+ * sets appropriate response headers (e.g., `Content-Encoding`, `Vary: Accept-Encoding`).
+ * Small responses and non-matching content types are left uncompressed.
  */
 internal fun Application.configureCompression() {
     install(Compression) {
@@ -28,5 +28,4 @@ internal fun Application.configureCompression() {
             matchContentType(ContentType.Text.Any, ContentType.Application.Json)
         }
     }
-
 }

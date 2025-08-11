@@ -1,13 +1,10 @@
 package dev.aoriani.ecomm
 
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
-import io.ktor.http.withCharset
-import io.ktor.server.config.MapApplicationConfig
-import io.ktor.server.testing.testApplication
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.server.config.*
+import io.ktor.server.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

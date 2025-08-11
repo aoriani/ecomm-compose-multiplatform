@@ -6,16 +6,17 @@ import com.expediagroup.graphql.server.operations.Query
 import dev.aoriani.ecomm.domain.models.ProductNotFoundException
 import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
+import dev.aoriani.ecomm.domain.usecases.invoke
 import dev.aoriani.ecomm.presentation.graphql.models.Product
 import dev.aoriani.ecomm.presentation.graphql.models.toGraphQlProduct
-import dev.aoriani.ecomm.domain.usecases.invoke
 
 /**
- * GraphQL Query resolver for product-related operations.
- * Utilizes a [dev.aoriani.ecomm.repository.ProductRepository] for data access.
+ * GraphQL query resolver for products.
  *
- * The `@GraphQLDescription` annotations on the class and its methods
- * are used by `graphql-kotlin` to generate the GraphQL schema documentation.
+ * Delegates to domain use cases `GetAllProductsUseCase` and `GetProductByIdUseCase`
+ * for data access, then maps results to GraphQL models via `toGraphQlProduct`.
+ *
+ * `@GraphQLDescription` annotations are surfaced in the generated schema docs.
  */
 @GraphQLDescription("Root entry point for product-related queries")
 class ProductQuery(

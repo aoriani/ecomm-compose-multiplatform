@@ -1,5 +1,7 @@
 package dev.aoriani.ecomm.data.repositories
 
+import dev.aoriani.ecomm.data.repositories.HardcodedProductRepositoryImpl.getAll
+import dev.aoriani.ecomm.data.repositories.HardcodedProductRepositoryImpl.getById
 import dev.aoriani.ecomm.domain.models.Product
 import dev.aoriani.ecomm.domain.models.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository

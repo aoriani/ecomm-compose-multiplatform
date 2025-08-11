@@ -1,13 +1,15 @@
 package dev.aoriani.ecomm.data.database
 
+import dev.aoriani.ecomm.data.database.ProductTable.id
+import dev.aoriani.ecomm.data.database.ProductTable.primaryKey
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Slf4jSqlDebugLogger
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
-import org.jetbrains.exposed.v1.jdbc.upsert
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.upsert
 import org.jetbrains.exposed.v1.json.json
 import java.math.BigDecimal
 

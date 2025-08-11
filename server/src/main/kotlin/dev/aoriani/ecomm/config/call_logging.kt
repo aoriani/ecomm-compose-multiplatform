@@ -10,24 +10,14 @@ import io.ktor.server.request.uri
 import org.slf4j.event.Level
 
 /**
- * Configures call logging for the application.
+ * Configure structured HTTP request logging.
  *
- * This method sets up the `CallLogging` plugin to log details of incoming HTTP requests and outgoing responses.
- * The logging behavior is configurable based on the 'ecomm.logging.level' setting. If no specific level is
- * configured, the default logging level is set to `INFO`.
+ * Installs Ktor's `CallLogging` plugin with:
+ * - Log level from `ecomm.logging.level` (defaults to `INFO`).
+ * - Filter to log only requests whose path starts with '/'.
+ * - Custom log line including method, request URI, response status, request Content-Type/Length, and User-Agent.
  *
- * The configuration includes:
- * - Setting the logging level dynamically from the application's environment configuration.
- * - Filtering to ensure only requests with paths starting with '/' are logged.
- * - Formatting the log messages to include additional request and response details, such as:
- *   - HTTP method
- *   - Request URI
- *   - Response status
- *   - Content type
- *   - Content length
- *   - User agent
- *
- * This setup helps in monitoring and debugging by providing detailed and structured logs for HTTP traffic.
+ * Useful for monitoring and debugging without logging request/response bodies.
  */
 internal fun Application.configureCallLogging() {
     val slf4jLevel = environment.config
