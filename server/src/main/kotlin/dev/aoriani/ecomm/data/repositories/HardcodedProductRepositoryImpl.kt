@@ -37,8 +37,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Aerospace-grade microfiber blend",
             inStock = true,
             countryOfOrigin = "South Africa"
-        ),
-        Product(
+        ), Product(
             id = "steve_jobs_plush",
             name = "Steve Jobs",
             price = BigDecimal("39.99"),
@@ -49,8 +48,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "100% organic cotton",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "bill_gates_plush",
             name = "Bill Gates",
             price = BigDecimal("29.99"),
@@ -61,8 +59,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Recycled polyester fiber",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "jeff_bezos_plush",
             name = "Jeff Bezos",
             price = BigDecimal("32.99"),
@@ -73,8 +70,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Bamboo-derived plush fabric",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "mark_zuckerberg_plush",
             name = "Mark Zuckerberg",
             price = BigDecimal("27.49"),
@@ -85,8 +81,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Eco-friendly cotton blend",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "sundar_pichai_plush",
             name = "Sundar Pichai",
             price = BigDecimal("24.99"),
@@ -97,8 +92,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Sustainably sourced Indian cotton",
             inStock = true,
             countryOfOrigin = "India"
-        ),
-        Product(
+        ), Product(
             id = "sam_altman_plush",
             name = "Sam Altman",
             price = BigDecimal("26.99"),
@@ -109,8 +103,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Recycled polyester blend",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "john_carmack_plush",
             name = "John Carmack",
             price = BigDecimal("31.49"),
@@ -121,8 +114,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "High-performance microfiber weave",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "linus_torvalds_plush",
             name = "Linus Torvalds",
             price = BigDecimal("28.99"),
@@ -133,8 +125,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Finnish wool-blend",
             inStock = true,
             countryOfOrigin = "Finland"
-        ),
-        Product(
+        ), Product(
             id = "tim_cook_plush",
             name = "Tim Cook",
             price = BigDecimal("33.49"),
@@ -145,8 +136,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Premium Pima cotton",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "richard_hendricks_plush",
             name = "Richard Hendricks",
             price = BigDecimal("22.99"),
@@ -157,8 +147,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Soft polyester fleece",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "larry_page_plush",
             name = "Larry Page",
             price = BigDecimal("30.99"),
@@ -169,8 +158,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Organic Egyptian cotton",
             inStock = true,
             countryOfOrigin = "United States"
-        ),
-        Product(
+        ), Product(
             id = "lisa_su_plush",
             name = "Lisa Su",
             price = BigDecimal("36.99"),
@@ -181,8 +169,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Silk-cotton blend",
             inStock = true,
             countryOfOrigin = "Taiwan"
-        ),
-        Product(
+        ), Product(
             id = "alan_turing_plush",
             name = "Alan Turing",
             price = BigDecimal("44.99"),
@@ -193,8 +180,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Heritage tweed-wool blend",
             inStock = true,
             countryOfOrigin = "United Kingdom"
-        ),
-        Product(
+        ), Product(
             id = "linus_sebastian_plush",
             name = "Linus Sebastian",
             price = BigDecimal("23.99"),
@@ -205,8 +191,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             material = "Canvas-cotton blend",
             inStock = true,
             countryOfOrigin = "Canada"
-        ),
-        Product(
+        ), Product(
             id = "satya_nadella_plush",
             name = "Satya Nadella",
             price = BigDecimal("27.99"),
@@ -227,12 +212,15 @@ object HardcodedProductRepositoryImpl : ProductRepository {
     override suspend fun getAll(): Result<List<Product>> = Result.success(products)
 
     /**
-     * Retrieves a product by its unique id.
-     * @param id The [String] identifier of the product to retrieve.
-     * @return Result containing the matching [Product] if found, or Result.success(null) if no product matches the given id.
+     * Retrieves a product by its unique identifier.
+     *
+     * @param id The unique identifier of the product to be retrieved.
+     * @return A [Result] wrapping the matching [Product]. If the product is found, the result is successful.
+     *         If the product is not found, the result contains a [ProductNotFoundException].
      */
     override suspend fun getById(id: String): Result<Product> {
         return products.firstOrNull { it.id == id }?.let { Result.success(it) } ?: Result.failure(
-            ProductNotFoundException("Product with id $id not found"))
+            ProductNotFoundException("Product with id $id not found")
+        )
     }
 }

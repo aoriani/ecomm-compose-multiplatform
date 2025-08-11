@@ -15,25 +15,39 @@ object DatabaseProductRepositoryImpl : ProductRepository {
     /**
      * Retrieves all products from the database.
      * Operations are performed within a new suspended transaction on [Dispatchers.IO].
-     * @return A list of all [Product]s.
+     * @return A [Result] wrapping a list of all [Product]s. Success case contains the list
+     * of products, failure case contains any database exceptions that occurred.
      */
     override suspend fun getAll(): Result<List<Product>> = newSuspendedTransaction(Dispatchers.IO) {
-        Result.success(ProductEntity.all().map(ProductEntity::toProduct))
+        runCatching { ProductEntity.all().map(ProductEntity::toProduct) }
     }
 
     /**
-     * Retrieves a product by its unique identifier from the database.
-     * Operations are performed within a new suspended transaction on [Dispatchers.IO].
-     * @param id The unique ID of the product.
-     * @return The [Product] if found, otherwise null.
+     * Retrieves a product by its unique identifier.
+     *
+     * This function fetches the product from the database using the provided ID.
+     * If the product is not found, a [ProductNotFoundException] is thrown.
+     *
+     * @param id The unique identifier of the product to retrieve. Must not be blank.
+     * @return A [Result] containing the retrieved [Product] if successful, or an exception if not.
+     * The result captures any errors that occur during the process, including validation or database-related issues.
      */
     override suspend fun getById(id: String): Result<Product> = newSuspendedTransaction(Dispatchers.IO) {
-        ProductEntity.findById(id)?.toProduct()?.let { Result.success(it) } ?: Result.failure(
-            ProductNotFoundException("Product with id $id not found")
-        )
+        runCatching { // Optional input guard:
+            require(id.isNotBlank()) { "id must not be blank" }
+
+            val entity = ProductEntity.findById(id)
+                ?: throw ProductNotFoundException("Product with id <$id> not found")
+            entity.toProduct()
+        }
     }
 }
 
+/**
+ * Converts a [ProductEntity] instance into a [Product] domain model.
+ *
+ * @return A [Product] object with data copied from the current [ProductEntity].
+ */
 private fun ProductEntity.toProduct(): Product {
     return Product(
         id = id.value,
