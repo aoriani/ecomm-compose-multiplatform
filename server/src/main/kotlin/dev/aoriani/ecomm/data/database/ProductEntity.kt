@@ -5,7 +5,7 @@ import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.ImmutableEntityClass
 
 /**
- * DAO entity representing a row in [ProductTable] (package dev.aoriani.ecomm.data.database).
+ * DAO entity representing a row in [ProductTable].
  *
  * Backed by Exposed v1 DAO APIs, this class provides a read-only, object-oriented view of a product record.
  *
