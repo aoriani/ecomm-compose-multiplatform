@@ -2,9 +2,15 @@ package dev.aoriani.ecomm.presentation.graphql.models
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.generator.scalars.ID
-import dev.aoriani.ecomm.domain.models.Product as DomainProduct
 import java.math.BigDecimal
+import dev.aoriani.ecomm.domain.models.Product as DomainProduct
 
+/**
+ * GraphQL representation of a product.
+ *
+ * Uses `ID` for the unique identifier and `BigDecimal` for price to
+ * preserve precision (mapped to a GraphQL BigDecimal scalar via hooks).
+ */
 @GraphQLDescription("Represents a product available in the e-commerce catalog")
 data class Product(
     @property:GraphQLDescription("Unique identifier of the product")
@@ -32,6 +38,10 @@ data class Product(
     val countryOfOrigin: String
 )
 
+/**
+ * Map a domain product to the GraphQL type.
+ * Wraps the domain `id` as `ID` and keeps `price` precision.
+ */
 fun DomainProduct.toGraphQlProduct(): Product = Product(
     id = ID(this.id),
     name = this.name,

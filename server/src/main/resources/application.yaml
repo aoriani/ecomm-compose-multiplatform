@@ -11,5 +11,8 @@ ecomm:
     driver: "org.h2.Driver"
   logging:
     level: "DEBUG"
+  mcp:
+    server-name: "ecomm-mcp-server"
+    server-version: "0.0.1"
   images:
     base-url: "https://api.aoriani.dev/static/images"

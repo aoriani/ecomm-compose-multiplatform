@@ -7,18 +7,10 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.cors.routing.CORS
 
 /**
- * A list of HTTP methods that are permitted for Cross-Origin Resource Sharing (CORS) requests.
+ * Default HTTP methods allowed by CORS.
  *
- * This constant is used to define the allowed HTTP methods for CORS configurations within the application,
- * ensuring that only the specified methods are permitted for cross-origin requests.
- *
- * The list includes common HTTP methods:
- * - `HttpMethod.Get`
- * - `HttpMethod.Post`
- * - `HttpMethod.Put`
- * - `HttpMethod.Delete`
- * - `HttpMethod.Patch`
- * - `HttpMethod.Options`
+ * Used by the Ktor `CORS` plugin configuration to permit
+ * cross-origin requests for: GET, POST, PUT, DELETE, PATCH, OPTIONS.
  */
 // Extracted constants for reuse
 private val ALLOWED_CORS_METHODS = listOf(
@@ -27,22 +19,22 @@ private val ALLOWED_CORS_METHODS = listOf(
 )
 
 /**
- * A list of HTTP headers that are allowed for CORS (Cross-Origin Resource Sharing) requests.
- * These headers enable proper communication between different origins by explicitly permitting
- * specific request headers from clients.
+ * Request headers allowed in CORS requests.
+ *
+ * Keeps the set minimal while supporting common scenarios:
+ * - `Content-Type` for JSON/form submissions
+ * - `Authorization` for bearer tokens
+ * - `X-Requested-With` for legacy/XHR clients
  */
 private val ALLOWED_CORS_HEADERS = listOf(
     HttpHeaders.ContentType, HttpHeaders.Authorization, "X-Requested-With"
 )
 
 /**
- * A map defining the hosts and their associated schemes that are allowed for Cross-Origin Resource Sharing (CORS).
+ * Allowed origins by host and scheme.
  *
- * Each entry in the map consists of a host as the key (e.g., "localhost:8080") and a list of
- * schemes (e.g., ["http"]) defining the protocols that are allowed for that host.
- *
- * This configuration is used to specify permitted external resources for CORS, ensuring
- * that only specified hosts with certain schemes can interact with the application.
+ * Keys are hostnames (optionally with port), values are allowed schemes
+ * passed to `allowHost` (e.g., host "localhost:8080" with scheme "http").
  */
 private val ALLOWED_CORS_HOSTS = mapOf(
     "localhost:8080" to listOf("http"),
@@ -52,22 +44,17 @@ private val ALLOWED_CORS_HOSTS = mapOf(
 )
 
 /**
- * Configures Cross-Origin Resource Sharing (CORS) for the application.
+ * Configure Cross-Origin Resource Sharing (CORS).
  *
- * This method sets up the necessary CORS policies to determine how cross-origin
- * requests are handled by the server. The configuration includes allowing specific
- * hosts, HTTP methods, and headers as defined in the application settings.
+ * Installs Ktor's `CORS` plugin with:
+ * - Allowed origins: specific hosts + schemes via `allowHost`.
+ * - Allowed methods: GET, POST, PUT, DELETE, PATCH, OPTIONS.
+ * - Allowed headers: `Content-Type`, `Authorization`, `X-Requested-With`.
+ * - Credentials disabled: `allowCredentials = false` (cookies/auth not allowed cross-origin).
  *
- * The following configurations are applied:
- * - Allowed hosts: Iterates through a predefined list of hosts and their associated
- *   schemes to grant access.
- * - Allowed HTTP methods: Enables support for specific request methods determined by the settings.
- * - Allowed headers: Specifies a list of headers that can be sent in requests.
- * - Disabling credential sharing: Explicitly disallows the inclusion of credentials such as
- *   cookies or HTTP authentication in cross-origin requests.
- *
- * This setup ensures secure and controlled access to server resources
- * for clients outside the origin boundary.
+ * The plugin automatically handles preflight (OPTIONS) requests and sets
+ * the appropriate CORS response headers. Adjust hosts, methods, or headers
+ * as needed for your deployment environments.
  */
 internal fun Application.configureCors() {
     install(CORS) {

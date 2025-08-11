@@ -10,12 +10,12 @@ import dev.aoriani.ecomm.presentation.graphql.models.toGraphQlProduct
 import dev.aoriani.ecomm.presentation.graphql.queries.ProductQuery
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import java.math.BigDecimal
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import java.math.BigDecimal
-import kotlinx.coroutines.test.runTest
 
 class ProductQueryTest {
 

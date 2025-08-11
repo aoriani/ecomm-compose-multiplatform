@@ -12,13 +12,18 @@ import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 import java.sql.Connection
 
 /**
- * Configures the database connection for the application and initializes the database schema.
+ * Configure database connection and DI bindings.
  *
- * This method retrieves the database URL and driver details from the application's configuration settings.
- * It establishes a connection to the database and sets the default isolation level for transactions to `TRANSACTION_SERIALIZABLE`.
- * Additionally, it ensures the database schema is initialized and seeds the database with data if required.
+ * - Registers DI providers for domain components using Ktor's DI plugin:
+ *   `ProductRepository`, `GetAllProductsUseCase`, `GetProductByIdUseCase`.
+ * - Reads `ecomm.database.url` and `ecomm.database.driver` from config and
+ *   connects via Exposed `Database.connect`.
+ * - Sets Exposed's default transaction isolation to `TRANSACTION_SERIALIZABLE`
+ *   (adjust based on your database and throughput needs).
+ * - Initializes the schema and seeds initial data when empty using
+ *   `initializeDatabaseAndSeedIfEmpty`, parameterized by `ecomm.images.base-url`.
  *
- * This function is typically invoked during the application startup process as part of configuring the application's resources.
+ * Call during application startup before handling requests.
  */
 internal fun Application.configureDatabase() {
     dependencies {
@@ -30,7 +35,7 @@ internal fun Application.configureDatabase() {
     val dbDriver = environment.config.property("ecomm.database.driver").getString()
     Database.connect(dbUrl, dbDriver)
     TransactionManager.manager.defaultIsolationLevel =
-        Connection.TRANSACTION_SERIALIZABLE // Or configure this too if needed
+        Connection.TRANSACTION_SERIALIZABLE // Tune per DB/consistency requirements
     val imageUrlBase = environment.config.property("ecomm.images.base-url").getString()
     initializeDatabaseAndSeedIfEmpty(imageUrlBase)
 }

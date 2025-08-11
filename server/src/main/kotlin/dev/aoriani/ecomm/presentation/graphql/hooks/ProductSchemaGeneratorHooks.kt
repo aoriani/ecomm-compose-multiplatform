@@ -10,8 +10,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 /**
- * Custom hooks for `graphql-kotlin` schema generation.
- * These hooks allow customization of the GraphQL schema generation process.
+ * Schema generator hooks for custom scalars.
+ *
+ * Maps Kotlin numeric/ID types to GraphQL scalars used by the API:
+ * - `BigDecimal`/`Number` -> `ExtendedScalars.GraphQLBigDecimal`
+ * - `ID` -> `Scalars.GraphQLID`
  */
 internal object ProductSchemaGeneratorHooks : SchemaGeneratorHooks {
 

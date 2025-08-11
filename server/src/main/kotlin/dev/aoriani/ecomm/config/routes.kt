@@ -10,8 +10,9 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 
 /**
- * Represents the root route path for the application's routing configuration.
- * Used to define the base endpoint for root-level requests.
+ * Root path for the application.
+ *
+ * Convenience constant used by routing to respond at '/'.
  */
 private const val ROOT_ROUTE = "/"
 
@@ -27,7 +28,7 @@ private const val STATIC_ROUTE = "/static"
 private const val STATIC_RESOURCE_DIR = "static"
 
 /**
- * Sets up the routing configuration for the Ktor application.
+ * Configure HTTP routes.
  *
  * This method defines the application's main HTTP routes, including:
  * - A root route (`ROOT_ROUTE`, defined in the application's configuration)
@@ -37,8 +38,7 @@ private const val STATIC_RESOURCE_DIR = "static"
  * - GraphQL-specific routes for handling GraphQL HTTP POST, GET requests, and the
  *   GraphiQL web interface.
  *
- * Usage of this method integrates routing features, enabling the application to handle
- * static content, GraphQL operations, and the default entry point for HTTP requests.
+ * GraphQL routes rely on the GraphQL plugin configuration for schema/resolvers.
  */
 internal fun Application.configureRouting() {
     routing {
