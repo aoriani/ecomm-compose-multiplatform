@@ -1,3 +1,9 @@
+/**
+ * Domain entry point for listing all products.
+ *
+ * Encapsulates the application logic to fetch every available product, delegating to the
+ * repository layer and returning results using Kotlin's [Result] type.
+ */
 package dev.aoriani.ecomm.domain.usecases
 
 import dev.aoriani.ecomm.domain.models.Product
