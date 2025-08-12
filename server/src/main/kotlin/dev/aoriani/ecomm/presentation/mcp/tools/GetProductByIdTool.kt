@@ -1,3 +1,10 @@
+/**
+ * MCP tool for retrieving a single product by its identifier.
+ *
+ * Exposes a tool named "get_product_by_id" that accepts an input payload containing
+ * a product ID and returns the corresponding product details. Input and output schemas
+ * are derived from the declared types and used by the MCP server for validation and discovery.
+ */
 package dev.aoriani.ecomm.presentation.mcp.tools
 
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
@@ -14,6 +21,11 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.reflect.KClass
 
+/**
+ * Tool implementation that fetches a product by ID using a domain use case.
+ *
+ * @param getProductById Domain use case that retrieves a product by its unique identifier.
+ */
 class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : McpTool {
     override val name: String = "get_product_by_id"
     override val description: String = """
@@ -23,6 +35,14 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
     override val input: KClass<*> = GetProductByIdRequest::class
     override val output: KClass<*> = Product::class
 
+    /**
+     * Executes the tool call by validating the "id" argument, invoking the domain use case,
+     * and returning both text and structured results.
+     *
+     * Error handling:
+     * - Returns an error result if the "id" is missing or blank.
+     * - Returns a generic error result if the domain use case fails.
+     */
     override suspend fun execute(request: CallToolRequest): CallToolResult {
         // TODO: Add logging
         val id = request.arguments["id"]?.jsonPrimitive?.contentOrNull
