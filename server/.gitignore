@@ -37,6 +37,6 @@ out/
 
 ### App###
 logs/
-/data/**
-!**/data/
+/data/
+!/src/**/data/
 
