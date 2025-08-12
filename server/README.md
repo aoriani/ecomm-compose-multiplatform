@@ -191,57 +191,186 @@ When adding new tests:
 ## Development Guidelines
 
 ### Project Structure
+The project follows a clean architecture approach with clear separation of concerns:
+
 - `src/main/kotlin/dev/aoriani/ecomm/` - Main application code
-  - `Application.kt` - Application entry point and configuration (includes routing configuration)
-  - `graphql/` - GraphQL-related code
-    - `models/` - Data models
-    - `queries/` - GraphQL query resolvers
-    - `exceptions/` - GraphQL-specific exceptions
-    - `schemageneratorhooks/` - Custom schema generator hooks
-  - `mcp/` - Model Context Protocol tools
-  - `repository/` - Data repositories
-    - `database/` - Database-specific repository implementations
+  - `Application.kt` - Application entry point
+  - `config/` - Application configuration
+    - `cache.kt` - Cache configuration
+    - `call_logging.kt` - Request logging configuration
+    - `compression.kt` - Response compression configuration
+    - `cors.kt` - CORS configuration
+    - `database.kt` - Database connection configuration
+    - `graphql.kt` - GraphQL server configuration
+    - `mcp.kt` - Model Context Protocol configuration
+    - `routes.kt` - HTTP routing configuration
+    - `status_pages.kt` - Error handling configuration
+  - `domain/` - Domain layer (business logic)
+    - `models/` - Domain entities
+    - `repositories/` - Repository interfaces
+    - `usecases/` - Business logic use cases
+  - `data/` - Data layer (repository implementations)
+    - `database/` - Database-specific code
+    - `repositories/` - Repository implementations
+  - `presentation/` - Presentation layer
+    - `graphql/` - GraphQL-related code
+      - `models/` - GraphQL data models
+      - `queries/` - GraphQL query resolvers
+      - `hooks/` - Custom schema generator hooks
+    - `mcp/` - Model Context Protocol implementation
+      - `models/` - MCP data models
+      - `tools/` - MCP tool implementations
 
 ### GraphQL Development
-The project uses the ExpediaGroup GraphQL Kotlin library:
+The project uses the ExpediaGroup GraphQL Kotlin library for implementing GraphQL functionality:
 
-1. Define data models in `graphql/models/` with `@GraphQLDescription` annotations
-2. Create query resolvers in `graphql/queries/` that implement the `Query` interface
-3. Implement custom exceptions in `graphql/exceptions/` for GraphQL-specific error handling
-4. Create custom schema generator hooks in `graphql/schemageneratorhooks/` if needed
-5. Access the GraphiQL interface at `/graphiql` when running the application
+#### GraphQL Models
+GraphQL models are defined in the `presentation/graphql/models` package. These models are annotated with GraphQL-specific annotations to provide schema documentation:
 
-Example of adding a new GraphQL query:
 ```kotlin
-@GraphQLDescription("Root entry point for category-related queries")
-class CategoryQuery(private val repository: CategoryRepository) : Query {
-    @GraphQLDescription("Retrieve all categories")
-    suspend fun categories(): List<Category> = repository.getAll()
-}
+@GraphQLDescription("Represents a product available in the e-commerce catalog")
+data class Product(
+    @property:GraphQLDescription("Unique identifier of the product")
+    val id: ID,
+
+    @property:GraphQLDescription("Name of the product")
+    val name: String,
+    
+    // Other properties...
+)
 ```
 
-Then register the query in `Application.kt`:
+Models also include mapping functions to convert domain models to GraphQL-specific models:
+
 ```kotlin
-install(GraphQL) {
-    schema {
-        packages = listOf("dev.aoriani.ecomm.graphql.models", "java.math") // Ensure all relevant model packages are listed
-        val repository: CategoryRepository by dependencies
-        queries = listOf(ProductQuery(repository), CategoryQuery(repository)) // Inject repositories via dependencies
-        hooks = ProductSchemaGeneratorHooks // Use custom schema generator hooks if needed
+fun DomainProduct.toGraphQlProduct(): Product = Product(
+    id = ID(this.id),
+    name = this.name,
+    // Other properties...
+)
+```
+
+#### GraphQL Queries
+Query resolvers are implemented in the `presentation/graphql/queries` package. Each query class implements the `Query` interface and is injected with the necessary use cases:
+
+```kotlin
+@GraphQLDescription("Root entry point for product-related queries")
+class ProductQuery(
+    private val getAllProducts: GetAllProductsUseCase,
+    private val getProductById: GetProductByIdUseCase
+) : Query {
+    @GraphQLDescription("Retrieve all products available in the catalog")
+    suspend fun products(): List<Product> {
+        // Implementation...
+    }
+
+    @GraphQLDescription("Fetch a single product by its unique identifier")
+    suspend fun product(
+        @GraphQLDescription("The unique ID of the product to retrieve")
+        id: ID
+    ): Product {
+        // Implementation...
     }
 }
 ```
 
-Note that repositories are injected into query resolvers using Ktor's dependency injection system:
+#### Schema Generator Hooks
+Custom schema generator hooks are implemented in the `presentation/graphql/hooks` package. These hooks allow for customization of the GraphQL schema generation process:
+
 ```kotlin
-dependencies {
-    provide<CategoryRepository> { DatabaseCategoryRepositoryImpl }
+class ProductSchemaGeneratorHooks : SchemaGeneratorHooks {
+    override fun willGenerateGraphQLType(type: KType): GraphQLType? {
+        // Custom type mapping logic...
+    }
+}
+```
+
+#### GraphQL Configuration
+The GraphQL server is configured in the `config/graphql.kt` file, which registers the query resolvers and schema generator hooks:
+
+```kotlin
+fun Application.configureGraphQL() {
+    install(GraphQL) {
+        schema {
+            packages = listOf("dev.aoriani.ecomm.presentation.graphql.models")
+            queries = listOf(
+                ProductQuery(
+                    getAllProducts = dependencies.get(),
+                    getProductById = dependencies.get()
+                )
+            )
+            hooks = ProductSchemaGeneratorHooks()
+        }
+        playground = true
+    }
 }
 ```
 
 ### Model Context Protocol (MCP) Server
 
-This project includes a Model Context Protocol (MCP) server that allows AI models like Gemini to interact with the application's data in a structured way. The server exposes a set of tools for querying product information.
+The Model Context Protocol (MCP) server allows AI models like Gemini to interact with the application's data in a structured way. The MCP implementation follows a clean architecture approach:
+
+#### MCP Tools
+MCP tools are implemented in the `presentation/mcp/tools` package. Each tool extends the `McpTool` interface and is responsible for handling a specific type of request:
+
+```kotlin
+class GetProductByIdTool(
+    private val getProductByIdUseCase: GetProductByIdUseCase
+) : McpTool<GetProductByIdRequest, Product> {
+    override val name = "get_product_by_id"
+    override val description = "Retrieves details of a single product identified by a unique product ID"
+    
+    override suspend fun execute(request: GetProductByIdRequest): CallToolResult {
+        // Implementation...
+    }
+}
+```
+
+#### MCP Models
+MCP models are defined in the `presentation/mcp/models` package. These models represent the data structures used by the MCP tools:
+
+```kotlin
+@Serializable
+data class Product(
+    val id: String,
+    val name: String,
+    val price: BigDecimal,
+    // Other properties...
+)
+```
+
+#### Available MCP Tools
+
+1. **get_products_list**
+   - Description: Retrieves all products in the catalog
+   - Input: None
+   - Output: An object containing a `products` array
+
+2. **get_product_by_id**
+   - Description: Retrieves details of a single product identified by a unique product ID
+   - Input: An object with a required `id` property (string)
+   - Output: A product object
+
+#### MCP Configuration
+The MCP server is configured in the `config/mcp.kt` file, which registers the available tools:
+
+```kotlin
+fun Application.configureMcp() {
+    mcp {
+        Server(
+            serverInfo = Implementation("eCommerceApp", "1.0.0"),
+            options = ServerOptions(
+                capabilities = ServerCapabilities(
+                    tools = ServerCapabilities.Tools(listChanged = null)
+                )
+            )
+        ).apply {
+            addTool(GetAllProductsTool(dependencies.get()))
+            addTool(GetProductByIdTool(dependencies.get()))
+        }
+    }
+}
+```
 
 For detailed documentation on the MCP server, its architecture, and the available tools, please see [MCP.md](MCP.md).
 
