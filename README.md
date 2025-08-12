@@ -52,7 +52,7 @@ Comprehensive documentation for this project, including detailed explanations of
 *   **Server:**
     *   [Server README](server/README.md)
     *   [Model Context Protocol (MCP) Server](server/MCP.md)
-    *   [Database](server/src/main/kotlin/dev/aoriani/ecomm/repository/database/DATABASE.md)
+    *   [Database](server/src/main/kotlin/dev/aoriani/ecomm/data/database/DATABASE.md)
 
 ## Technologies Used
 
@@ -87,7 +87,11 @@ The repository is organized into two main directories:
     *   `iosApp/`: Xcode project for the iOS application.
     *   See `client/README.md` for more detailed information on the client project structure.
 *   `./server/`: Contains the Ktor backend application.
-    *   `src/`: Source code for the server, including GraphQL schema, resolvers, and Ktor configuration.
+    *   `src/main/kotlin/dev/aoriani/ecomm/`: Source code for the server.
+        *   `config/`: Ktor configuration files for different modules (database, logging, etc.).
+        *   `data/`: Data layer, containing database access and repository implementations.
+        *   `domain/`: Domain layer, with business models, repository interfaces, and use cases.
+        *   `presentation/`: Presentation layer, handling GraphQL and MCP APIs.
     *   `Dockerfile`: For building a Docker image of the server.
     *   See `server/README.md` for more details on the server project.
 
