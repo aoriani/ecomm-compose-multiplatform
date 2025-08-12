@@ -7,6 +7,7 @@
  */
 package dev.aoriani.ecomm.presentation.mcp.tools
 
+import dev.aoriani.ecomm.domain.models.ProductNotFoundException
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import dev.aoriani.ecomm.presentation.mcp.models.GetProductByIdRequest
 import dev.aoriani.ecomm.presentation.mcp.models.Product
@@ -16,6 +17,7 @@ import io.modelcontextprotocol.kotlin.sdk.CallToolResult
 import io.modelcontextprotocol.kotlin.sdk.TextContent
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -45,22 +47,26 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
      */
     override suspend fun execute(request: CallToolRequest): CallToolResult {
         // TODO: Add logging
-        val id = request.arguments["id"]?.jsonPrimitive?.contentOrNull
+        val args = runCatching { Json.decodeFromJsonElement<GetProductByIdRequest>(request.arguments) }.getOrNull()
+        val id = args?.id
         if (id.isNullOrBlank()) return CallToolResult(
             content = listOf(TextContent("Product ID must not be blank")),
             isError = true
         )
 
         val result = getProductById(id)
-        if (result.isSuccess) {
+        return if (result.isSuccess) {
             val product = result.map { it.toMcpProduct() }.getOrThrow()
-            return CallToolResult(
+            CallToolResult(
                 content = listOf(TextContent(product.toString())),
                 structuredContent = Json.encodeToJsonElement(product).jsonObject
             )
         } else {
             // TODO: Log failure
-            return CallToolResult(content = listOf(TextContent("Unknown error")), isError = true)
+            when (val exception = result.exceptionOrNull()) {
+                is ProductNotFoundException -> CallToolResult(content = listOf(TextContent("Product not found: $id")), isError = true)
+                else -> CallToolResult(content = listOf(TextContent("Unknown error")), isError = true)
+            }
         }
     }
 }
