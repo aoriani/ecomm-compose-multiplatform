@@ -14,7 +14,7 @@ import java.math.BigDecimal
  * @property countryOfOrigin Country where the product was manufactured
  */
 data class Product(
-    val id: String,
+    val id: ProductId,
     val name: String,
     val price: BigDecimal,
     val description: String,

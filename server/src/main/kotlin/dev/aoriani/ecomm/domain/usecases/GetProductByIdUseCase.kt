@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm.domain.usecases
 
 import dev.aoriani.ecomm.domain.models.Product
+import dev.aoriani.ecomm.domain.models.ProductId
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 
 /**
@@ -9,7 +10,7 @@ import dev.aoriani.ecomm.domain.repositories.ProductRepository
  * This use case wraps the [ProductRepository.getById] operation to encapsulate the business logic
  * of retrieving individual products.
  */
-class GetProductByIdUseCase(private val repository: ProductRepository) : ResultUseCase<String, Product> {
+class GetProductByIdUseCase(private val repository: ProductRepository) : ResultUseCase<ProductId, Product> {
 
     /**
      * Executes the use case to retrieve a product by its unique identifier.
@@ -18,5 +19,5 @@ class GetProductByIdUseCase(private val repository: ProductRepository) : ResultU
      * @return A [Result] containing the [Product] on success, or a failure if the product is not found
      * or an error occurs.
      */
-    override suspend fun invoke(params: String): Result<Product> = repository.getById(params)
+    override suspend fun invoke(params: ProductId): Result<Product> = repository.getById(params)
 }

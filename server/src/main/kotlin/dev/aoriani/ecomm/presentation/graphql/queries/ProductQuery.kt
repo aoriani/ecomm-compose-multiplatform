@@ -3,7 +3,8 @@ package dev.aoriani.ecomm.presentation.graphql.queries
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.generator.scalars.ID
 import com.expediagroup.graphql.server.operations.Query
-import dev.aoriani.ecomm.domain.models.ProductNotFoundException
+import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import dev.aoriani.ecomm.domain.usecases.invoke
@@ -61,8 +62,7 @@ class ProductQuery(
         @GraphQLDescription("The unique ID of the product to retrieve. Cannot be blank.")
         id: ID
     ): Product {
-        require(id.value.isNotBlank()) { "Product ID cannot be blank." }
-        val result = getProductById(id.value)
+        val result = getProductById(ProductId(id.value))
         if (result.isFailure) {
             // TODO: Log failure
             when (val exception = result.exceptionOrNull()) {

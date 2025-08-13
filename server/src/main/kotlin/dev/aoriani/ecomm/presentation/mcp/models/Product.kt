@@ -65,7 +65,7 @@ data class GetProductByIdRequest(
 )
 
 fun DomainProduct.toMcpProduct(): Product = Product(
-    id = this.id,
+    id = this.id.id,
     name = this.name,
     price = this.price,
     description = this.description,

@@ -43,7 +43,7 @@ data class Product(
  * Wraps the domain `id` as `ID` and keeps `price` precision.
  */
 fun DomainProduct.toGraphQlProduct(): Product = Product(
-    id = ID(this.id),
+    id = ID(this.id.id),
     name = this.name,
     price = this.price,
     description = this.description,

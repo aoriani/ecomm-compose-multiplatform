@@ -2,7 +2,8 @@ package dev.aoriani.ecomm.data.repositories
 
 import dev.aoriani.ecomm.data.database.ProductEntity
 import dev.aoriani.ecomm.domain.models.Product
-import dev.aoriani.ecomm.domain.models.ProductNotFoundException
+import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
@@ -32,12 +33,10 @@ object DatabaseProductRepositoryImpl : ProductRepository {
      * @return A [Result] containing the retrieved [Product] if successful, or an exception if not.
      * The result captures any errors that occur during the process, including validation or database-related issues.
      */
-    override suspend fun getById(id: String): Result<Product> = newSuspendedTransaction(Dispatchers.IO) {
+    override suspend fun getById(id: ProductId): Result<Product> = newSuspendedTransaction(Dispatchers.IO) {
         runCatching { // Optional input guard:
-            require(id.isNotBlank()) { "id must not be blank" }
-
-            val entity = ProductEntity.findById(id)
-                ?: throw ProductNotFoundException("Product with id <$id> not found")
+            val entity = ProductEntity.findById(id.id)
+                ?: throw ProductNotFoundException(id)
             entity.toProduct()
         }
     }
@@ -50,7 +49,7 @@ object DatabaseProductRepositoryImpl : ProductRepository {
  */
 private fun ProductEntity.toProduct(): Product {
     return Product(
-        id = id.value,
+        id = ProductId(id.value),
         name = name,
         price = price,
         description = description,

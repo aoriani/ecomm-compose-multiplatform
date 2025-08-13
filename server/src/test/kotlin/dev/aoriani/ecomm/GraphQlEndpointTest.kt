@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm
 
 import dev.aoriani.ecomm.domain.models.Product
+import dev.aoriani.ecomm.domain.models.ProductId
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -93,7 +94,7 @@ class GraphQlEndpointTest {
             coEvery { getAll() } returns Result.success(
                 listOf(
                     Product(
-                        id = "1",
+                        id = ProductId("1"),
                         name = "Product 1",
                         description = "Description 1",
                         price = BigDecimal.TEN,
@@ -133,9 +134,9 @@ class GraphQlEndpointTest {
     @Test
     fun `When product query with existing product then it should return the product`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getById("1") } returns Result.success(
+            coEvery { getById(ProductId("1")) } returns Result.success(
                 Product(
-                    id = "1",
+                    id = ProductId("1"),
                     name = "Product 1",
                     description = "Description 1",
                     price = BigDecimal.TEN,
@@ -218,9 +219,9 @@ class GraphQlEndpointTest {
     @Test
     fun `When product query with existing product then it should return all the product fields`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getById("1") } returns Result.success(
+            coEvery { getById(ProductId("1")) } returns Result.success(
                 Product(
-                    id = "1",
+                    id = ProductId("1"),
                     name = "Product 1",
                     description = "Description 1",
                     price = BigDecimal.TEN,
@@ -274,7 +275,7 @@ class GraphQlEndpointTest {
     @Test
     fun `When product repository throws an exception then it should return an error`() = testApplication {
         val mockProductRepository: ProductRepository = mockk {
-            coEvery { getById("1") } throws RuntimeException("Database error")
+            coEvery { getById(ProductId("1")) } throws RuntimeException("Database error")
         }
         configureEnvironment()
         configureAppWithMockedProducts(mockProductRepository)

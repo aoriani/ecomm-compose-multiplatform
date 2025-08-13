@@ -1,6 +1,7 @@
 package dev.aoriani.ecomm.domain.repositories
 
 import dev.aoriani.ecomm.domain.models.Product
+import dev.aoriani.ecomm.domain.models.ProductId
 
 /**
  * Repository abstraction for performing CRUD operations on [Product] entities.
@@ -26,5 +27,5 @@ interface ProductRepository {
      * @return A [Result] containing the requested [Product] if found, or a failure if the product does not exist
      *         or an error occurs during retrieval.
      */
-    suspend fun getById(id: String): Result<Product>
+    suspend fun getById(id: ProductId): Result<Product>
 }

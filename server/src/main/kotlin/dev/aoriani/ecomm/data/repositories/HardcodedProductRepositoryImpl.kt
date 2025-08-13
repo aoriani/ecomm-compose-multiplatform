@@ -3,7 +3,8 @@ package dev.aoriani.ecomm.data.repositories
 import dev.aoriani.ecomm.data.repositories.HardcodedProductRepositoryImpl.getAll
 import dev.aoriani.ecomm.data.repositories.HardcodedProductRepositoryImpl.getById
 import dev.aoriani.ecomm.domain.models.Product
-import dev.aoriani.ecomm.domain.models.ProductNotFoundException
+import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import java.math.BigDecimal
 
@@ -27,7 +28,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
      */
     private val products = listOf(
         Product(
-            id = "elon_musk_plush",
+            id = ProductId("elon_musk_plush"),
             name = "Elon Musk",
             price = BigDecimal("34.99"),
             description = """
@@ -38,7 +39,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "South Africa"
         ), Product(
-            id = "steve_jobs_plush",
+            id = ProductId("steve_jobs_plush"),
             name = "Steve Jobs",
             price = BigDecimal("39.99"),
             description = """
@@ -49,7 +50,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "bill_gates_plush",
+            id = ProductId("bill_gates_plush"),
             name = "Bill Gates",
             price = BigDecimal("29.99"),
             description = """
@@ -60,7 +61,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "jeff_bezos_plush",
+            id = ProductId("jeff_bezos_plush"),
             name = "Jeff Bezos",
             price = BigDecimal("32.99"),
             description = """
@@ -71,7 +72,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "mark_zuckerberg_plush",
+            id = ProductId("mark_zuckerberg_plush"),
             name = "Mark Zuckerberg",
             price = BigDecimal("27.49"),
             description = """
@@ -82,7 +83,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "sundar_pichai_plush",
+            id = ProductId("sundar_pichai_plush"),
             name = "Sundar Pichai",
             price = BigDecimal("24.99"),
             description = """
@@ -93,7 +94,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "India"
         ), Product(
-            id = "sam_altman_plush",
+            id = ProductId("sam_altman_plush"),
             name = "Sam Altman",
             price = BigDecimal("26.99"),
             description = """
@@ -104,7 +105,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "john_carmack_plush",
+            id = ProductId("john_carmack_plush"),
             name = "John Carmack",
             price = BigDecimal("31.49"),
             description = """
@@ -115,7 +116,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "linus_torvalds_plush",
+            id = ProductId("linus_torvalds_plush"),
             name = "Linus Torvalds",
             price = BigDecimal("28.99"),
             description = """
@@ -126,7 +127,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "Finland"
         ), Product(
-            id = "tim_cook_plush",
+            id = ProductId("tim_cook_plush"),
             name = "Tim Cook",
             price = BigDecimal("33.49"),
             description = """
@@ -137,7 +138,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "richard_hendricks_plush",
+            id = ProductId("richard_hendricks_plush"),
             name = "Richard Hendricks",
             price = BigDecimal("22.99"),
             description = """
@@ -148,7 +149,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "larry_page_plush",
+            id = ProductId("larry_page_plush"),
             name = "Larry Page",
             price = BigDecimal("30.99"),
             description = """
@@ -159,7 +160,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United States"
         ), Product(
-            id = "lisa_su_plush",
+            id = ProductId("lisa_su_plush"),
             name = "Lisa Su",
             price = BigDecimal("36.99"),
             description = """
@@ -170,7 +171,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "Taiwan"
         ), Product(
-            id = "alan_turing_plush",
+            id = ProductId("alan_turing_plush"),
             name = "Alan Turing",
             price = BigDecimal("44.99"),
             description = """
@@ -181,7 +182,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "United Kingdom"
         ), Product(
-            id = "linus_sebastian_plush",
+            id = ProductId("linus_sebastian_plush"),
             name = "Linus Sebastian",
             price = BigDecimal("23.99"),
             description = """
@@ -192,7 +193,7 @@ object HardcodedProductRepositoryImpl : ProductRepository {
             inStock = true,
             countryOfOrigin = "Canada"
         ), Product(
-            id = "satya_nadella_plush",
+            id = ProductId("satya_nadella_plush"),
             name = "Satya Nadella",
             price = BigDecimal("27.99"),
             description = """
@@ -218,9 +219,9 @@ object HardcodedProductRepositoryImpl : ProductRepository {
      * @return A [Result] wrapping the matching [Product]. If the product is found, the result is successful.
      *         If the product is not found, the result contains a [ProductNotFoundException].
      */
-    override suspend fun getById(id: String): Result<Product> {
+    override suspend fun getById(id: ProductId): Result<Product> {
         return products.firstOrNull { it.id == id }?.let { Result.success(it) } ?: Result.failure(
-            ProductNotFoundException("Product with id $id not found")
+            ProductNotFoundException(id)
         )
     }
 }

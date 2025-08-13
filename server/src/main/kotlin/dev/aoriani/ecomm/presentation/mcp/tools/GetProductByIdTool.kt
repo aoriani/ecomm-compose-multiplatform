@@ -7,7 +7,8 @@
  */
 package dev.aoriani.ecomm.presentation.mcp.tools
 
-import dev.aoriani.ecomm.domain.models.ProductNotFoundException
+import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import dev.aoriani.ecomm.presentation.mcp.models.GetProductByIdRequest
 import dev.aoriani.ecomm.presentation.mcp.models.Product
@@ -54,7 +55,7 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
             isError = true
         )
 
-        val result = getProductById(id)
+        val result = getProductById(ProductId(id))
         return if (result.isSuccess) {
             val product = result.map { it.toMcpProduct() }.getOrThrow()
             CallToolResult(
