@@ -17,6 +17,7 @@ import io.modelcontextprotocol.kotlin.sdk.TextContent
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
+import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
 /**
@@ -25,6 +26,7 @@ import kotlin.reflect.KClass
  * @param getAllProducts Use case responsible for fetching all products.
  */
 class GetAllProductsTool(private val getAllProducts: GetAllProductsUseCase) : McpTool {
+    private val logger = LoggerFactory.getLogger(javaClass)
     override val name: String = "get_products_list"
     override val description: String = """
                     Retrieves all products in the catalog. Takes no input parameters and returns an object with a
@@ -43,9 +45,10 @@ class GetAllProductsTool(private val getAllProducts: GetAllProductsUseCase) : Mc
     override suspend fun execute(request: CallToolRequest): CallToolResult {
         val result = getAllProducts()
         if (result.isFailure) {
-            // TODO: Log failure
+            val exception = result.exceptionOrNull()
+            logger.error("Failed to get all products", exception)
             return CallToolResult(
-                content = listOf(TextContent("Unknown error")),
+                content = listOf(TextContent("Failed to retrieve products")),
                 isError = true
             )
         } else {
