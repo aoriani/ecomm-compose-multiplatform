@@ -3,6 +3,7 @@ package dev.aoriani.ecomm.graphql.queries
 import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.domain.models.Product
 import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.BlankProductIdException
 import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
@@ -109,11 +110,11 @@ class ProductQueryTest {
     }
 
     @Test
-    fun `product should throw IllegalArgumentException for blank ID`() = runTest {
-        assertFailsWith<IllegalArgumentException> {
+    fun `product should throw BlankProductIdException for blank ID`() = runTest {
+        assertFailsWith<BlankProductIdException> {
             mockProductQuery.product(ID(""))
         }
-        assertFailsWith<IllegalArgumentException> {
+        assertFailsWith<BlankProductIdException> {
             mockProductQuery.product(ID("   "))
         }
     }

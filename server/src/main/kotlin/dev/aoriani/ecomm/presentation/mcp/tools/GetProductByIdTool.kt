@@ -8,6 +8,7 @@
 package dev.aoriani.ecomm.presentation.mcp.tools
 
 import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.BlankProductIdException
 import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import dev.aoriani.ecomm.presentation.mcp.models.GetProductByIdRequest
@@ -17,11 +18,10 @@ import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
 import io.modelcontextprotocol.kotlin.sdk.CallToolResult
 import io.modelcontextprotocol.kotlin.sdk.TextContent
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
 /**
@@ -30,6 +30,7 @@ import kotlin.reflect.KClass
  * @param getProductById Domain use case that retrieves a product by its unique identifier.
  */
 class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : McpTool {
+    private val logger = LoggerFactory.getLogger(javaClass)
     override val name: String = "get_product_by_id"
     override val description: String = """
                     This tool retrieves details of a single product identified by a unique product ID. It takes the 
@@ -47,7 +48,6 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
      * - Returns a generic error result if the domain use case fails.
      */
     override suspend fun execute(request: CallToolRequest): CallToolResult {
-        // TODO: Add logging
         val args = runCatching { Json.decodeFromJsonElement<GetProductByIdRequest>(request.arguments) }.getOrNull()
         val id = args?.id
         if (id.isNullOrBlank()) return CallToolResult(
@@ -63,10 +63,16 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
                 structuredContent = Json.encodeToJsonElement(product).jsonObject
             )
         } else {
-            // TODO: Log failure
-            when (val exception = result.exceptionOrNull()) {
-                is ProductNotFoundException -> CallToolResult(content = listOf(TextContent("Product not found: $id")), isError = true)
-                else -> CallToolResult(content = listOf(TextContent("Unknown error")), isError = true)
+            val exception = result.exceptionOrNull()
+            when (exception) {
+                is ProductNotFoundException -> CallToolResult(content = listOf(TextContent("Product not found: $id")),
+                    isError = true)
+                is BlankProductIdException -> CallToolResult(content = listOf(TextContent(exception.message)), isError = true)
+                else -> {
+                    logger.error("Failed to get product by id: $id", exception)
+                    CallToolResult(content = listOf(TextContent("Failed to retrieve product with id: $id")),
+                        isError = true)
+                }
             }
         }
     }

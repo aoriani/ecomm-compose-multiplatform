@@ -1,11 +1,12 @@
 package dev.aoriani.ecomm.data.repositories
 
 import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.BlankProductIdException
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class HardcodedProductRepositoryImplTest {
@@ -32,22 +33,19 @@ class HardcodedProductRepositoryImplTest {
     }
 
     @Test
-    fun `When getById is called with a nonexistent ID then null is returned`() = runBlocking {
+    fun `When getById is called with a nonexistent ID then it should return a failure`() = runBlocking {
         // When
         val result = HardcodedProductRepositoryImpl.getById(ProductId("nonexistent_id"))
 
         // Then
-        assertTrue(result.isSuccess)
-        assertNull(result.getOrNull())
+        assertTrue(result.isFailure)
     }
 
     @Test
-    fun `When getById is called with an empty ID then null is returned`() = runBlocking {
-        // When
-        val result = HardcodedProductRepositoryImpl.getById(ProductId(""))
-
+    fun `When getById is called with an empty ID then it should throw BlankProductIdException`() {
         // Then
-        assertTrue(result.isSuccess)
-        assertNull(result.getOrNull())
+        assertFailsWith<BlankProductIdException> {
+            runBlocking { HardcodedProductRepositoryImpl.getById(ProductId("")) }
+        }
     }
 }
