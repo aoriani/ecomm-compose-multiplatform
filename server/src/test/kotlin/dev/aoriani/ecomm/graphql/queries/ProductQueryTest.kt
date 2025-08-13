@@ -2,7 +2,8 @@ package dev.aoriani.ecomm.graphql.queries
 
 import com.expediagroup.graphql.generator.scalars.ID
 import dev.aoriani.ecomm.domain.models.Product
-import dev.aoriani.ecomm.domain.models.ProductNotFoundException
+import dev.aoriani.ecomm.domain.models.ProductId
+import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
@@ -39,7 +40,7 @@ class ProductQueryTest {
     fun `products should return all products from repository`() = runTest {
         val products = listOf(
             Product(
-                id = "1",
+                id = ProductId("1"),
                 name = "Product A",
                 price = BigDecimal("10.0"),
                 description = "Description A",
@@ -49,7 +50,7 @@ class ProductQueryTest {
                 countryOfOrigin = "USA"
             ),
             Product(
-                id = "2",
+                id = ProductId("2"),
                 name = "Product B",
                 price = BigDecimal("20.0"),
                 description = "Description B",
@@ -78,7 +79,7 @@ class ProductQueryTest {
     @Test
     fun `product should return product by ID`() = runTest {
         val product = Product(
-            id = "1",
+            id = ProductId("1"),
             name = "Product A",
             price = BigDecimal("10.0"),
             description = "Description A",
@@ -87,7 +88,7 @@ class ProductQueryTest {
             inStock = true,
             countryOfOrigin = "USA"
         )
-        coEvery { mockProductRepository.getById("1") } returns Result.success(product)
+        coEvery { mockProductRepository.getById(ProductId("1")) } returns Result.success(product)
 
         val result = mockProductQuery.product(ID("1"))
 
@@ -96,7 +97,11 @@ class ProductQueryTest {
 
     @Test
     fun `product should throw ProductNotFoundException if product not found`() = runTest {
-        coEvery { mockProductRepository.getById("nonexistent") } returns Result.failure(ProductNotFoundException("nonexistent"))
+        coEvery { mockProductRepository.getById(ProductId("nonexistent")) } returns Result.failure(
+            ProductNotFoundException(
+                ProductId("nonexistent")
+            )
+        )
 
         assertFailsWith<ProductNotFoundException> {
             mockProductQuery.product(ID("nonexistent"))

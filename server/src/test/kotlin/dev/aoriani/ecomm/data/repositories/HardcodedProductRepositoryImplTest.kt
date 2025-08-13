@@ -1,5 +1,6 @@
 package dev.aoriani.ecomm.data.repositories
 
+import dev.aoriani.ecomm.domain.models.ProductId
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +23,7 @@ class HardcodedProductRepositoryImplTest {
     @Test
     fun `When getById is called with a valid ID then the correct product is returned`() = runBlocking {
         // When
-        val resul = HardcodedProductRepositoryImpl.getById("elon_musk_plush")
+        val resul = HardcodedProductRepositoryImpl.getById(ProductId("elon_musk_plush"))
 
         // Then
         assertTrue(resul.isSuccess)
@@ -33,7 +34,7 @@ class HardcodedProductRepositoryImplTest {
     @Test
     fun `When getById is called with a nonexistent ID then null is returned`() = runBlocking {
         // When
-        val result = HardcodedProductRepositoryImpl.getById("nonexistent_id")
+        val result = HardcodedProductRepositoryImpl.getById(ProductId("nonexistent_id"))
 
         // Then
         assertTrue(result.isSuccess)
@@ -43,7 +44,7 @@ class HardcodedProductRepositoryImplTest {
     @Test
     fun `When getById is called with an empty ID then null is returned`() = runBlocking {
         // When
-        val result = HardcodedProductRepositoryImpl.getById("")
+        val result = HardcodedProductRepositoryImpl.getById(ProductId(""))
 
         // Then
         assertTrue(result.isSuccess)
