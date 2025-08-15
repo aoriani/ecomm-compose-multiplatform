@@ -4,7 +4,6 @@ import dev.aoriani.ecomm.domain.models.exceptions.BlankProductIdException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
 
 class ProductIdTest {
 
