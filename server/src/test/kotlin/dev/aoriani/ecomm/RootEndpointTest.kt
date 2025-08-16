@@ -16,7 +16,9 @@ class RootEndpointTest {
             config = MapApplicationConfig(
                 "ecomm.database.url" to "jdbc:sqlite:./data/products.db",
                 "ecomm.database.driver" to "org.sqlite.JDBC",
-                "ecomm.images.base-url" to "http://localhost:8080/static/images" // Added for test configuration
+                "ecomm.images.base-url" to "http://localhost:8080/static/images", // Added for test configuration
+                "ecomm.mcp.server-name" to "mcp-server",
+                "ecomm.mcp.server-version" to "1.0.0",
             )
         }
         application {
