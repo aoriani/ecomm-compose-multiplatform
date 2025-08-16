@@ -41,7 +41,7 @@ class ProductQuery(
      */
     @GraphQLDescription("Retrieve all products available in the catalog")
     suspend fun products(): List<Product> {
-        val result = getAllProducts.invoke(Unit)
+        val result = getAllProducts()
         if (result.isFailure) {
             val exception = result.exceptionOrNull()
             logger.error("Failed to get all products", exception)
@@ -70,8 +70,7 @@ class ProductQuery(
     ): Product {
         val result = getProductById(ProductId(id.value))
         if (result.isFailure) {
-            val exception = result.exceptionOrNull()
-            when (exception) {
+            when (val exception = result.exceptionOrNull()) {
                 is ProductNotFoundException -> throw exception
                 is BlankProductIdException -> throw exception
                 else -> {
