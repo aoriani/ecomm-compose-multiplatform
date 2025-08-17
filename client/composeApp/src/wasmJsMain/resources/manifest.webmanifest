@@ -1,10 +1,22 @@
 {
+  "id": "/",
   "name": "eCommerceApp",
   "short_name": "eCommerce",
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
+  "lang": "en-US",
   "background_color": "#ffffff",
   "theme_color": "#000000",
+  "categories": ["shopping", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Shop",
+      "url": "/",
+      "icons": [{ "src": "icon-192.png", "type": "image/png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     { "src": "favicon.ico", "type": "image/x-icon", "sizes": "16x16 32x32" },
     { "src": "icon-192.png", "type": "image/png", "sizes": "192x192" },

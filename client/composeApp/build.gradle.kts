@@ -208,19 +208,17 @@ compose.desktop {
             packageName = "io.aoriani.ecomm"
             packageVersion = "1.0.0"
 
-            nativeDistributions {
-                macOS {
-                    dockName = "eCommerceApp"
-                    iconFile.set(File("src/desktopMain/icons/AppIcon_mac.icns"))
-                }
+            macOS {
+                dockName = "eCommerceApp"
+                iconFile.set(project.file("src/desktopMain/icons/AppIcon_mac.icns"))
+            }
 
-                windows {
-                    iconFile.set(File("src/desktopMain/icons/AppIcon_windows.ico"))
-                }
+            windows {
+                iconFile.set(project.file("src/desktopMain/icons/AppIcon_windows.ico"))
+            }
 
-                linux {
-                    iconFile.set(File("src/desktopMain/icons/AppIcon_linux.png"))
-                }
+            linux {
+                iconFile.set(project.file("src/desktopMain/icons/AppIcon_linux.png"))
             }
         }
     }
