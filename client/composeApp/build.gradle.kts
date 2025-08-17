@@ -207,6 +207,20 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "io.aoriani.ecomm"
             packageVersion = "1.0.0"
+
+            nativeDistributions {
+                macOS {
+                    iconFile.set(File("src/desktopMain/icons/AppIcon_mac.icns"))
+                }
+
+                windows {
+                    iconFile.set(File("src/desktopMain/icons/AppIcon_windows.ico"))
+                }
+
+                linux {
+                    iconFile.set(File("src/desktopMain/icons/AppIcon_linux.png"))
+                }
+            }
         }
     }
 }
