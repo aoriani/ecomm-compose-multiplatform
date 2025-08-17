@@ -6,6 +6,7 @@ import ch.qos.logback.core.read.ListAppender
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.config.MapApplicationConfig
@@ -15,6 +16,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import org.slf4j.LoggerFactory
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CallLoggingConfigTest {
@@ -44,10 +46,10 @@ class CallLoggingConfigTest {
         }
 
         val response = client.get("/log-test")
+        assertEquals(HttpStatusCode.OK, response.status)
         response.bodyAsText() // ensure body consumed
 
         val messages = appender.list.map { it.formattedMessage }
         assertTrue(messages.any { it.startsWith("Request: GET /log-test") && it.contains("Status: 200") })
     }
 }
-

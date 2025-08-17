@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
     <title>eCommerceApp</title>
     <link type="text/css" rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" sizes="any">
@@ -10,13 +11,17 @@
     <link rel="manifest" href="manifest.webmanifest">
     <script type="application/javascript" src="composeApp.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('cache_service_worker.js').then(function(registration) {
-                console.log('Service Worker registered with scope:', registration.scope);
-            }).catch(function(error) {
-                console.log('Service Worker registration failed:', error);
-            });
-        }
+        window.addEventListener('load', function () {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('cache_service_worker.js')
+                    .then(function (registration) {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(function (error) {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            }
+        });
     </script>
 </head>
 <body>

@@ -30,6 +30,7 @@ class CorsConfigTest {
             headers {
                 append(HttpHeaders.Origin, "http://localhost:8080")
                 append(HttpHeaders.AccessControlRequestMethod, HttpMethod.Get.value)
+                append(HttpHeaders.AccessControlRequestHeaders, HttpHeaders.ContentType)
             }
         }
 
