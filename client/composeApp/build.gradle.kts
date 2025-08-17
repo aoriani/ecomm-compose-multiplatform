@@ -210,6 +210,7 @@ compose.desktop {
 
             nativeDistributions {
                 macOS {
+                    dockName = "eCommerceApp"
                     iconFile.set(File("src/desktopMain/icons/AppIcon_mac.icns"))
                 }
 
