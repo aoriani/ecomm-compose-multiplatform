@@ -41,4 +41,3 @@ class CompressionConfigTest {
         assert(body.length < 2000)
     }
 }
-
