@@ -10,7 +10,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 class DatabaseConfigTest {
 
     @Test
-    fun `database is configured with serializable isolation level`() = testApplication {
+    fun `When database is configured then transaction isolation level is serializable`() = testApplication {
         environment {
             config = MapApplicationConfig(
                 "ecomm.database.url" to "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
