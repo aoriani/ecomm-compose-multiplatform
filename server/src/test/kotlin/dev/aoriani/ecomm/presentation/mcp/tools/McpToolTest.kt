@@ -12,7 +12,9 @@ import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.test.assertFailsWith
 
 class McpToolTest {
     @Serializable
@@ -20,6 +22,9 @@ class McpToolTest {
 
     @Serializable
     class TestOutput(private val result: Boolean)
+
+    @Serializable
+    data class OptionalInput(val maybe: String? = null)
 
     @Test
     fun `When addTool is called with tool having input and output then it registers with server`() {
@@ -111,6 +116,21 @@ class McpToolTest {
         assertTrue(schema.properties.containsKey("value"))
         assertNotNull(schema.required)
         assertTrue(schema.required!!.contains("name"))
+    }
+
+    @Test
+    fun `When toToolSchema is called for primitive type then it throws`() {
+        assertFailsWith<IllegalArgumentException>(message = "schema does not contain properties") {
+            String::class.toToolSchema()
+        }
+    }
+
+    @Test
+    fun `When class has only optional fields then required is null`() {
+        val schema = OptionalInput::class.toToolSchema()
+        assertNotNull(schema.properties)
+        assertTrue(schema.properties.containsKey("maybe"))
+        assertNull(schema.required)
     }
 
     @Test
