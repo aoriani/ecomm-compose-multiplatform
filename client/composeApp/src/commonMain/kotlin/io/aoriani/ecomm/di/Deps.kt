@@ -34,7 +34,7 @@ val appModule = module {
     includes(sqlCommonModule)
     singleOf(::KtorClient)
     single(named(BACKEND_BASE_URL)) { "https://api.aoriani.dev/graphql" }
-    single { ApolloClient(get(named(BACKEND_BASE_URL)), get()) }
+    single { ApolloClient(get(qualifier = named(BACKEND_BASE_URL)), ktorClient = get()) }
     singleOf(::GraphQlProductDataSource) bind ProductDataSource::class
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
     singleOf(::CartRepositoryImpl) bind CartRepository::class
