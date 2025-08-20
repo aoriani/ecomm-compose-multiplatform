@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.toRoute
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
+import io.aoriani.ecomm.domain.AddToCartUseCase
 import io.aoriani.ecomm.ui.navigation.Routes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,9 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class ProductDetailsViewModel(
-    private val productRepository: ProductRepository, private val savedStateHandle: SavedStateHandle
+    private val productRepository: ProductRepository,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val route: Routes.ProductDetails = savedStateHandle.toRoute()
@@ -58,13 +61,15 @@ class ProductDetailsViewModel(
         }
     }
 
-
     companion object {
-        class Factory(private val productRepository: ProductRepository) :
+        class Factory(
+            private val productRepository: ProductRepository,
+            private val addToCartUseCase: AddToCartUseCase
+        ) :
             ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
                 @Suppress("UNCHECKED_CAST") return ProductDetailsViewModel(
-                    productRepository, extras.createSavedStateHandle()
+                    productRepository, addToCartUseCase, extras.createSavedStateHandle()
                 ) as T
             }
         }
