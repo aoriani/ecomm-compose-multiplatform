@@ -8,7 +8,7 @@
   "display_override": ["standalone", "fullscreen"],
   "lang": "en-US",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#6200EE",
   "categories": ["shopping", "productivity"],
   "shortcuts": [
     {
