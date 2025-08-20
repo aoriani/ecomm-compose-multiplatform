@@ -14,7 +14,8 @@ internal fun NavGraphBuilder.productListScreen() {
     composable<Routes.ProductList> {
         val viewModel: ProductListViewModel = viewModel(
             factory = ProductListViewModel.Companion.Factory(
-                koinInject()
+                productRepository = koinInject(),
+                addToCartUseCase = koinInject()
             )
         )
         val state by viewModel.state.collectAsStateWithLifecycle()

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import co.touchlab.kermit.Logger
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
+import io.aoriani.ecomm.domain.AddToCartUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ private const val LOGTAG = "ProductListViewModel"
 
 class ProductListViewModel(
     private val productRepository: ProductRepository,
+    private val addToCartUseCase: AddToCartUseCase,
     private val logger: Logger = Logger,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
@@ -44,14 +46,17 @@ class ProductListViewModel(
     }
 
     companion object {
-        class Factory(private val productRepository: ProductRepository) :
+        class Factory(
+            private val productRepository: ProductRepository,
+            private val addToCartUseCase: AddToCartUseCase,
+        ) :
             ViewModelProvider.Factory {
             override fun <T : ViewModel> create(
                 modelClass: KClass<T>,
                 extras: CreationExtras
             ): T {
                 @Suppress("UNCHECKED_CAST")
-                return ProductListViewModel(productRepository) as T
+                return ProductListViewModel(productRepository, addToCartUseCase) as T
             }
         }
     }

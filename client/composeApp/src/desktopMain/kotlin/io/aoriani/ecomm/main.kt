@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import ecommerceapp.composeapp.generated.resources.Res
+import ecommerceapp.composeapp.generated.resources.appIcon
 import io.aoriani.ecomm.ui.window.AboutAppDialog
 import io.aoriani.ecomm.ui.window.DesktopMenuBar
 import org.jetbrains.compose.resources.painterResource
