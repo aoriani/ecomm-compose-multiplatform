@@ -38,7 +38,7 @@ class AddToCartUseCaseTest {
     fun `When use case is invoked then product should be added to cart repository`() = runTest {
         // Given
         val fakeCartRepository = FakeCartRepository()
-        val addToCartUseCase = AddToCartUseCase(fakeCartRepository)
+        val addToCartUseCase = AddToCartUseCaseImpl(fakeCartRepository)
         val productToAdd = object : ProductBasic {
             override val id: ProductBasic.Id = ProductBasic.Id("1")
             override val name: String = "Test Product"
