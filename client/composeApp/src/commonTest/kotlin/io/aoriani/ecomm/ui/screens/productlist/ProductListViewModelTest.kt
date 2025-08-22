@@ -7,6 +7,7 @@ import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.data.repositories.cart.CartRepository
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import io.aoriani.ecomm.domain.AddToCartUseCase
+import io.aoriani.ecomm.domain.AddToCartUseCaseImpl
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +33,7 @@ class ProductListViewModelTest {
         val testDispatcher = StandardTestDispatcher(testScheduler)
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
-            addToCartUseCase = AddToCartUseCase(FakeCartRepository()),
+            addToCartUseCase = {},
             dispatcher = testDispatcher
         )
         val state = viewModel.state.value
@@ -67,7 +68,7 @@ class ProductListViewModelTest {
         // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
-            addToCartUseCase = AddToCartUseCase(FakeCartRepository()),
+            addToCartUseCase = { } ,
             dispatcher = testDispatcher
         )
 
@@ -97,7 +98,7 @@ class ProductListViewModelTest {
         // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
-            addToCartUseCase = AddToCartUseCase(FakeCartRepository()),
+            addToCartUseCase = { },
             dispatcher = testDispatcher
         )
 
@@ -133,7 +134,7 @@ class ProductListViewModelTest {
         // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
-            addToCartUseCase = AddToCartUseCase(FakeCartRepository()),
+            addToCartUseCase = { } ,
             dispatcher = testDispatcher
         )
 
@@ -165,29 +166,5 @@ private class FakeProductRepository(
 
     override suspend fun getProduct(id: String): Result<Product?> {
         return getProductLambda(id)
-    }
-}
-
-private class FakeCartRepository(): CartRepository {
-    override val state: StateFlow<CartRepository.State>
-        get() = TODO("Not yet implemented")
-
-    override suspend fun add(product: ProductBasic) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun update(
-        productId: ProductBasic.Id,
-        quantity: Int
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun remove(productId: ProductBasic.Id) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun clear() {
-        TODO("Not yet implemented")
     }
 }

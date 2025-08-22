@@ -12,6 +12,7 @@ import io.aoriani.ecomm.data.repositories.products.ProductRepositoryImpl
 import io.aoriani.ecomm.data.repositories.products.datasources.ProductDataSource
 import io.aoriani.ecomm.data.repositories.products.datasources.graphql.GraphQlProductDataSource
 import io.aoriani.ecomm.domain.AddToCartUseCase
+import io.aoriani.ecomm.domain.AddToCartUseCaseImpl
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -38,5 +39,5 @@ val appModule = module {
     singleOf(::GraphQlProductDataSource) bind ProductDataSource::class
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
     singleOf(::CartRepositoryImpl) bind CartRepository::class
-    factoryOf(::AddToCartUseCase)
+    factoryOf(::AddToCartUseCaseImpl) bind AddToCartUseCase::class
 }
