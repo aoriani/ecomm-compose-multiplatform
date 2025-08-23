@@ -13,13 +13,16 @@
     <script>
         window.addEventListener('load', function () {
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('cache_service_worker.js')
-                    .then(function (registration) {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                    })
-                    .catch(function (error) {
-                        console.log('Service Worker registration failed:', error);
-                    });
+                // Do not register the service worker in development
+                if (window.location.hostname !== 'localhost') {
+                    navigator.serviceWorker.register('cache_service_worker.js')
+                        .then(function (registration) {
+                            console.log('Service Worker registered with scope:', registration.scope);
+                        })
+                        .catch(function (error) {
+                            console.log('Service Worker registration failed:', error);
+                        });
+                }
             }
         });
     </script>
