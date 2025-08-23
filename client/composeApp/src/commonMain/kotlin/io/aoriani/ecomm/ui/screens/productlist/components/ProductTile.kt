@@ -58,23 +58,24 @@ fun ProductTile(product: ProductPreview, modifier: Modifier = Modifier, onClick:
 @Composable
 fun ProductImage(product: ProductPreview) {
     val isPreview = LocalInspectionMode.current
+    val contentScale = ContentScale.Crop
+    val modifier = Modifier
+        .size(100.dp)
+        .clip(MaterialShapes.PixelCircle.toShape())
+
     if (!isPreview) {
         AsyncImage(
             model = product.thumbnailUrl,
-            contentScale = ContentScale.Crop,
+            contentScale = contentScale,
             contentDescription = product.name,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(MaterialShapes.PixelCircle.toShape())
+            modifier = modifier
         )
     } else {
         Image(
             painter = painterResource(Res.drawable.compose_multiplatform),
-            contentScale = ContentScale.Crop,
+            contentScale = contentScale,
             contentDescription = product.name,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(MaterialShapes.PixelCircle.toShape())
+            modifier = modifier
         )
     }
 }
@@ -91,7 +92,6 @@ fun ProductPrice(price: DollarAmount) {
         )
     }
 }
-
 
 @Preview(name = "Product Tile", showBackground = true)
 @Composable

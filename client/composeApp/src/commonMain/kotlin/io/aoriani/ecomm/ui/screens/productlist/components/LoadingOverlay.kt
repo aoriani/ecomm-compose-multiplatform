@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package io.aoriani.ecomm.ui.screens.productlist.components
 
 import androidx.compose.foundation.background
@@ -18,7 +20,6 @@ import io.aoriani.ecomm.ui.screens.productlist.productlist
 import io.aoriani.ecomm.ui.test.TestTags
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingOverlay(
     isLoading: Boolean,
@@ -39,7 +40,6 @@ fun LoadingOverlay(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview(showBackground = true)
 @Composable
 fun LoadingOverlayLoadingPreview() {
