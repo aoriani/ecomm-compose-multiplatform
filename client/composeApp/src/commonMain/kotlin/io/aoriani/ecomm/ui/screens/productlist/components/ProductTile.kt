@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes
@@ -33,7 +31,6 @@ import io.aoriani.ecomm.data.model.ProductPreview
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductTile(product: ProductPreview, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Card(modifier = modifier.padding(8.dp), onClick = onClick) {
@@ -47,7 +44,7 @@ fun ProductTile(product: ProductPreview, modifier: Modifier = Modifier, onClick:
             ProductImage(product = product)
             Text(
                 text = product.name,
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
 
