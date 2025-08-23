@@ -1,13 +1,15 @@
 package io.aoriani.ecomm.ui.screens.cart
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.cart_title
@@ -15,6 +17,7 @@ import ecommerceapp.composeapp.generated.resources.content_description_back
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(navigateBack: () -> Unit = {}) {
     Scaffold(
@@ -36,10 +39,11 @@ fun CartScreen(navigateBack: () -> Unit = {}) {
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview(name = "Cart Screen", showBackground = true)
 @Composable
 fun CartScreenPreview() {
-    MaterialTheme {
+    MaterialExpressiveTheme {
         CartScreen()
     }
 }
