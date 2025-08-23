@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +44,7 @@ fun ProductTile(product: ProductPreview, modifier: Modifier = Modifier, onClick:
             ProductImage(product = product)
             Text(
                 text = product.name,
-                style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
 
@@ -86,7 +86,7 @@ fun ProductPrice(price: DollarAmount) {
     ) {
         Text(
             text = "$$price", // Add currency symbol
-            style = MaterialTheme.typography.body2 // Smaller price
+            style = MaterialTheme.typography.bodyMedium // Smaller price
         )
     }
 }
