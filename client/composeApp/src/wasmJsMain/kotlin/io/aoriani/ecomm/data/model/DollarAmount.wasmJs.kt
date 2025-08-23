@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  *
  * @property delegate The underlying `Big` instance.
  */
+@OptIn(ExperimentalWasmJsInterop::class)
 @JsModule("big.js")
 private external class Big {
     constructor(value: String)

@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +18,7 @@ import io.aoriani.ecomm.ui.screens.productlist.productlist
 import io.aoriani.ecomm.ui.test.TestTags
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingOverlay(
     isLoading: Boolean,
@@ -32,7 +33,7 @@ fun LoadingOverlay(
                     .testTag(TestTags.screens.productlist.loadingOverlay),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                LoadingIndicator(modifier = Modifier.fillMaxSize(0.5f))
             }
         }
     }

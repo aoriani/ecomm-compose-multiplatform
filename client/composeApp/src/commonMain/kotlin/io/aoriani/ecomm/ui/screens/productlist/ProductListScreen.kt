@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,9 +45,9 @@ fun ProductListScreen(
                 TopAppBar(
                     title = { Text(stringResource(Res.string.product_list_title)) },
                     actions = {
-                        Button(onClick = navigateToCart) {
+                        IconButton(onClick = navigateToCart) {
                             Icon(
-                                Icons.Default.ShoppingCart,
+                                Icons.Filled.ShoppingCart,
                                 contentDescription = stringResource(Res.string.content_description_cart)
                             )
                         }
