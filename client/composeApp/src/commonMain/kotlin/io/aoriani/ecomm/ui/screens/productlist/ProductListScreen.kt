@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -54,11 +56,15 @@ fun ProductListScreen(
                 TopAppBar(
                     title = { Text(stringResource(Res.string.product_list_title)) },
                     actions = {
-                        IconButton(onClick = navigateToCart) {
-                            Icon(
-                                Icons.Filled.ShoppingCart,
-                                contentDescription = stringResource(Res.string.content_description_cart)
-                            )
+                        BadgedBox(badge = {
+                            Badge { Text(0.toString()) }
+                        }) {
+                            IconButton(onClick = navigateToCart) {
+                                Icon(
+                                    Icons.Filled.ShoppingCart,
+                                    contentDescription = stringResource(Res.string.content_description_cart)
+                                )
+                            }
                         }
                     },
                 )
@@ -99,7 +105,7 @@ fun ProductListScreen(
                                 actionLabel = actionLabel
                             )
 
-                            when(result) {
+                            when (result) {
                                 SnackbarResult.Dismissed -> Unit
                                 SnackbarResult.ActionPerformed -> {
                                     state.reload()
