@@ -109,6 +109,7 @@ kotlin {
             implementation(libs.kermit.main)
             implementation(libs.sqldelight.coroutines.extension)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.kotlinx.coroutines.core)

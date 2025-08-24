@@ -8,16 +8,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import io.aoriani.ecomm.ui.navigation.Routes
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 context(navController: NavHostController)
 internal fun NavGraphBuilder.productDetailsScreen() {
     composable<Routes.ProductDetails> { backStackEntry ->
-        val viewModel: ProductDetailsViewModel = viewModel(
-            factory = ProductDetailsViewModel.Companion.Factory(
-                productRepository = koinInject(),
-                addToCartUseCase = koinInject()
-            )
-        )
+        val viewModel: ProductDetailsViewModel = koinViewModel()
         val state: ProductDetailsUiState by viewModel.state.collectAsStateWithLifecycle()
         ProductDetailsScreen(state, navigateBack = { navController.popBackStack() })
     }
