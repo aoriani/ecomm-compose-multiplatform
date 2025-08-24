@@ -57,7 +57,9 @@ fun ProductListScreen(
                     title = { Text(stringResource(Res.string.product_list_title)) },
                     actions = {
                         BadgedBox(badge = {
-                            Badge { Text(0.toString()) }
+                            if (state.cartItemCount > 0) {
+                                Badge { Text(state.cartItemCount.toString()) }
+                            }
                         }) {
                             IconButton(onClick = navigateToCart) {
                                 Icon(
@@ -114,7 +116,7 @@ fun ProductListScreen(
                         }
                     }
 
-                    ProductListUiState.Loading -> Unit
+                    is ProductListUiState.Loading -> Unit
                 }
             }
         }
@@ -126,6 +128,6 @@ fun ProductListScreen(
 @Composable
 fun ProductListScreenPreview() {
     MaterialExpressiveTheme {
-        ProductListScreen(state = ProductListUiState.Loading)
+        ProductListScreen(state = ProductListUiState.Loading(cartItemCount = 0))
     }
 }
