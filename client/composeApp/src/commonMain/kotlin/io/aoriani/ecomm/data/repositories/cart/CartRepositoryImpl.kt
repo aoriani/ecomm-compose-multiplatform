@@ -44,7 +44,7 @@ class CartRepositoryImpl : CartRepository {
         }
     }
 
-    override suspend fun update(productId: ProductBasic.Id, quantity: Int) {
+    override suspend fun updateQuantity(productId: ProductBasic.Id, quantity: Int) {
         if (productId in items) {
             if (quantity == 0) {
                 items.remove(productId)
