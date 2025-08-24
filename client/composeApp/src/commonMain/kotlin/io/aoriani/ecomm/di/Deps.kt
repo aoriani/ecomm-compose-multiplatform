@@ -13,9 +13,13 @@ import io.aoriani.ecomm.data.repositories.products.datasources.ProductDataSource
 import io.aoriani.ecomm.data.repositories.products.datasources.graphql.GraphQlProductDataSource
 import io.aoriani.ecomm.domain.AddToCartUseCase
 import io.aoriani.ecomm.domain.AddToCartUseCaseImpl
+import io.aoriani.ecomm.ui.screens.productdetails.ProductDetailsViewModel
+import io.aoriani.ecomm.ui.screens.productlist.ProductListViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -40,4 +44,12 @@ val appModule = module {
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
     singleOf(::CartRepositoryImpl) bind CartRepository::class
     factoryOf(::AddToCartUseCaseImpl) bind AddToCartUseCase::class
+    viewModel { ProductListViewModel(productRepository = get(), addToCartUseCase = get()) }
+    viewModel {
+        ProductDetailsViewModel(
+            productRepository = get(),
+            addToCartUseCase = get(),
+            savedStateHandle = get()
+        )
+    }
 }

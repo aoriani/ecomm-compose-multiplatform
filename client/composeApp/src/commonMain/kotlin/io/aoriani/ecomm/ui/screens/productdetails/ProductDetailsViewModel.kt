@@ -60,18 +60,4 @@ class ProductDetailsViewModel(
                 }
         }
     }
-
-    companion object {
-        class Factory(
-            private val productRepository: ProductRepository,
-            private val addToCartUseCase: AddToCartUseCase
-        ) :
-            ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
-                @Suppress("UNCHECKED_CAST") return ProductDetailsViewModel(
-                    productRepository, addToCartUseCase, extras.createSavedStateHandle()
-                ) as T
-            }
-        }
-    }
 }
