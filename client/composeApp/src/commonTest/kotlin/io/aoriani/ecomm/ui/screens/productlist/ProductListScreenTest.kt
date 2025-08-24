@@ -23,7 +23,7 @@ class ProductListScreenTest : UiTest() {
     fun `When state is loading then loading overlay is displayed`() = runComposeUiTest {
 
         setContentWithContext {
-            ProductListScreen(ProductListUiState.Loading)
+            ProductListScreen(ProductListUiState.Loading())
         }
 
         onNodeWithTag(TestTags.screens.productlist.loadingOverlay).assertIsDisplayed()
@@ -36,7 +36,7 @@ class ProductListScreenTest : UiTest() {
             var wasCartClicked = false
             setContentWithContext {
                 ProductListScreen(
-                    ProductListUiState.Loading,
+                    ProductListUiState.Loading(),
                     navigateToCart = { wasCartClicked = true })
                 cartContentDescription = stringResource(Res.string.content_description_cart)
             }
