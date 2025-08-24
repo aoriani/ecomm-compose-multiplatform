@@ -4,6 +4,7 @@ import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ZERO
 import kotlinx.coroutines.test.runTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -25,9 +26,15 @@ class CartRepositoryImplTest {
         override val thumbnailUrl: String? = null
     }
 
+    private lateinit var cartRepository: CartRepositoryImpl
+
+    @BeforeTest
+    fun setUp() {
+        cartRepository = CartRepositoryImpl()
+    }
+
     @Test
     fun `When initialized cart is empty`() {
-        val cartRepository = CartRepositoryImpl()
         assertTrue(cartRepository.state.value.items.isEmpty())
         assertEquals(DollarAmount.ZERO, cartRepository.state.value.subTotal)
         assertEquals(0, cartRepository.state.value.count)
@@ -35,7 +42,6 @@ class CartRepositoryImplTest {
 
     @Test
     fun `When adding a product it is added to the cart`() = runTest {
-        val cartRepository = CartRepositoryImpl()
         cartRepository.add(fakeProduct1)
         val cartState = cartRepository.state.value
         assertEquals(1, cartState.items.size)
@@ -51,7 +57,6 @@ class CartRepositoryImplTest {
 
     @Test
     fun `When adding the same product twice there is a single entry in the cart`() = runTest {
-        val cartRepository = CartRepositoryImpl()
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct1)
 
@@ -69,7 +74,6 @@ class CartRepositoryImplTest {
 
     @Test
     fun `When adding multiple products they are added to the cart`() = runTest {
-        val cartRepository = CartRepositoryImpl()
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct2)
 
@@ -95,7 +99,6 @@ class CartRepositoryImplTest {
 
     @Test
     fun `When updating the quantity of a product it is updated in the cart`() = runTest {
-        val cartRepository = CartRepositoryImpl()
         cartRepository.add(fakeProduct1)
 
         var cartState = cartRepository.state.value
@@ -124,8 +127,7 @@ class CartRepositoryImplTest {
     }
 
     @Test
-    fun `When clearing the cart it becomes empty`() = runTest {
-        val cartRepository = CartRepositoryImpl()
+    fun `When removing a product it is removed from the cart`() = runTest {
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct2)
 
@@ -148,8 +150,7 @@ class CartRepositoryImplTest {
     }
 
     @Test
-    fun `When removing a product it is removed from the cart`() = runTest {
-        val cartRepository = CartRepositoryImpl()
+    fun `When clearing the cart it becomes empty`() = runTest {
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct2)
 
