@@ -4,4 +4,6 @@
     <string name="cart_title">Cart</string>
     <string name="content_description_back">back</string>
     <string name="content_description_cart">cart</string>
+    <string name="product_list_snackbar_generic_error">Something went wrong</string>
+    <string name="product_list_snackbar_action_retry">Retry</string>
 </resources>
