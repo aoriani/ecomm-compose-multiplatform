@@ -8,6 +8,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -169,6 +170,52 @@ class CartRepositoryImplTest {
             cartRepository.state.value.items.isEmpty(),
             "Cart items should be empty after clear"
         )
+    }
+
+    @Test
+    fun `When updating the quantity of a product to 0 it is removed from the cart`() = runTest {
+        cartRepository.add(fakeProduct1)
+        cartRepository.add(fakeProduct2)
+        assertCartState(
+            expectedSize = 2,
+            expectedCount = 2,
+            expectedSubTotal = DollarAmount("30.00")
+        )
+
+        cartRepository.updateQuantity(fakeProduct1.id, 0)
+        assertCartState(
+            expectedSize = 1,
+            expectedCount = 1,
+            expectedSubTotal = DollarAmount("20.00")
+        )
+        val firstCartItem = cartRepository.state.value.items.first()
+        assertCartItem(
+            cartItem = firstCartItem,
+            expectedProduct = fakeProduct2,
+            expectedQuantity = 1
+        )
+    }
+
+    @Test
+    fun `When updating the quantity of a product to a negative value an IllegalArgumentException is thrown`() =
+        runTest {
+            assertFailsWith<IllegalArgumentException> {
+                cartRepository.updateQuantity(fakeProduct1.id, -1)
+            }
+        }
+
+    @Test
+    fun `When updating the quantity of a non-existent product cart an IllegalArgumentException is thrown`() = runTest {
+        assertFailsWith<IllegalArgumentException> {
+            cartRepository.updateQuantity(fakeProduct1.id, 1)
+        }
+    }
+
+    @Test
+    fun `When removing a non-existent product cart an IllegalArgumentException is thrown`() = runTest {
+        assertFailsWith<IllegalArgumentException> {
+            cartRepository.remove(fakeProduct1.id)
+        }
     }
 
     private fun assertCartState(
