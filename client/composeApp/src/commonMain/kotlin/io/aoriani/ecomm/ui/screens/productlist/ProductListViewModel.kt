@@ -1,9 +1,7 @@
 package io.aoriani.ecomm.ui.screens.productlist
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import co.touchlab.kermit.Logger
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import io.aoriani.ecomm.domain.AddToCartUseCase
@@ -13,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.reflect.KClass
 
 private const val LOGTAG = "ProductListViewModel"
 
