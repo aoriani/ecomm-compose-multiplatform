@@ -22,7 +22,7 @@ class ProductListViewModel(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
     val state: StateFlow<ProductListUiState>
-        field = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading)
+        field = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading())
 
     init {
         fetchProducts()
@@ -30,18 +30,19 @@ class ProductListViewModel(
 
     fun fetchProducts() {
         viewModelScope.launch(dispatcher) {
-            state.update { ProductListUiState.Loading }
+            state.update { ProductListUiState.Loading() }
             productRepository.fetchProducts()
                 .onSuccess { productPreviews ->
                     logger.i(tag = LOGTAG) { "Products fetched: $productPreviews" }
                     state.update { ProductListUiState.Success(
                         products = productPreviews,
+                        cartItemCount = 0,
                         _addToCart = ::addToCart
                     ) }
                 }
                 .onFailure {
                     logger.e(throwable = it, tag = LOGTAG) { "Error fetching products" }
-                    state.update { ProductListUiState.Error(_reload = ::fetchProducts) }
+                    state.update { ProductListUiState.Error(cartItemCount = 0, _reload = ::fetchProducts) }
                 }
         }
     }
