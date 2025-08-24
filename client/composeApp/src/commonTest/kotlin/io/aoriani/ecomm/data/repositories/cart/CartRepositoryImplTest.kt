@@ -1,5 +1,6 @@
 package io.aoriani.ecomm.data.repositories.cart
 
+import io.aoriani.ecomm.data.model.CartItem
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ZERO
@@ -35,24 +36,24 @@ class CartRepositoryImplTest {
 
     @Test
     fun `When initialized cart is empty`() {
-        assertTrue(cartRepository.state.value.items.isEmpty())
-        assertEquals(DollarAmount.ZERO, cartRepository.state.value.subTotal)
-        assertEquals(0, cartRepository.state.value.count)
+        assertCartState(expectedSize = 0, expectedCount = 0, expectedSubTotal = DollarAmount.ZERO)
     }
 
     @Test
     fun `When adding a product it is added to the cart`() = runTest {
         cartRepository.add(fakeProduct1)
-        val cartState = cartRepository.state.value
-        assertEquals(1, cartState.items.size)
-        assertEquals(1, cartState.count)
-        assertEquals(DollarAmount("10.00"), cartState.subTotal)
+        assertCartState(
+            expectedSize = 1,
+            expectedCount = 1,
+            expectedSubTotal = DollarAmount("10.00")
+        )
 
-        val firstCartItem = cartState.items.first()
-        assertEquals(1, firstCartItem.quantity)
-        assertEquals(fakeProduct1.id, firstCartItem.id)
-        assertEquals(fakeProduct1.name, firstCartItem.name)
-        assertEquals(fakeProduct1.price, firstCartItem.totalPrice)
+        val firstCartItem = cartRepository.state.value.items.first()
+        assertCartItem(
+            cartItem = firstCartItem,
+            expectedProduct = fakeProduct1,
+            expectedQuantity = 1
+        )
     }
 
     @Test
@@ -165,6 +166,41 @@ class CartRepositoryImplTest {
         assertEquals(0, cartState.items.size)
         assertEquals(0, cartState.count)
         assertEquals(DollarAmount.ZERO, cartState.subTotal)
+    }
 
+    private fun assertCartState(
+        expectedSize: Int,
+        expectedCount: Int,
+        expectedSubTotal: DollarAmount,
+        cartState: CartRepository.State = cartRepository.state.value // Optional default
+    ) {
+        assertEquals(expectedSize, cartState.items.size, "Cart items size mismatch")
+        assertEquals(expectedCount, cartState.count, "Cart count mismatch")
+        assertEquals(expectedSubTotal, cartState.subTotal, "Cart subtotal mismatch")
+    }
+
+    private fun assertCartItem(
+        cartItem: CartItem?, // Make it nullable and assertNotNull inside
+        expectedProduct: ProductBasic,
+        expectedQuantity: Int
+    ) {
+        assertNotNull(cartItem, "Cart item for product ${expectedProduct.id.value} should not be null")
+        cartItem.run { // Safe call after assertNotNull
+            assertEquals(expected = expectedQuantity,
+                actual = quantity,
+                message = "Item quantity mismatch"
+            )
+            assertEquals(expected = expectedProduct.id, actual = id, message = "Item ID mismatch")
+            assertEquals(
+                expected = expectedProduct.name,
+                actual = name,
+                message = "Item name mismatch"
+            )
+            assertEquals(
+                expected = expectedProduct.price * expectedQuantity,
+                actual = totalPrice,
+                message = "Item total price mismatch"
+            )
+        }
     }
 }
