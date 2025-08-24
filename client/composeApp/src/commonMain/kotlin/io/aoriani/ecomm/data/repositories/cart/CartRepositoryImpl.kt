@@ -45,19 +45,18 @@ class CartRepositoryImpl : CartRepository {
     }
 
     override suspend fun updateQuantity(productId: ProductBasic.Id, quantity: Int) {
-        if (productId in items) {
-            if (quantity == 0) {
-                items.remove(productId)
-            } else {
-                items[productId] = items.getValue(productId).copy(quantity = quantity)
-            }
+        require(quantity >= 0) { "Quantity must be non-negative" }
+        require(productId in items) { "Product with ID $productId not found in the cart" }
+        if (quantity == 0) {
+            items.remove(productId)
+        } else {
+            items[productId] = items.getValue(productId).copy(quantity = quantity)
         }
     }
 
     override suspend fun remove(productId: ProductBasic.Id) {
-        if (productId in items) {
-            items.remove(productId)
-        }
+        require(productId in items) { "Product with ID $productId not found in the cart" }
+        items.remove(productId)
     }
 
     override suspend fun clear() {
