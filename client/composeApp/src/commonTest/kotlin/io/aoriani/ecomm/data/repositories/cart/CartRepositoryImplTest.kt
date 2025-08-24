@@ -61,16 +61,18 @@ class CartRepositoryImplTest {
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct1)
 
-        val cartState = cartRepository.state.value
-        assertEquals(1, cartState.items.size)
-        assertEquals(2, cartState.count)
-        assertEquals(DollarAmount("20.00"), cartState.subTotal)
+        assertCartState(
+            expectedSize = 1,
+            expectedCount = 2,
+            expectedSubTotal = DollarAmount("20.00")
+        )
 
-        val firstCartItem = cartState.items.first()
-        assertEquals(2, firstCartItem.quantity)
-        assertEquals(fakeProduct1.id, firstCartItem.id)
-        assertEquals(fakeProduct1.name, firstCartItem.name)
-        assertEquals(fakeProduct1.price * 2, firstCartItem.totalPrice)
+        val firstCartItem = cartRepository.state.value.items.first()
+        assertCartItem(
+            cartItem = firstCartItem,
+            expectedProduct = fakeProduct1,
+            expectedQuantity = 2
+        )
     }
 
     @Test
@@ -78,53 +80,54 @@ class CartRepositoryImplTest {
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct2)
 
-        val cartState = cartRepository.state.value
-        assertEquals(2, cartState.items.size)
-        assertEquals(2, cartState.count)
-        assertEquals(DollarAmount("30.00"), cartState.subTotal)
+        assertCartState(
+            expectedSize = 2,
+            expectedCount = 2,
+            expectedSubTotal = DollarAmount("30.00")
+        )
 
-        val product1InCart = cartState.items.find { it.id == fakeProduct1.id }
-        assertNotNull(product1InCart)
-        assertEquals(1, product1InCart.quantity)
-        assertEquals(fakeProduct1.id, product1InCart.id)
-        assertEquals(fakeProduct1.name, product1InCart.name)
-        assertEquals(fakeProduct1.price, product1InCart.totalPrice)
+        val product1InCart = cartRepository.state.value.items.find { it.id == fakeProduct1.id }
+        assertCartItem(
+            cartItem = product1InCart,
+            expectedProduct = fakeProduct1,
+            expectedQuantity = 1
+        )
 
-        val product2InCart = cartState.items.find { it.id == fakeProduct2.id }
-        assertNotNull(product2InCart)
-        assertEquals(1, product2InCart.quantity)
-        assertEquals(fakeProduct2.id, product2InCart.id)
-        assertEquals(fakeProduct2.name, product2InCart.name)
-        assertEquals(fakeProduct2.price, product2InCart.totalPrice)
+        val product2InCart = cartRepository.state.value.items.find { it.id == fakeProduct2.id }
+        assertCartItem(
+            cartItem = product2InCart,
+            expectedProduct = fakeProduct2,
+            expectedQuantity = 1
+        )
     }
 
     @Test
     fun `When updating the quantity of a product it is updated in the cart`() = runTest {
         cartRepository.add(fakeProduct1)
 
-        var cartState = cartRepository.state.value
-        assertEquals(1, cartState.items.size)
-        assertEquals(1, cartState.count)
-        assertEquals(DollarAmount("10.00"), cartState.subTotal)
-
-        var firstCartItem = cartState.items.first()
-        assertEquals(1, firstCartItem.quantity)
-        assertEquals(fakeProduct1.id, firstCartItem.id)
-        assertEquals(fakeProduct1.name, firstCartItem.name)
-        assertEquals(fakeProduct1.price, firstCartItem.totalPrice)
+        assertCartState(
+            expectedSize = 1,
+            expectedCount = 1,
+            expectedSubTotal = DollarAmount("10.00")
+        )
+        assertCartItem(
+            cartItem = cartRepository.state.value.items.first(),
+            expectedProduct = fakeProduct1,
+            expectedQuantity = 1
+        )
 
         cartRepository.updateQuantity(productId = fakeProduct1.id, quantity = 3)
 
-        cartState = cartRepository.state.value
-        assertEquals(1, cartState.items.size)
-        assertEquals(3, cartState.count)
-        assertEquals(DollarAmount("30.00"), cartState.subTotal)
-
-        firstCartItem = cartState.items.first()
-        assertEquals(3, firstCartItem.quantity)
-        assertEquals(fakeProduct1.id, firstCartItem.id)
-        assertEquals(fakeProduct1.name, firstCartItem.name)
-        assertEquals(fakeProduct1.price * 3, firstCartItem.totalPrice)
+        assertCartState(
+            expectedSize = 1,
+            expectedCount = 3,
+            expectedSubTotal = DollarAmount("30.00")
+        )
+        assertCartItem(
+            cartItem = cartRepository.state.value.items.first(),
+            expectedProduct = fakeProduct1,
+            expectedQuantity = 3
+        )
     }
 
     @Test
@@ -132,22 +135,26 @@ class CartRepositoryImplTest {
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct2)
 
-        var cartState = cartRepository.state.value
-        assertEquals(2, cartState.items.size)
-        assertEquals(2, cartState.count)
-        assertEquals(DollarAmount("30.00"), cartState.subTotal)
+        assertCartState(
+            expectedSize = 2,
+            expectedCount = 2,
+            expectedSubTotal = DollarAmount("30.00")
+        )
 
         cartRepository.remove(fakeProduct1.id)
 
-        cartState = cartRepository.state.value
-        assertEquals(1, cartState.items.size)
-        assertEquals(1, cartState.count)
-        assertEquals(DollarAmount("20.00"), cartState.subTotal)
+        assertCartState(
+            expectedSize = 1,
+            expectedCount = 1,
+            expectedSubTotal = DollarAmount("20.00")
+        )
 
-        val firstCartItem = cartState.items.first()
-        assertEquals(1, firstCartItem.quantity)
-        assertEquals(fakeProduct2.id, firstCartItem.id)
-        assertEquals(fakeProduct2.name, firstCartItem.name)
+        val firstCartItem = cartRepository.state.value.items.first()
+        assertCartItem(
+            cartItem = firstCartItem,
+            expectedProduct = fakeProduct2, // Product 1 was removed
+            expectedQuantity = 1
+        )
     }
 
     @Test
@@ -155,17 +162,20 @@ class CartRepositoryImplTest {
         cartRepository.add(fakeProduct1)
         cartRepository.add(fakeProduct2)
 
-        var cartState = cartRepository.state.value
-        assertEquals(2, cartState.items.size)
-        assertEquals(2, cartState.count)
-        assertEquals(DollarAmount("30.00"), cartState.subTotal)
+        assertCartState(
+            expectedSize = 2,
+            expectedCount = 2,
+            expectedSubTotal = DollarAmount("30.00")
+        )
 
         cartRepository.clear()
 
-        cartState = cartRepository.state.value
-        assertEquals(0, cartState.items.size)
-        assertEquals(0, cartState.count)
-        assertEquals(DollarAmount.ZERO, cartState.subTotal)
+        assertCartState(
+            expectedSize = 0,
+            expectedCount = 0,
+            expectedSubTotal = DollarAmount.ZERO
+        )
+        assertTrue(cartRepository.state.value.items.isEmpty(), "Cart items should be empty after clear")
     }
 
     private fun assertCartState(
