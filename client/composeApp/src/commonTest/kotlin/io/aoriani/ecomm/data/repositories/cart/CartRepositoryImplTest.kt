@@ -13,21 +13,11 @@ import kotlin.test.assertTrue
 
 class CartRepositoryImplTest {
 
-    private val fakeProduct1 = object : ProductBasic {
-        override val id: ProductBasic.Id = ProductBasic.Id("Product 1")
-        override val name: String = "Product 1"
-        override val price: DollarAmount = DollarAmount("10.00")
-        override val thumbnailUrl: String? = null
-    }
-
-    private val fakeProduct2 = object : ProductBasic {
-        override val id: ProductBasic.Id = ProductBasic.Id("Product 2")
-        override val name: String = "Product 2"
-        override val price: DollarAmount = DollarAmount("20.00")
-        override val thumbnailUrl: String? = null
-    }
-
     private lateinit var cartRepository: CartRepositoryImpl
+    private val fakeProduct1 =
+        createFakeProductBasic(idSuffix = "1", nameSuffix = "1", price = "10.00")
+    private val fakeProduct2 =
+        createFakeProductBasic(idSuffix = "2", nameSuffix = "2", price = "20.00")
 
     @BeforeTest
     fun setUp() {
@@ -175,7 +165,10 @@ class CartRepositoryImplTest {
             expectedCount = 0,
             expectedSubTotal = DollarAmount.ZERO
         )
-        assertTrue(cartRepository.state.value.items.isEmpty(), "Cart items should be empty after clear")
+        assertTrue(
+            cartRepository.state.value.items.isEmpty(),
+            "Cart items should be empty after clear"
+        )
     }
 
     private fun assertCartState(
@@ -194,9 +187,13 @@ class CartRepositoryImplTest {
         expectedProduct: ProductBasic,
         expectedQuantity: Int
     ) {
-        assertNotNull(cartItem, "Cart item for product ${expectedProduct.id.value} should not be null")
+        assertNotNull(
+            cartItem,
+            "Cart item for product ${expectedProduct.id.value} should not be null"
+        )
         cartItem.run { // Safe call after assertNotNull
-            assertEquals(expected = expectedQuantity,
+            assertEquals(
+                expected = expectedQuantity,
                 actual = quantity,
                 message = "Item quantity mismatch"
             )
@@ -211,6 +208,20 @@ class CartRepositoryImplTest {
                 actual = totalPrice,
                 message = "Item total price mismatch"
             )
+        }
+    }
+
+    private fun createFakeProductBasic(
+        idSuffix: String,
+        nameSuffix: String,
+        price: String,
+        thumbnailUrl: String? = null // Default to null if often unused
+    ): ProductBasic {
+        return object : ProductBasic {
+            override val id: ProductBasic.Id = ProductBasic.Id("Product $idSuffix")
+            override val name: String = "Product $nameSuffix"
+            override val price: DollarAmount = DollarAmount(price)
+            override val thumbnailUrl: String? = thumbnailUrl
         }
     }
 }
