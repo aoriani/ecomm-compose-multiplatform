@@ -46,7 +46,7 @@ interface CartRepository {
      * @param productId The ID of the [ProductBasic] whose quantity is to be updated.
      * @param quantity The new quantity for the product.
      */
-    suspend fun update(productId: ProductBasic.Id, quantity: Int)
+    suspend fun updateQuantity(productId: ProductBasic.Id, quantity: Int)
 
     /**
      * Removes a product completely from the shopping cart.

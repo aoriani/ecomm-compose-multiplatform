@@ -27,7 +27,7 @@ class AddToCartUseCaseTest {
             addedProducts.add(product)
         }
 
-        override suspend fun update(productId: ProductBasic.Id, quantity: Int) = Unit
+        override suspend fun updateQuantity(productId: ProductBasic.Id, quantity: Int) = Unit
         override suspend fun remove(productId: ProductBasic.Id) = Unit
 
         override suspend fun clear() = Unit
