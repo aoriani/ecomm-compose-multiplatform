@@ -13,18 +13,20 @@ import kotlinx.collections.immutable.ImmutableList
  * - [Success]: Indicates that the product list was fetched successfully and contains the list of products. It also provides a way to add a product to the cart.
  */
 sealed interface ProductListUiState {
+    val cartItemCount: Int
+
     /**
      * Represents the loading state of the ProductList screen.
      * This state is active when the product list is being fetched or refreshed.
      */
-    data object Loading : ProductListUiState
+    data class Loading(override val cartItemCount: Int = 0) : ProductListUiState
     /**
      * Represents the error state of the product list screen.
      * This state is used when there's an issue fetching or displaying the product list.
      *
      * @property _reload A lambda function that can be invoked to retry loading the product list.
      */
-    class Error(private val _reload: () -> Unit) : ProductListUiState {
+    class Error(override val cartItemCount: Int, private val _reload: () -> Unit) : ProductListUiState {
         /**
          * Reloads the product list.
          *
@@ -43,6 +45,7 @@ sealed interface ProductListUiState {
      */
     data class Success(
         val products: ImmutableList<ProductPreview>,
+        override val cartItemCount: Int,
         private val _addToCart: (ProductBasic) -> Unit
     ) : ProductListUiState {
         fun addToCart(product: ProductBasic) = _addToCart(product)
