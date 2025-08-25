@@ -13,20 +13,42 @@ import kotlinx.collections.immutable.ImmutableList
  * - [Success]: Indicates that the product list was fetched successfully and contains the list of products. It also provides a way to add a product to the cart.
  */
 sealed interface ProductListUiState {
+    /**
+     * The number of items currently in the shopping cart.
+     * This property is common to all UI states and is used to display a badge or indicator
+     * of the cart's content.
+     */
     val cartItemCount: Int
+
+    /**
+     * Creates a new instance of the current `ProductListUiState` with an updated `cartItemCount`.
+     *
+     * This function is useful when the number of items in the cart changes, and the UI state
+     * needs to reflect this change without altering other aspects of the state (like the list
+     * of products in `Success` state, or the retry action in `Error` state).
+     *
+     * @param newItemCount The new number of items in the cart.
+     * @return A new `ProductListUiState` instance with the updated `cartItemCount`.
+     */
+    fun copyWithNewCartItemCount(newItemCount: Int): ProductListUiState
 
     /**
      * Represents the loading state of the ProductList screen.
      * This state is active when the product list is being fetched or refreshed.
      */
-    data class Loading(override val cartItemCount: Int = 0) : ProductListUiState
+    data class Loading(override val cartItemCount: Int = 0) : ProductListUiState {
+        override fun copyWithNewCartItemCount(newItemCount: Int): ProductListUiState {
+            return copy(cartItemCount = newItemCount)
+        }
+    }
+
     /**
      * Represents the error state of the product list screen.
      * This state is used when there's an issue fetching or displaying the product list.
      *
      * @property _reload A lambda function that can be invoked to retry loading the product list.
      */
-    class Error(override val cartItemCount: Int, private val _reload: () -> Unit) : ProductListUiState {
+    data class Error(override val cartItemCount: Int, private val _reload: () -> Unit) : ProductListUiState {
         /**
          * Reloads the product list.
          *
@@ -34,6 +56,10 @@ sealed interface ProductListUiState {
          * allowing the user to attempt to reload the data.
          */
         fun reload() = _reload()
+
+        override fun copyWithNewCartItemCount(newItemCount: Int): ProductListUiState {
+            return copy(cartItemCount = newItemCount)
+        }
     }
 
     /**
@@ -49,5 +75,9 @@ sealed interface ProductListUiState {
         private val _addToCart: (ProductBasic) -> Unit
     ) : ProductListUiState {
         fun addToCart(product: ProductBasic) = _addToCart(product)
+
+        override fun copyWithNewCartItemCount(newItemCount: Int): ProductListUiState {
+            return copy(cartItemCount = newItemCount)
+        }
     }
 }

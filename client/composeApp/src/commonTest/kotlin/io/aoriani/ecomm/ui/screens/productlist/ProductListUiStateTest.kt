@@ -2,6 +2,7 @@ package io.aoriani.ecomm.ui.screens.productlist
 
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductBasic
+import io.aoriani.ecomm.data.model.ProductPreview
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +21,8 @@ class ProductListUiStateTest {
     @Test
     fun `Given Error state when cartItemCount is accessed then it returns the correct count`() {
         val expectedCartItemCount = 3
-        val errorState = ProductListUiState.Error(cartItemCount = expectedCartItemCount, _reload = {})
+        val errorState =
+            ProductListUiState.Error(cartItemCount = expectedCartItemCount, _reload = {})
         assertEquals(expected = expectedCartItemCount, actual = errorState.cartItemCount)
     }
 
@@ -69,5 +71,49 @@ class ProductListUiStateTest {
         errorState.reload()
 
         assertTrue(wasCalled)
+    }
+
+    @Test
+    fun `Given Loading state when copyWithNewCartItemCount is called then it returns a new Loading state with the updated count`() {
+        val initialCartItemCount = 5
+        val newCartItemCount = 10
+        val loadingState = ProductListUiState.Loading(cartItemCount = initialCartItemCount)
+
+        val newState = loadingState.copyWithNewCartItemCount(newCartItemCount)
+
+        assertTrue(newState is ProductListUiState.Loading)
+        assertEquals(expected = newCartItemCount, actual = newState.cartItemCount)
+    }
+
+    @Test
+    fun `Given Error state when copyWithNewCartItemCount is called then it returns a new Error state with the updated count`() {
+        val initialCartItemCount = 3
+        val newCartItemCount = 7
+        val errorState =
+            ProductListUiState.Error(cartItemCount = initialCartItemCount, _reload = { })
+
+        val newState = errorState.copyWithNewCartItemCount(newCartItemCount)
+
+        assertTrue(newState is ProductListUiState.Error)
+        assertEquals(expected = newCartItemCount, actual = newState.cartItemCount)
+    }
+
+    @Test
+    fun `Given Success state when copyWithNewCartItemCount is called then it returns a new Success state with the updated count`() {
+        val initialCartItemCount = 10
+        val newCartItemCount = 15
+        val products = persistentListOf<ProductPreview>()
+        val successState = ProductListUiState.Success(
+            products = products,
+            cartItemCount = initialCartItemCount,
+            _addToCart = {}
+        )
+
+        val newState = successState.copyWithNewCartItemCount(newCartItemCount)
+
+        assertTrue(newState is ProductListUiState.Success)
+        assertEquals(expected = newCartItemCount, actual = newState.cartItemCount)
+        // Ensure other properties like products and the lambda are preserved
+        assertSame(expected = products, actual = newState.products)
     }
 }
