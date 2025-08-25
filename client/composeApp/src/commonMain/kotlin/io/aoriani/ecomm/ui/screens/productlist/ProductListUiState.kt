@@ -74,6 +74,14 @@ sealed interface ProductListUiState {
         override val cartItemCount: Int,
         private val _addToCart: (ProductBasic) -> Unit
     ) : ProductListUiState {
+        /**
+         * Adds the given product to the cart.
+         *
+         * This function is invoked when the user interacts with a product in the list
+         * to add it to their shopping cart.
+         *
+         * @param product The product to be added to the cart.
+         */
         fun addToCart(product: ProductBasic) = _addToCart(product)
 
         override fun copyWithNewCartItemCount(newItemCount: Int): ProductListUiState {
