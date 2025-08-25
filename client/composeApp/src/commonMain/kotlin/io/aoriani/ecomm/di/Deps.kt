@@ -43,7 +43,7 @@ val appModule = module {
     singleOf(::ProductRepositoryImpl) bind ProductRepository::class
     singleOf(::CartRepositoryImpl) bind CartRepository::class
     factoryOf(::AddToCartUseCaseImpl) bind AddToCartUseCase::class
-    viewModel { ProductListViewModel(productRepository = get(), addToCartUseCase = get()) }
+    viewModel { ProductListViewModel(productRepository = get(), cartRepository = get(), addToCartUseCase = get()) }
     viewModel {
         ProductDetailsViewModel(
             productRepository = get(),
