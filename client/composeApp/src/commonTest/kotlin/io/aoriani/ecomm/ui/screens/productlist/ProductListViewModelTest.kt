@@ -3,6 +3,7 @@ package io.aoriani.ecomm.ui.screens.productlist
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
+import io.aoriani.ecomm.ui.test.fakes.FakeCartRepository
 import io.aoriani.ecomm.ui.test.fakes.FakeProductRepository
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +28,7 @@ class ProductListViewModelTest {
         val testDispatcher = StandardTestDispatcher(testScheduler)
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
+            cartRepository = FakeCartRepository(),
             addToCartUseCase = {},
             dispatcher = testDispatcher
         )
@@ -62,6 +64,7 @@ class ProductListViewModelTest {
         // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
+            cartRepository = FakeCartRepository(),
             addToCartUseCase = { },
             dispatcher = testDispatcher
         )
@@ -92,6 +95,7 @@ class ProductListViewModelTest {
         // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
+            cartRepository = FakeCartRepository(),
             addToCartUseCase = { },
             dispatcher = testDispatcher
         )
@@ -128,6 +132,7 @@ class ProductListViewModelTest {
         // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
+            cartRepository = FakeCartRepository(),
             addToCartUseCase = { },
             dispatcher = testDispatcher
         )
