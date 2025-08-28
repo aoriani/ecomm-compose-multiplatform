@@ -5,10 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddShoppingCart
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,8 +39,13 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ProductTile(product: ProductPreview, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
-    Card(modifier = modifier.padding(8.dp), onClick = onClick) {
+fun ProductTile(
+    product: ProductPreview,
+    modifier: Modifier = Modifier,
+    onTileClicked: () -> Unit = {},
+    onAddToCartClicked: () -> Unit = {}
+) {
+    Card(modifier = modifier.padding(8.dp), onClick = onTileClicked) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -49,7 +61,11 @@ fun ProductTile(product: ProductPreview, modifier: Modifier = Modifier, onClick:
                 overflow = TextOverflow.Ellipsis
 
             )
-            ProductPrice(price = product.price)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                ProductPrice(price = product.price)
+                AddToCartButton(onAddToCart = onAddToCartClicked)
+            }
+
         }
     }
 }
@@ -82,15 +98,29 @@ fun ProductImage(product: ProductPreview) {
 
 @Composable
 fun ProductPrice(price: DollarAmount) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
+    Text(
+        text = "$$price", // Add currency symbol
+        style = MaterialTheme.typography.bodyMedium // Smaller price
+    )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun AddToCartButton(onAddToCart: () -> Unit = {}) {
+    val size = ButtonDefaults.ExtraSmallContainerHeight
+    IconButton(
+        onClick = onAddToCart,
+        modifier = Modifier.heightIn(size),
+        shapes = IconButtonDefaults.shapes(),
+        colors = IconButtonDefaults.filledIconButtonColors()
     ) {
-        Text(
-            text = "$$price", // Add currency symbol
-            style = MaterialTheme.typography.bodyMedium // Smaller price
+        Icon(
+            Icons.Default.AddShoppingCart,
+            contentDescription = "Localized description",
+            modifier = Modifier.size(ButtonDefaults.iconSizeFor(size)),
         )
     }
+
 }
 
 @Preview(name = "Product Tile", showBackground = true)
