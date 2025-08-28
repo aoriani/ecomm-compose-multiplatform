@@ -33,7 +33,7 @@ class ProductTileTest : UiTest() {
                     price = DollarAmount(productPrice),
                     thumbnailUrl = "thumbnailUrl"
                 ),
-                onClick = { wasClicked = true }
+                onTileClicked = { wasClicked = true }
             )
         }
 
