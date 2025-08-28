@@ -89,7 +89,9 @@ fun ProductListScreen(
                                 items(state.products) { item ->
                                     ProductTile(
                                         product = item,
-                                        onClick = { navigateToProductDetails(item) })
+                                        onTileClicked = { navigateToProductDetails(item) },
+                                        onAddToCartClicked = { state.addToCart(item) }
+                                    )
                                 }
                             }
                             VerticalScrollbarIfSupported(scrollState)
