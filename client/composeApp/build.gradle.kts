@@ -100,7 +100,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.compose.material3)
-            implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.navigation3.runtime)
             implementation(libs.apollo.adapters.core)
             implementation(libs.apollo.kotlin)
             implementation(libs.apollo.ktor)
