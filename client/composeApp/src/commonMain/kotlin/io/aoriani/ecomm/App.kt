@@ -8,6 +8,7 @@ import io.aoriani.ecomm.di.appModule
 import io.aoriani.ecomm.ui.navigation.Navigation
 import org.koin.compose.KoinMultiplatformApplication
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.logger.Level
 import org.koin.dsl.koinConfiguration
 
 @OptIn(KoinExperimentalAPI::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -19,7 +20,8 @@ fun App(
         KoinMultiplatformApplication(
             config = koinConfiguration {
                 modules(appModule)
-            }
+            },
+            logLevel = Level.DEBUG
         ) {
             Navigation(onNavHostReady = onNavHostReady)
         }

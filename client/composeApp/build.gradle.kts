@@ -88,7 +88,7 @@ kotlin {
             implementation(libs.roboeletric)
         }
         commonMain.dependencies {
-//            implementation(libs.kermit.koin)
+            implementation(libs.kermit.koin)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)

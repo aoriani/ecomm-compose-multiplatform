@@ -64,7 +64,7 @@ coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.r
 
 # Kermit
 kermit-main = { module = "co.touchlab:kermit", version.ref = "kermit" }
-#kermit-koin = { module = "co.touchlab:kermit-koin", version.ref = "kermit" }
+kermit-koin = { module = "co.touchlab:kermit-koin", version.ref = "kermit" }
 kermit-test = { module = "co.touchlab:kermit-test", version.ref = "kermit" }
 
 # Koin
