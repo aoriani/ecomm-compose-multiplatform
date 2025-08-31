@@ -37,6 +37,7 @@ class ProductListViewModel(
         viewModelScope.launch(dispatcher) {
             cartItemCount.collect { count ->
                 state.update { it.copyWithNewCartItemCount(count) }
+                println("Cart item count: ${state.value.cartItemCount}")
             }
         }
     }

@@ -26,16 +26,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.compose_multiplatform
+import ecommerceapp.composeapp.generated.resources.product_list_add_to_cart_button_content_description
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
+import io.aoriani.ecomm.ui.screens.productlist.ProductListScreenTestTags
+import io.aoriani.ecomm.ui.screens.productlist.productlist
+import io.aoriani.ecomm.ui.test.TestTags
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -110,13 +116,13 @@ fun AddToCartButton(onAddToCart: () -> Unit = {}) {
     val size = ButtonDefaults.ExtraSmallContainerHeight
     IconButton(
         onClick = onAddToCart,
-        modifier = Modifier.heightIn(size),
+        modifier = Modifier.heightIn(size).testTag(TestTags.screens.productlist.addTocartButton),
         shapes = IconButtonDefaults.shapes(),
         colors = IconButtonDefaults.filledIconButtonColors()
     ) {
         Icon(
             Icons.Default.AddShoppingCart,
-            contentDescription = "Localized description",
+            contentDescription = stringResource(Res.string.product_list_add_to_cart_button_content_description),
             modifier = Modifier.size(ButtonDefaults.iconSizeFor(size)),
         )
     }

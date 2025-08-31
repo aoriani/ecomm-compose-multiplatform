@@ -14,12 +14,12 @@ class FakeCartRepository(
             persistentListOf(),
             DollarAmount.ZERO, 0
         )
-    )
+    ),
+    private val _add: suspend (product: ProductBasic) -> Unit = {},
+
 ) : CartRepository {
-    override val state: StateFlow<CartRepository.State> = _state
-    override suspend fun add(product: ProductBasic) {
-        TODO("Not yet implemented")
-    }
+    override val state: StateFlow<CartRepository.State> get() = _state
+    override suspend fun add(product: ProductBasic) = _add(product)
 
     override suspend fun updateQuantity(
         productId: ProductBasic.Id,

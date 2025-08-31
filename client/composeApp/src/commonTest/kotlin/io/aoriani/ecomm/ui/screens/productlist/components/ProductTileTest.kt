@@ -1,7 +1,9 @@
 package io.aoriani.ecomm.ui.screens.productlist.components
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -9,6 +11,8 @@ import androidx.compose.ui.test.runComposeUiTest
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
+import io.aoriani.ecomm.ui.screens.productlist.productlist
+import io.aoriani.ecomm.ui.test.TestTags
 import io.aoriani.ecomm.ui.test.UiTest
 import io.aoriani.ecomm.ui.test.setContentWithContext
 import kotlin.test.Test
@@ -23,7 +27,8 @@ class ProductTileTest : UiTest() {
 
         val productName = "ProductName"
         val productPrice = "12.96"
-        var wasClicked = false
+        var wasTileClicked = false
+        var wasAddToCartClicked = false
 
         setContentWithContext {
             ProductTile(
@@ -33,15 +38,24 @@ class ProductTileTest : UiTest() {
                     price = DollarAmount(productPrice),
                     thumbnailUrl = "thumbnailUrl"
                 ),
-                onTileClicked = { wasClicked = true }
+                onTileClicked = { wasTileClicked = true },
+                onAddToCartClicked = { wasAddToCartClicked = true }
             )
         }
 
         onNodeWithText(productName).assertExists().assertIsDisplayed()
         onNodeWithText("$${productPrice}").assertExists().assertIsDisplayed()
+        onNodeWithTag(TestTags.screens.productlist.addTocartButton).assertExists()
+            .assertIsDisplayed().assertContentDescriptionEquals("Add to Cart")
 
-        assertFalse(wasClicked)
+
+        assertFalse(wasAddToCartClicked)
+        onNodeWithTag(TestTags.screens.productlist.addTocartButton).performClick()
+        assertTrue(wasAddToCartClicked)
+
+        assertFalse(wasTileClicked)
         onRoot().performClick()
-        assertTrue(wasClicked)
+        assertTrue(wasTileClicked)
+
     }
 }
