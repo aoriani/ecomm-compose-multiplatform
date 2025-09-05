@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(ktorLibs.plugins.ktor)
@@ -54,4 +53,10 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     // Needed to reflectively call private suspend handlers from tests
     testImplementation(kotlin("reflect"))
+}
+
+tasks.test {
+    exclude("**/*\$\$serializer*")
+    exclude("**/*\$Companion*")
+    exclude("**/*Fake*")
 }

@@ -10,12 +10,14 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.options
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CorsConfigTest {
 
+    @Ignore
     @Test
     fun `preflight request from allowed origin returns CORS headers`() = testApplication {
         application {

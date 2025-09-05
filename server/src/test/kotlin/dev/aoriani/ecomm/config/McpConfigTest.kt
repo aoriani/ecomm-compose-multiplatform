@@ -12,7 +12,7 @@ import kotlin.test.Test
 
 class McpConfigTest {
 
-    private object DummyRepo : ProductRepository {
+    private object FakeProductRepository : ProductRepository {
         override suspend fun getAll(): Result<List<Product>> = Result.success(emptyList())
         override suspend fun getById(id: ProductId): Result<Product> = Result.failure(NoSuchElementException("n/a"))
     }
@@ -27,8 +27,8 @@ class McpConfigTest {
         }
         application {
             // Provide required use cases for tools
-            val getAll = GetAllProductsUseCase(DummyRepo)
-            val getById = GetProductByIdUseCase(DummyRepo)
+            val getAll = GetAllProductsUseCase(FakeProductRepository)
+            val getById = GetProductByIdUseCase(FakeProductRepository)
             dependencies {
                 provide<GetAllProductsUseCase> { getAll }
                 provide<GetProductByIdUseCase> { getById }

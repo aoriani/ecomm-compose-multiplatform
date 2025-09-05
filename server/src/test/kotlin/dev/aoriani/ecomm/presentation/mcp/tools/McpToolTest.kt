@@ -17,14 +17,15 @@ import kotlin.test.assertTrue
 import kotlin.test.assertFailsWith
 
 class McpToolTest {
-    @Serializable
-    class TestInput(private val name: String, private val value: Int)
 
     @Serializable
-    class TestOutput(private val result: Boolean)
+    class FakeInputClass(private val name: String, private val value: Int)
 
     @Serializable
-    data class OptionalInput(val maybe: String? = null)
+    class FakeOutputClass(private val result: Boolean)
+
+    @Serializable
+    data class FakeOptionalInputClass(val maybe: String? = null)
 
     @Test
     fun `When addTool is called with tool having input and output then it registers with server`() {
@@ -34,8 +35,8 @@ class McpToolTest {
         val tool = createMockTool(
             name = "test_tool",
             description = "Test tool",
-            input = TestInput::class,
-            output = TestOutput::class
+            input = FakeInputClass::class,
+            output = FakeOutputClass::class
         )
 
         // When
@@ -61,7 +62,7 @@ class McpToolTest {
             name = "test_tool",
             description = "Test tool",
             input = null,
-            output = TestOutput::class
+            output = FakeOutputClass::class
         )
 
         // When
@@ -86,7 +87,7 @@ class McpToolTest {
         val tool = createMockTool(
             name = "test_tool",
             description = "Test tool",
-            input = TestInput::class,
+            input = FakeInputClass::class,
             output = null
         )
 
@@ -108,7 +109,7 @@ class McpToolTest {
     @Test
     fun `When KClass toToolSchema is called then it extracts properties and required fields`() {
         // When
-        val schema = TestInput::class.toToolSchema()
+        val schema = FakeInputClass::class.toToolSchema()
 
         // Then
         assertNotNull(schema.properties)
@@ -127,7 +128,7 @@ class McpToolTest {
 
     @Test
     fun `When class has only optional fields then required is null`() {
-        val schema = OptionalInput::class.toToolSchema()
+        val schema = FakeOptionalInputClass::class.toToolSchema()
         assertNotNull(schema.properties)
         assertTrue(schema.properties.containsKey("maybe"))
         assertNull(schema.required)

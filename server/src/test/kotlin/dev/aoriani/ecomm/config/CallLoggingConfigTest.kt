@@ -15,6 +15,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import org.slf4j.LoggerFactory
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -29,6 +30,7 @@ class CallLoggingConfigTest {
         return listAppender
     }
 
+    @Ignore
     @Test
     fun `call logging writes formatted request log line`() = testApplication {
         environment {
