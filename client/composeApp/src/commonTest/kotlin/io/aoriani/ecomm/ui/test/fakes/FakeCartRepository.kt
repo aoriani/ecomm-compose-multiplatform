@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class FakeCartRepository(
-    private val _state: StateFlow<CartRepository.State> = MutableStateFlow(
+    private val _state: MutableStateFlow<CartRepository.State> = MutableStateFlow(
         CartRepository.State(
             persistentListOf(),
             DollarAmount.ZERO, 0

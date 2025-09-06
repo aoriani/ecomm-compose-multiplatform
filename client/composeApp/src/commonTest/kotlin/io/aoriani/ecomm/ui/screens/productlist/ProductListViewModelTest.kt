@@ -18,7 +18,6 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -222,11 +221,9 @@ class ProductListViewModelTest {
         assertEquals(fakeProduct, productToAdd)
     }
 
-    @Ignore
     @Test
     fun `When state is loading and cart items change then state is updated`() = runTest {
         val fakeProductRepository = FakeProductRepository(fetchProductsLambda = {
-            // Never returns a result
             awaitCancellation()
         })
         val cartState =
@@ -234,7 +231,6 @@ class ProductListViewModelTest {
         val fakeCartRepository = FakeCartRepository(_state = cartState)
         val testDispatcher = StandardTestDispatcher(testScheduler)
 
-        // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
             cartRepository = fakeCartRepository,
@@ -245,17 +241,17 @@ class ProductListViewModelTest {
         advanceUntilIdle()
 
         assertIs<ProductListUiState.Loading>(viewModel.state.value)
-        assertEquals(0, (viewModel.state.value as ProductListUiState.Error).cartItemCount)
+        assertEquals(0, (viewModel.state.value as ProductListUiState.Loading).cartItemCount)
 
         cartState.update { it.copy(count = 3) }
 
+        testScheduler.runCurrent()
         advanceUntilIdle()
 
         assertIs<ProductListUiState.Loading>(viewModel.state.value)
-        assertEquals(3, (viewModel.state.value as ProductListUiState.Error).cartItemCount)
+        assertEquals(3, (viewModel.state.value as ProductListUiState.Loading).cartItemCount)
     }
 
-    @Ignore
     @Test
     fun `When state is success and cart items change then state is updated`() = runTest {
         val cartState =
@@ -263,7 +259,6 @@ class ProductListViewModelTest {
         val fakeCartRepository = FakeCartRepository(_state = cartState)
         val testDispatcher = StandardTestDispatcher(testScheduler)
 
-        // Act
         val viewModel = ProductListViewModel(
             productRepository = FakeProductRepository(),
             cartRepository = fakeCartRepository,
@@ -274,14 +269,15 @@ class ProductListViewModelTest {
         advanceUntilIdle()
 
         assertIs<ProductListUiState.Success>(viewModel.state.value)
-        assertEquals(0, (viewModel.state.value as ProductListUiState.Error).cartItemCount)
+        assertEquals(0, (viewModel.state.value as ProductListUiState.Success).cartItemCount)
 
         cartState.update { it.copy(count = 3) }
 
+        testScheduler.runCurrent()
         advanceUntilIdle()
 
         assertIs<ProductListUiState.Success>(viewModel.state.value)
-        assertEquals(3, (viewModel.state.value as ProductListUiState.Error).cartItemCount)
+        assertEquals(3, (viewModel.state.value as ProductListUiState.Success).cartItemCount)
     }
 
     @Test
@@ -294,7 +290,6 @@ class ProductListViewModelTest {
         val fakeCartRepository = FakeCartRepository(_state = cartState)
         val testDispatcher = StandardTestDispatcher(testScheduler)
 
-        // Act
         val viewModel = ProductListViewModel(
             productRepository = fakeProductRepository,
             cartRepository = fakeCartRepository,
@@ -307,19 +302,12 @@ class ProductListViewModelTest {
         assertIs<ProductListUiState.Error>(viewModel.state.value)
         assertEquals(0, (viewModel.state.value as ProductListUiState.Error).cartItemCount)
 
-        cartState.update { it.copy(count = 3) } // Using update for consistency
+        cartState.update { it.copy(count = 3) }
 
+        testScheduler.runCurrent()
         advanceUntilIdle()
-        yield()
-        advanceUntilIdle()
-        println("Cart item count no view model: ${viewModel.state.value.cartItemCount}")
+
         assertIs<ProductListUiState.Error>(viewModel.state.value)
         assertEquals(3, (viewModel.state.value as ProductListUiState.Error).cartItemCount)
-        println("en of test")
     }
-
 }
-
-
-
-

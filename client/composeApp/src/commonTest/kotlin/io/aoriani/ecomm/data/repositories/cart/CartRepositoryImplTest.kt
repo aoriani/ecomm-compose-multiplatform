@@ -199,21 +199,27 @@ class CartRepositoryImplTest {
     @Test
     fun `When updating the quantity of a product to a negative value an IllegalArgumentException is thrown`() =
         runTest {
-            assertFailsWith<IllegalArgumentException> {
+            assertFailsWith<IllegalArgumentException>(
+                message = "Should throw IllegalArgumentException for negative quantity"
+            ) {
                 cartRepository.updateQuantity(fakeProduct1.id, -1)
             }
         }
 
     @Test
     fun `When updating the quantity of a non-existent product cart an IllegalArgumentException is thrown`() = runTest {
-        assertFailsWith<IllegalArgumentException> {
+        assertFailsWith<IllegalArgumentException>(
+            message = "Should throw IllegalArgumentException for non-existent product"
+        ) {
             cartRepository.updateQuantity(fakeProduct1.id, 1)
         }
     }
 
     @Test
     fun `When removing a non-existent product cart an IllegalArgumentException is thrown`() = runTest {
-        assertFailsWith<IllegalArgumentException> {
+        assertFailsWith<IllegalArgumentException>(
+            message = "Should throw IllegalArgumentException for non-existent product"
+        ) {
             cartRepository.remove(fakeProduct1.id)
         }
     }

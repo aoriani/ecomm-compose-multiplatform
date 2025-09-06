@@ -30,37 +30,36 @@ class ProductListViewModel(
         field = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading())
 
     private val cartItemCount = cartRepository.state.map { cartState -> cartState.count }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), 0)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     init {
         fetchProducts()
         viewModelScope.launch(dispatcher) {
             cartItemCount.collect { count ->
                 state.update { it.copyWithNewCartItemCount(count) }
-                println("Cart item count: ${state.value.cartItemCount}")
             }
         }
     }
 
     fun fetchProducts() {
         viewModelScope.launch(dispatcher) {
-            state.update { ProductListUiState.Loading() }
+            state.update { currentState -> ProductListUiState.Loading(cartItemCount = currentState.cartItemCount) }
             productRepository.fetchProducts()
                 .onSuccess { productPreviews ->
                     logger.i(tag = LOGTAG) { "Products fetched: $productPreviews" }
-                    state.update {
+                    state.update { currentState->
                         ProductListUiState.Success(
                             products = productPreviews,
-                            cartItemCount = 0,
+                            cartItemCount = currentState.cartItemCount,
                             _addToCart = ::addToCart
                         )
                     }
                 }
                 .onFailure {
                     logger.e(throwable = it, tag = LOGTAG) { "Error fetching products" }
-                    state.update {
+                    state.update { currentState ->
                         ProductListUiState.Error(
-                            cartItemCount = 0,
+                            cartItemCount = currentState.cartItemCount,
                             _reload = ::fetchProducts
                         )
                     }
