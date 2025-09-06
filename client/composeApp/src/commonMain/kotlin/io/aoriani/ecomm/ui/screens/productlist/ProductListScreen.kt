@@ -28,19 +28,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_cart
 import ecommerceapp.composeapp.generated.resources.product_list_snackbar_action_retry
 import ecommerceapp.composeapp.generated.resources.product_list_snackbar_generic_error
 import ecommerceapp.composeapp.generated.resources.product_list_title
+import io.aoriani.ecomm.data.model.DollarAmount
+import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
 import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollbarIfSupported
 import io.aoriani.ecomm.ui.screens.productlist.components.LoadingOverlay
 import io.aoriani.ecomm.ui.screens.productlist.components.ProductTile
+import io.aoriani.ecomm.ui.test.TestTags
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +65,11 @@ fun ProductListScreen(
                     actions = {
                         BadgedBox(badge = {
                             if (state.cartItemCount > 0) {
-                                Badge { Text(state.cartItemCount.toString()) }
+                                Badge(modifier = Modifier.testTag(TestTags.screens.productlist.cartCountBagde)) {
+                                    Text(
+                                        state.cartItemCount.toString()
+                                    )
+                                }
                             }
                         }) {
                             IconButton(onClick = navigateToCart) {
@@ -125,11 +136,21 @@ fun ProductListScreen(
     }
 }
 
+private class ProductListUiStateParameterProvider : PreviewParameterProvider<ProductListUiState> {
+    override val values = sequenceOf(
+        ProductListUiState.Loading(),
+        ProductListUiState.Error(),
+        ProductListUiState.Success(),
+        ProductListUiState.Success(cartItemCount = 4, products = persistentListOf(
+        )),
+    )
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Preview(group = "Product List", name = "Loading", showBackground = true)
+@Preview(showBackground = true)
 @Composable
-fun ProductListScreenPreview() {
+fun ProductListScreenPreview(@PreviewParameter(ProductListUiStateParameterProvider::class) state: ProductListUiState) {
     MaterialExpressiveTheme {
-        ProductListScreen(state = ProductListUiState.Loading(cartItemCount = 0))
+        ProductListScreen(state = state)
     }
 }

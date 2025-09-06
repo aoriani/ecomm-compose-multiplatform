@@ -37,7 +37,6 @@ import ecommerceapp.composeapp.generated.resources.product_list_add_to_cart_butt
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
-import io.aoriani.ecomm.ui.screens.productlist.ProductListScreenTestTags
 import io.aoriani.ecomm.ui.screens.productlist.productlist
 import io.aoriani.ecomm.ui.test.TestTags
 import org.jetbrains.compose.resources.painterResource
@@ -86,6 +85,7 @@ fun ProductImage(product: ProductPreview) {
         .clip(MaterialShapes.PixelCircle.toShape())
 
     if (!isPreview) {
+        // TODO : Handle loading and error states
         AsyncImage(
             model = product.thumbnailUrl,
             contentScale = contentScale,
