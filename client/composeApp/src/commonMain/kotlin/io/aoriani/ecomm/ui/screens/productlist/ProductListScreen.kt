@@ -43,6 +43,7 @@ import io.aoriani.ecomm.ui.screens.productlist.components.LoadingOverlay
 import io.aoriani.ecomm.ui.screens.productlist.components.ProductTile
 import io.aoriani.ecomm.ui.test.TestTags
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -141,9 +142,18 @@ private class ProductListUiStateParameterProvider : PreviewParameterProvider<Pro
         ProductListUiState.Loading(),
         ProductListUiState.Error(),
         ProductListUiState.Success(),
-        ProductListUiState.Success(cartItemCount = 4, products = persistentListOf(
-        )),
+        ProductListUiState.Success(
+            cartItemCount = 4, products = Array(20) { index ->
+                ProductPreview(
+                    id = ProductBasic.Id("id"),
+                    name = "Product $index",
+                    price = DollarAmount("10.0"),
+                    thumbnailUrl = "https://picsum.photos/200/300"
+                )
+            }.toPersistentList()
+        )
     )
+
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
