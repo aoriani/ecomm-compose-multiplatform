@@ -245,7 +245,6 @@ class ProductListViewModelTest {
 
         cartState.update { it.copy(count = 3) }
 
-        testScheduler.runCurrent()
         advanceUntilIdle()
 
         assertIs<ProductListUiState.Loading>(viewModel.state.value)
@@ -273,7 +272,6 @@ class ProductListViewModelTest {
 
         cartState.update { it.copy(count = 3) }
 
-        testScheduler.runCurrent()
         advanceUntilIdle()
 
         assertIs<ProductListUiState.Success>(viewModel.state.value)
@@ -304,7 +302,6 @@ class ProductListViewModelTest {
 
         cartState.update { it.copy(count = 3) }
 
-        testScheduler.runCurrent()
         advanceUntilIdle()
 
         assertIs<ProductListUiState.Error>(viewModel.state.value)
