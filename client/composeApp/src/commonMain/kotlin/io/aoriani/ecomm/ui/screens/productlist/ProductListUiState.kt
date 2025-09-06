@@ -3,6 +3,7 @@ package io.aoriani.ecomm.ui.screens.productlist
 import io.aoriani.ecomm.data.model.ProductBasic
 import io.aoriani.ecomm.data.model.ProductPreview
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 /**
  * Represents the different states of the Product List UI.
@@ -48,7 +49,7 @@ sealed interface ProductListUiState {
      *
      * @property _reload A lambda function that can be invoked to retry loading the product list.
      */
-    data class Error(override val cartItemCount: Int, private val _reload: () -> Unit) : ProductListUiState {
+    data class Error(override val cartItemCount: Int = 0, private val _reload: () -> Unit = {}) : ProductListUiState {
         /**
          * Reloads the product list.
          *
@@ -70,9 +71,9 @@ sealed interface ProductListUiState {
      *                   and exposed via the public `addToCart` method.
      */
     data class Success(
-        val products: ImmutableList<ProductPreview>,
-        override val cartItemCount: Int,
-        private val _addToCart: (ProductBasic) -> Unit
+        val products: ImmutableList<ProductPreview> = persistentListOf(),
+        override val cartItemCount: Int = 0,
+        private val _addToCart: (ProductBasic) -> Unit = {}
     ) : ProductListUiState {
         /**
          * Adds the given product to the cart.

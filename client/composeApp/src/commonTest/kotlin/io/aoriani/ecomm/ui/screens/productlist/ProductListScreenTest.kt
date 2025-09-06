@@ -1,7 +1,11 @@
 package io.aoriani.ecomm.ui.screens.productlist
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -28,6 +32,30 @@ class ProductListScreenTest : UiTest() {
 
         onNodeWithTag(TestTags.screens.productlist.loadingOverlay).assertIsDisplayed()
     }
+
+    @Test
+    fun `When state is loading and cart count is zero no badge is displayed`() = runComposeUiTest {
+
+        setContentWithContext {
+            ProductListScreen(ProductListUiState.Loading(cartItemCount = 0))
+        }
+
+        onNodeWithTag(TestTags.screens.productlist.cartCountBagde).assertDoesNotExist()
+    }
+
+
+    @Test
+    fun `When state is loading and cart count is not zero no badge is displayed`() =
+        runComposeUiTest {
+
+            setContentWithContext {
+                ProductListScreen(ProductListUiState.Loading(cartItemCount = 14))
+            }
+
+            onNodeWithTag(TestTags.screens.productlist.cartCountBagde)
+                .assertIsDisplayed()
+                .onChildren().assertAny(hasText("14"))
+        }
 
     @Test
     fun `When cart action button is clicked the correspondent navigation callback is invoked`() =
