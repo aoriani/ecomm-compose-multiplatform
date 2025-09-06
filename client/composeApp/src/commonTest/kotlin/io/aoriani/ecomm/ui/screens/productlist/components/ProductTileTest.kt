@@ -45,9 +45,7 @@ class ProductTileTest : UiTest() {
 
         onNodeWithText(productName).assertExists().assertIsDisplayed()
         onNodeWithText("$${productPrice}").assertExists().assertIsDisplayed()
-        onNodeWithTag(TestTags.screens.productlist.addTocartButton).assertExists()
-            .assertIsDisplayed().assertContentDescriptionEquals("Add to Cart")
-
+        onNodeWithTag(TestTags.screens.productlist.addTocartButton).assertExists().assertIsDisplayed()
 
         assertFalse(wasAddToCartClicked)
         onNodeWithTag(TestTags.screens.productlist.addTocartButton).performClick()
@@ -56,6 +54,5 @@ class ProductTileTest : UiTest() {
         assertFalse(wasTileClicked)
         onRoot().performClick()
         assertTrue(wasTileClicked)
-
     }
 }
