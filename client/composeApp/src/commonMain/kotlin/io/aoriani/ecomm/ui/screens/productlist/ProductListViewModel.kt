@@ -29,14 +29,11 @@ class ProductListViewModel(
     val state: StateFlow<ProductListUiState>
         field = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading())
 
-    private val cartItemCount = cartRepository.state.map { cartState -> cartState.count }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
-
     init {
         fetchProducts()
         viewModelScope.launch(dispatcher) {
-            cartItemCount.collect { count ->
-                state.update { it.copyWithNewCartItemCount(count) }
+            cartRepository.state.collect { cartState ->
+                state.update { it.copyWithNewCartItemCount(cartState.count) }
             }
         }
     }
