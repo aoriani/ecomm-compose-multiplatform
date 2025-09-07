@@ -3,6 +3,7 @@ package io.aoriani.ecomm.data.model
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
@@ -295,5 +296,171 @@ class DollarAmountTest {
         val eqAmountTrailingZeros = DollarAmount("75.50000") // Normalizes to "75.50"
         val eqAmountStandard = DollarAmount("75.50")
         assertEquals(eqAmountTrailingZeros.hashCode(), eqAmountStandard.hashCode(), "hashCode for '75.50000' and '75.50' should be equal")
+    }
+
+    @Test
+    fun `Constructor throws DollarAmountFormatException for invalid numeric strings`() {
+        // Test strings that don't match DOLLAR_AMOUNT_REGEX pattern: ^(-)?\d+(\.\d+)?$
+        
+        // Strings ending with decimal point only (no digits after)
+        assertFails { DollarAmount("10.") }
+        assertFails { DollarAmount("0.") }
+        assertFails { DollarAmount("-5.") }
+        
+        // Strings starting with decimal point only (no digits before)
+        assertFails { DollarAmount(".50") }
+        assertFails { DollarAmount(".0") }
+        assertFails { DollarAmount(".123") }
+        assertFails { DollarAmount("-.50") }
+        
+        // Non-numeric strings
+        assertFails { DollarAmount("abc") }
+        assertFails { DollarAmount("xyz123") }
+        assertFails { DollarAmount("123abc") }
+        assertFails { DollarAmount("12.34abc") }
+        
+        // Multiple decimal points
+        assertFails { DollarAmount("10.50.25") }
+        assertFails { DollarAmount("1.2.3") }
+        
+        // Multiple minus signs
+        assertFails { DollarAmount("--10") }
+        assertFails { DollarAmount("---5.50") }
+        
+        // Minus sign not at the beginning
+        assertFails { DollarAmount("10-") }
+        assertFails { DollarAmount("10.-50") }
+        assertFails { DollarAmount("1-0.50") }
+        
+        // Empty string
+        assertFails { DollarAmount("") }
+        
+        // Whitespace only
+        assertFails { DollarAmount(" ") }
+        assertFails { DollarAmount("   ") }
+        assertFails { DollarAmount("\t") }
+        assertFails { DollarAmount("\n") }
+        
+        // Strings with spaces
+        assertFails { DollarAmount(" 10") }
+        assertFails { DollarAmount("10 ") }
+        assertFails { DollarAmount(" 10.50 ") }
+        assertFails { DollarAmount("1 0.50") }
+        assertFails { DollarAmount("10. 50") }
+        
+        // Special characters
+        assertFails { DollarAmount("+10") }
+        assertFails { DollarAmount("$10") }
+        assertFails { DollarAmount("10$") }
+        assertFails { DollarAmount("10,50") }
+        assertFails { DollarAmount("1,000.50") }
+        assertFails { DollarAmount("10%") }
+        assertFails { DollarAmount("10#") }
+        
+        // Just decimal point
+        assertFails { DollarAmount(".") }
+        assertFails { DollarAmount("-.") }
+        
+        // Just minus sign
+        assertFails { DollarAmount("-") }
+        
+        // Letters mixed with valid patterns
+        assertFails { DollarAmount("1a0") }
+        assertFails { DollarAmount("1.a5") }
+        assertFails { DollarAmount("a10.50") }
+    }
+
+    @Test
+    fun `requireValidDollarAmount function throws DollarAmountFormatException for invalid inputs`() {
+        // Test strings that don't match DOLLAR_AMOUNT_REGEX pattern: ^(-)?\d+(\.\d+)?$
+        
+        // Strings ending with decimal point only (no digits after)
+        assertFails { requireValidDollarAmount("10.") }
+        assertFails { requireValidDollarAmount("0.") }
+        assertFails { requireValidDollarAmount("-5.") }
+        
+        // Strings starting with decimal point only (no digits before)
+        assertFails { requireValidDollarAmount(".50") }
+        assertFails { requireValidDollarAmount(".0") }
+        assertFails { requireValidDollarAmount(".123") }
+        assertFails { requireValidDollarAmount("-.50") }
+        
+        // Non-numeric strings
+        assertFails { requireValidDollarAmount("abc") }
+        assertFails { requireValidDollarAmount("xyz123") }
+        assertFails { requireValidDollarAmount("123abc") }
+        assertFails { requireValidDollarAmount("12.34abc") }
+        
+        // Multiple decimal points
+        assertFails { requireValidDollarAmount("10.50.25") }
+        assertFails { requireValidDollarAmount("1.2.3") }
+        
+        // Multiple minus signs
+        assertFails { requireValidDollarAmount("--10") }
+        assertFails { requireValidDollarAmount("---5.50") }
+        
+        // Minus sign not at the beginning
+        assertFails { requireValidDollarAmount("10-") }
+        assertFails { requireValidDollarAmount("10.-50") }
+        assertFails { requireValidDollarAmount("1-0.50") }
+        
+        // Empty string
+        assertFails { requireValidDollarAmount("") }
+        
+        // Whitespace only
+        assertFails { requireValidDollarAmount(" ") }
+        assertFails { requireValidDollarAmount("   ") }
+        assertFails { requireValidDollarAmount("\t") }
+        assertFails { requireValidDollarAmount("\n") }
+        
+        // Strings with spaces
+        assertFails { requireValidDollarAmount(" 10") }
+        assertFails { requireValidDollarAmount("10 ") }
+        assertFails { requireValidDollarAmount(" 10.50 ") }
+        assertFails { requireValidDollarAmount("1 0.50") }
+        assertFails { requireValidDollarAmount("10. 50") }
+        
+        // Special characters
+        assertFails { requireValidDollarAmount("+10") }
+        assertFails { requireValidDollarAmount("$10") }
+        assertFails { requireValidDollarAmount("10$") }
+        assertFails { requireValidDollarAmount("10,50") }
+        assertFails { requireValidDollarAmount("1,000.50") }
+        assertFails { requireValidDollarAmount("10%") }
+        assertFails { requireValidDollarAmount("10#") }
+        
+        // Just decimal point
+        assertFails { requireValidDollarAmount(".") }
+        assertFails { requireValidDollarAmount("-.") }
+        
+        // Just minus sign
+        assertFails { requireValidDollarAmount("-") }
+        
+        // Letters mixed with valid patterns
+        assertFails { requireValidDollarAmount("1a0") }
+        assertFails { requireValidDollarAmount("1.a5") }
+        assertFails { requireValidDollarAmount("a10.50") }
+    }
+
+    @Test
+    fun `requireValidDollarAmount function accepts valid inputs`() {
+        // Test valid strings that should match DOLLAR_AMOUNT_REGEX pattern: ^(-)?\d+(\.\d+)?$
+        
+        // These should not throw exceptions
+        requireValidDollarAmount("10")
+        requireValidDollarAmount("10.0")
+        requireValidDollarAmount("10.00")
+        requireValidDollarAmount("1234.56")
+        requireValidDollarAmount("-10")
+        requireValidDollarAmount("-10.50")
+        requireValidDollarAmount("10.123")
+        requireValidDollarAmount("0")
+        requireValidDollarAmount("0.00")
+        requireValidDollarAmount("-0")
+        requireValidDollarAmount("-0.00")
+        requireValidDollarAmount("999999.999999")
+        requireValidDollarAmount("1.1")
+        requireValidDollarAmount("123456789")
+        requireValidDollarAmount("-123456789.123456789")
     }
 }
