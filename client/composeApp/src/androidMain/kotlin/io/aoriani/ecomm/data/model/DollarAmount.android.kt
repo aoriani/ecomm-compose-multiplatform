@@ -106,6 +106,6 @@ actual class DollarAmount {
      * @return The hash code for this dollar amount.
      */
     actual override fun hashCode(): Int {
-        return delegate.stripTrailingZeros().hashCode()
+        return toString().hashCode()
     }
 }
