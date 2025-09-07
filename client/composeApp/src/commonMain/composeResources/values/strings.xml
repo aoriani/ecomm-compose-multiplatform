@@ -6,5 +6,5 @@
     <string name="content_description_cart">cart</string>
     <string name="product_list_snackbar_generic_error">Something went wrong</string>
     <string name="product_list_snackbar_action_retry">Retry</string>
-    <string name="product_list_add_to_cart_button_content_description">Add to Cart</string>"
+    <string name="product_list_add_to_cart_button_content_description">Add to Cart</string>
 </resources>

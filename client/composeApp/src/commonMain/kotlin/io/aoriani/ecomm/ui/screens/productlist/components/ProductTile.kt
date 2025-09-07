@@ -116,7 +116,7 @@ fun AddToCartButton(onAddToCart: () -> Unit = {}) {
     val size = ButtonDefaults.ExtraSmallContainerHeight
     IconButton(
         onClick = onAddToCart,
-        modifier = Modifier.heightIn(size).testTag(TestTags.screens.productlist.addTocartButton),
+        modifier = Modifier.heightIn(size).testTag(TestTags.screens.productlist.addToCartButton),
         shapes = IconButtonDefaults.shapes(),
         colors = IconButtonDefaults.filledIconButtonColors()
     ) {

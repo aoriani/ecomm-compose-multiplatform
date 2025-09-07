@@ -56,83 +56,82 @@ fun ProductListScreen(
     navigateToProductDetails: (ProductBasic) -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    LoadingOverlay(false) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(stringResource(Res.string.product_list_title)) },
-                    actions = {
-                        BadgedBox(badge = {
-                            if (state.cartItemCount > 0) {
-                                Badge(modifier = Modifier.testTag(TestTags.screens.productlist.cartCountBagde)) {
-                                    Text(
-                                        state.cartItemCount.toString()
-                                    )
-                                }
-                            }
-                        }) {
-                            IconButton(onClick = navigateToCart) {
-                                Icon(
-                                    Icons.Filled.ShoppingCart,
-                                    contentDescription = stringResource(Res.string.content_description_cart)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(Res.string.product_list_title)) },
+                actions = {
+                    BadgedBox(badge = {
+                        if (state.cartItemCount > 0) {
+                            Badge(modifier = Modifier.testTag(TestTags.screens.productlist.cartCountBadge)) {
+                                Text(
+                                    state.cartItemCount.toString()
                                 )
                             }
                         }
-                    },
-                )
-            },
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-        ) { paddingValues ->
-            LoadingOverlay(
-                isLoading = state is ProductListUiState.Loading,
-                modifier = Modifier.padding(paddingValues)
-            ) {
-                when (state) {
-                    is ProductListUiState.Success -> {
-                        val scrollState = rememberLazyGridState()
-                        Box {
-                            LazyVerticalGrid(
-                                columns = GridCells.Adaptive(minSize = 150.dp),
-                                state = scrollState,
-                                modifier = Modifier.fillMaxSize().background(Color(0xFFEEEEEE))
-                            ) {
-                                items(state.products) { item ->
-                                    ProductTile(
-                                        product = item,
-                                        onTileClicked = { navigateToProductDetails(item) },
-                                        onAddToCartClicked = { state.addToCart(item) }
-                                    )
-                                }
-                            }
-                            VerticalScrollbarIfSupported(scrollState)
-                        }
-                    }
-
-                    is ProductListUiState.Error -> {
-                        val message = stringResource(Res.string.product_list_snackbar_generic_error)
-                        val actionLabel =
-                            stringResource(Res.string.product_list_snackbar_action_retry)
-                        LaunchedEffect(snackbarHostState) {
-                            val result = snackbarHostState.showSnackbar(
-                                message = message,
-                                actionLabel = actionLabel
+                    }) {
+                        IconButton(onClick = navigateToCart) {
+                            Icon(
+                                Icons.Filled.ShoppingCart,
+                                contentDescription = stringResource(Res.string.content_description_cart)
                             )
-
-                            when (result) {
-                                SnackbarResult.Dismissed -> Unit
-                                SnackbarResult.ActionPerformed -> {
-                                    state.reload()
-                                }
-                            }
-
                         }
                     }
-
-                    is ProductListUiState.Loading -> Unit
+                },
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { paddingValues ->
+        LoadingOverlay(
+            isLoading = state is ProductListUiState.Loading,
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            when (state) {
+                is ProductListUiState.Success -> {
+                    val scrollState = rememberLazyGridState()
+                    Box {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(minSize = 150.dp),
+                            state = scrollState,
+                            modifier = Modifier.fillMaxSize().background(Color(0xFFEEEEEE))
+                        ) {
+                            items(state.products) { item ->
+                                ProductTile(
+                                    product = item,
+                                    onTileClicked = { navigateToProductDetails(item) },
+                                    onAddToCartClicked = { state.addToCart(item) }
+                                )
+                            }
+                        }
+                        VerticalScrollbarIfSupported(scrollState)
+                    }
                 }
+
+                is ProductListUiState.Error -> {
+                    val message = stringResource(Res.string.product_list_snackbar_generic_error)
+                    val actionLabel =
+                        stringResource(Res.string.product_list_snackbar_action_retry)
+                    LaunchedEffect(snackbarHostState, state) {
+                        val result = snackbarHostState.showSnackbar(
+                            message = message,
+                            actionLabel = actionLabel
+                        )
+
+                        when (result) {
+                            SnackbarResult.Dismissed -> Unit
+                            SnackbarResult.ActionPerformed -> {
+                                state.reload()
+                            }
+                        }
+
+                    }
+                }
+
+                is ProductListUiState.Loading -> Unit
             }
         }
     }
+
 }
 
 private class ProductListUiStateParameterProvider : PreviewParameterProvider<ProductListUiState> {
