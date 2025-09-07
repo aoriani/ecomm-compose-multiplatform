@@ -6,7 +6,6 @@ object ProductListScreenTestTags {
     const val loadingOverlay = "productlist:loadingOverlay"
     const val addTocartButton = "productlist:addTocartButton"
     const val cartCountBagde = "productlist:cartCountBagde"
-    const val snackbar = "productlist:snackbar"
 }
 
 val TestTags.screens.productlist get() = ProductListScreenTestTags
