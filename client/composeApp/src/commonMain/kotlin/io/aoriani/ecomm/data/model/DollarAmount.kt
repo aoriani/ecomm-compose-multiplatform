@@ -14,11 +14,16 @@ import kotlinx.serialization.encoding.Encoder
  * This is an expect class, meaning it declares a type that must be implemented
  * by actual classes in platform-specific source sets.
  *
- * @property value The string representation of the dollar amount.
+ * The constructor accepts a string representation of a dollar amount.
+ * It is expected to handle various valid formats (e.g., "10", "10.00", "10.5", "1234.56")
+ * and throw a [DollarAmountFormatException] for invalid input.
+ *
+ * @param value The string representation of the dollar amount.
+ * @throws DollarAmountFormatException if the provided string `value` is not a valid representation of a dollar amount.
  */
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 @Serializable(with = DollarAmountAsStringSerializer::class)
-expect class DollarAmount(value: String) {
+expect class DollarAmount @Throws(DollarAmountFormatException::class) constructor(value: String) {
     /**
      * Adds another [DollarAmount] to this one.
      * @param other The [DollarAmount] to add.
@@ -65,6 +70,39 @@ expect class DollarAmount(value: String) {
      */
     override fun hashCode(): Int
 }
+
+/**
+ * Regular expression for validating dollar amount strings.
+ *
+ * This regex matches strings that:
+ * - Optionally start with a minus sign (`^-?`).
+ * - Followed by one or more digits (`\d+`).
+ * - Optionally followed by a decimal point and one or more digits (`(\.\d+)?$`).
+ *   Note: While the regex allows more than two decimal places for flexibility in initial parsing,
+ *   the `DollarAmount` constructor and its `toString()` method are expected to enforce
+ *   or normalize to two decimal places for canonical representation.
+ *
+ * Examples of valid strings (according to the regex): "10", "10.0", "10.00", "1234.56", "-10", "-10.50", "10.123"
+ * Examples of invalid strings: "10.", ".50", "abc", "--10"
+ */
+private val DOLLAR_AMOUNT_REGEX = Regex("""^(-)?\d+(\.\d+)?$""")
+
+/**
+ * Checks if the provided string `value` is a valid representation of a dollar amount.
+ *
+ * This function uses the [DOLLAR_AMOUNT_REGEX] to validate the input string.
+ *
+ * @param value The string to validate.
+ * @throws DollarAmountFormatException if the `value` does not match the expected dollar amount format.
+ */
+@Throws(DollarAmountFormatException::class)
+fun requireValidDollarAmount(value: String) {
+    if (!DOLLAR_AMOUNT_REGEX.matches(value)) {
+        throw DollarAmountFormatException("Invalid dollar amount format: $value")
+    }
+}
+
+class DollarAmountFormatException(message: String) : RuntimeException(message)
 
 /**
  * A [DollarAmount] instance representing zero dollars.
