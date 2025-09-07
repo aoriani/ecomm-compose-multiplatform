@@ -89,7 +89,10 @@ actual class DollarAmount {
      * For example, a value representing `10.456` will be formatted as `"10.46"`, and `10` as `"10.00"`.
      */
     actual override fun toString(): String {
-        return delegate.toFixed(2, Big.roundHalfEven)
+        val returnString =  delegate.toFixed(2, Big.roundHalfEven)
+
+        // Zero will always be positive to ensure consistent behavior among platforms
+        return if (returnString == "-0.00") "0.00" else returnString
     }
 
     /**

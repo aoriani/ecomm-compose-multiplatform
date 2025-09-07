@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSNumberFormatterDecimalStyle
+import platform.Foundation.NSNumberFormatterRoundHalfEven
 
 /**
  * iOS-specific implementation of [DollarAmount].
@@ -79,9 +80,13 @@ actual class DollarAmount {
             usesGroupingSeparator = false
             minimumFractionDigits = 2.toULong()
             maximumFractionDigits = 2.toULong()
+            roundingMode = NSNumberFormatterRoundHalfEven
         }
 
-        return numberFormatter.stringFromNumber(delegate) ?: delegate.toString()
+        val returnString = numberFormatter.stringFromNumber(delegate) ?: delegate.toString()
+
+        // Zero will always be positive to ensure consistent behavior among platforms
+        return if (returnString == "-0.00") "0.00" else returnString
     }
 
     /**
