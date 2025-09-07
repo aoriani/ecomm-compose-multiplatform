@@ -24,6 +24,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -110,11 +111,10 @@ fun ProductListScreen(
                     }
 
                     is ProductListUiState.Error -> {
-                        val scope = rememberCoroutineScope()
                         val message = stringResource(Res.string.product_list_snackbar_generic_error)
                         val actionLabel =
                             stringResource(Res.string.product_list_snackbar_action_retry)
-                        scope.launch {
+                        LaunchedEffect(snackbarHostState) {
                             val result = snackbarHostState.showSnackbar(
                                 message = message,
                                 actionLabel = actionLabel
@@ -126,6 +126,7 @@ fun ProductListScreen(
                                     state.reload()
                                 }
                             }
+
                         }
                     }
 
