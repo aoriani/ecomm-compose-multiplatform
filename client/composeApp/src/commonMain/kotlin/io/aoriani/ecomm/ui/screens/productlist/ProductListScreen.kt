@@ -42,7 +42,6 @@ import io.aoriani.ecomm.ui.screens.common.components.VerticalScrollbarIfSupporte
 import io.aoriani.ecomm.ui.screens.productlist.components.LoadingOverlay
 import io.aoriani.ecomm.ui.screens.productlist.components.ProductTile
 import io.aoriani.ecomm.ui.test.TestTags
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -55,7 +54,7 @@ import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 fun ProductListScreen(
     state: ProductListUiState,
     navigateToCart: () -> Unit = {},
-    navigateToProductDetails: (ProductPreview) -> Unit = {}
+    navigateToProductDetails: (ProductBasic) -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     LoadingOverlay(false) {
@@ -153,7 +152,6 @@ private class ProductListUiStateParameterProvider : PreviewParameterProvider<Pro
             }.toPersistentList()
         )
     )
-
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
