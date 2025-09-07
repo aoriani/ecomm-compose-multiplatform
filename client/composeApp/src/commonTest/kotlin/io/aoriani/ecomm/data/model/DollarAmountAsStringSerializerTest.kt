@@ -183,13 +183,13 @@ class DollarAmountAsStringSerializerTest {
     @Test
     fun `round-trip serialization preserves values`() {
         val testAmounts = listOf(
-//            DollarAmount("10.50"),
-//            DollarAmount("0"),
-//            DollarAmount("-25.75"),
-//            DollarAmount("999999.99"),
-//            DollarAmount("0.01"),
-//            DollarAmount.ZERO,
-//            DollarAmount("123.456"), // Will be normalized to 123.46
+            DollarAmount("10.50"),
+            DollarAmount("0"),
+            DollarAmount("-25.75"),
+            DollarAmount("999999.99"),
+            DollarAmount("0.01"),
+            DollarAmount.ZERO,
+            DollarAmount("123.456"), // Will be normalized to 123.46
             DollarAmount("-0.001")   // Will be normalized
         )
 
