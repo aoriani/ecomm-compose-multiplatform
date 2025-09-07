@@ -73,6 +73,7 @@ actual class DollarAmount {
      * formatted to 2 decimal places using [NSNumberFormatterDecimalStyle].
      *
      * For example, a value representing `10.456` will be formatted as `"10.46"`, and `10` as `"10.00"`.
+     * A zero value will always be positive ("0.00") to ensure consistent behavior among platforms.
      */
     actual override fun toString(): String {
         val numberFormatter = NSNumberFormatter().apply {
@@ -85,15 +86,14 @@ actual class DollarAmount {
 
         val returnString = numberFormatter.stringFromNumber(delegate) ?: delegate.toString()
 
-        // Zero will always be positive to ensure consistent behavior among platforms
         return if (returnString == "-0.00") "0.00" else returnString
     }
 
     /**
      * Checks if this [DollarAmount] is equal to another object.
      *
-     * Two [DollarAmount] instances are considered equal if their underlying [NSDecimalNumber]
-     * representations are numerically equal (i.e., `isEqual` returns `true`).
+     * Two [DollarAmount] instances are considered equal if their canonical string
+     * representations (as returned by [toString]) are equal.
      * For an object to be equal to a [DollarAmount], it must also be an instance of [DollarAmount].
      *
      * @param other The object to compare with.
@@ -108,15 +108,15 @@ actual class DollarAmount {
     }
 
     /**
-     * Returns the hash code of this [DollarAmount].
+     * Returns the hash code for this [DollarAmount].
      *
-     * The hash code is calculated based on the underlying [NSDecimalNumber] value.
-     * This ensures that two [DollarAmount] instances considered equal by the [equals] method
+     * The hash code is calculated based on its canonical string representation (as returned by [toString]),
+     * ensuring that two [DollarAmount] instances considered equal by the [equals] method
      * will have the same hash code, promoting correct behavior in hash-based collections.
      *
-     * @return The hash code.
+     * @return The hash code for this dollar amount.
      */
     actual override fun hashCode(): Int {
-        return delegate.hash().toInt()
+        return toString().hashCode()
     }
 }
