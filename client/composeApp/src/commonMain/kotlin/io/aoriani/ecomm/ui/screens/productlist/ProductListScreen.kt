@@ -26,7 +26,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -44,7 +43,6 @@ import io.aoriani.ecomm.ui.screens.productlist.components.LoadingOverlay
 import io.aoriani.ecomm.ui.screens.productlist.components.ProductTile
 import io.aoriani.ecomm.ui.test.TestTags
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
