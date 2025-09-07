@@ -87,19 +87,19 @@ actual class DollarAmount {
      * rounded to 2 decimal places using the `Big.js` half-even rounding mode ([Big.roundHalfEven]).
      *
      * For example, a value representing `10.456` will be formatted as `"10.46"`, and `10` as `"10.00"`.
+     * A zero value will always be positive ("0.00") to ensure consistent behavior among platforms.
      */
     actual override fun toString(): String {
         val returnString =  delegate.toFixed(2, Big.roundHalfEven)
 
-        // Zero will always be positive to ensure consistent behavior among platforms
         return if (returnString == "-0.00") "0.00" else returnString
     }
 
     /**
      * Checks if this [DollarAmount] is equal to another object.
      *
-     * Two [DollarAmount] instances are considered equal if their underlying `Big.js`
-     * representations are numerically equal (as determined by `Big.eq()`).
+     * Two [DollarAmount] instances are considered equal if their canonical string
+     * representations (as returned by [toString]) are equal.
      * For an object to be equal to a [DollarAmount], it must also be
      * an instance of [DollarAmount].
      *
@@ -117,15 +117,13 @@ actual class DollarAmount {
     /**
      * Returns the hash code for this [DollarAmount].
      *
-     * The hash code is calculated based on the string representation of its underlying `Big.js` value.
-     * This ensures that two [DollarAmount] instances considered equal by the [equals] method
-     * will have the same hash code, promoting correct behavior in hash-based collections.
+     * The hash code is calculated based on the canonical string representation of this dollar amount
+     * (as returned by [toString]), ensuring that two [DollarAmount] instances considered equal by
+     * the [equals] method will have the same hash code, promoting correct behavior in hash-based collections.
      *
      * @return The hash code for this dollar amount.
      */
     actual override fun hashCode(): Int {
-        // The most straightforward way to ensure consistency with an `eq` method
-        // from an external JS library is to base the hashCode on the canonical string representation.
-        return delegate.toString().hashCode()
+        return toString().hashCode()
     }
 }
