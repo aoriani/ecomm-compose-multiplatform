@@ -1,7 +1,6 @@
 package io.aoriani.ecomm.ui.screens.productlist.components
 
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -45,10 +44,10 @@ class ProductTileTest : UiTest() {
 
         onNodeWithText(productName).assertExists().assertIsDisplayed()
         onNodeWithText("$${productPrice}").assertExists().assertIsDisplayed()
-        onNodeWithTag(TestTags.screens.productlist.addTocartButton).assertExists().assertIsDisplayed()
+        onNodeWithTag(TestTags.screens.productlist.addToCartButton).assertExists().assertIsDisplayed()
 
         assertFalse(wasAddToCartClicked)
-        onNodeWithTag(TestTags.screens.productlist.addTocartButton).performClick()
+        onNodeWithTag(TestTags.screens.productlist.addToCartButton).performClick()
         assertTrue(wasAddToCartClicked)
 
         assertFalse(wasTileClicked)

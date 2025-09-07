@@ -3,7 +3,6 @@ package io.aoriani.ecomm.ui.screens.productlist
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -47,18 +46,18 @@ class ProductListScreenTest : UiTest() {
             ProductListScreen(ProductListUiState.Loading(cartItemCount = 0))
         }
 
-        onNodeWithTag(TestTags.screens.productlist.cartCountBagde).assertDoesNotExist()
+        onNodeWithTag(TestTags.screens.productlist.cartCountBadge).assertDoesNotExist()
     }
 
     @Test
-    fun `When state is loading and cart count is not zero no badge is displayed`() =
+    fun `When state is loading and cart count is not zero a badge is displayed`() =
         runComposeUiTest {
 
             setContentWithContext {
                 ProductListScreen(ProductListUiState.Loading(cartItemCount = 14))
             }
 
-            onNodeWithTag(TestTags.screens.productlist.cartCountBagde)
+            onNodeWithTag(TestTags.screens.productlist.cartCountBadge)
                 .assertIsDisplayed()
                 .onChildren().assertAny(hasText("14"))
         }
@@ -70,8 +69,21 @@ class ProductListScreenTest : UiTest() {
             ProductListScreen(ProductListUiState.Error(cartItemCount = 0))
         }
 
-        onNodeWithTag(TestTags.screens.productlist.cartCountBagde).assertDoesNotExist()
+        onNodeWithTag(TestTags.screens.productlist.cartCountBadge).assertDoesNotExist()
     }
+
+    @Test
+    fun `When state is error and cart count is not zero a badge is displayed`() =
+        runComposeUiTest {
+
+            setContentWithContext {
+                ProductListScreen(ProductListUiState.Error(cartItemCount = 14))
+            }
+
+            onNodeWithTag(TestTags.screens.productlist.cartCountBadge)
+                .assertIsDisplayed()
+                .onChildren().assertAny(hasText("14"))
+        }
 
     @Test
     fun `When state is error snackbar is displayed`() = runComposeUiTest {
@@ -89,38 +101,24 @@ class ProductListScreenTest : UiTest() {
     }
 
     @Test
-    fun `When state is error and cart count is not zero no badge is displayed`() =
-        runComposeUiTest {
-
-            setContentWithContext {
-                ProductListScreen(ProductListUiState.Error(cartItemCount = 14))
-            }
-
-            onNodeWithTag(TestTags.screens.productlist.cartCountBagde)
-                .assertIsDisplayed()
-                .onChildren().assertAny(hasText("14"))
-        }
-
-
-    @Test
     fun `When state is success and cart count is zero no badge is displayed`() = runComposeUiTest {
 
         setContentWithContext {
             ProductListScreen(ProductListUiState.Success(cartItemCount = 0))
         }
 
-        onNodeWithTag(TestTags.screens.productlist.cartCountBagde).assertDoesNotExist()
+        onNodeWithTag(TestTags.screens.productlist.cartCountBadge).assertDoesNotExist()
     }
 
     @Test
-    fun `When state is success and cart count is not zero no badge is displayed`() =
+    fun `When state is success and cart count is not zero a badge is displayed`() =
         runComposeUiTest {
 
             setContentWithContext {
                 ProductListScreen(ProductListUiState.Success(cartItemCount = 14))
             }
 
-            onNodeWithTag(TestTags.screens.productlist.cartCountBagde)
+            onNodeWithTag(TestTags.screens.productlist.cartCountBadge)
                 .assertIsDisplayed()
                 .onChildren().assertAny(hasText("14"))
         }
