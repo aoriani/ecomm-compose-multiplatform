@@ -66,7 +66,7 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
      * Retrieves a single product by its unique identifier from the GraphQL API.
      * Handles Apollo GraphQL responses, including errors, and maps the data to a [Product] model.
      * @param id The unique identifier of the product to retrieve.
-     * @return A [Result] containing the [Product] if found, or a [ProductRepository.ProductException] if not found or an error occurs.
+     * @return A [Result] containing the [Product] if found, or `null` when not found. On failures, returns a [ProductRepository.ProductException].
      */
     override suspend fun getProduct(id: String): Result<Product?> {
         return try {
@@ -91,15 +91,8 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
 
                 else -> {
                     val product = response.data?.product?.toProductModel()
-                    if (product != null) {
-                        Result.success(product)
-                    } else {
-                        Result.failure(
-                            ProductRepository.ProductException(
-                                "Product not found or missing data for id: $id"
-                            )
-                        )
-                    }
+                    // Align with repository contract: not-found is success(null)
+                    Result.success(product)
                 }
             }
         } catch (apolloException: ApolloException) {
