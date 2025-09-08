@@ -14,6 +14,7 @@ import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ProductQueryTest {
@@ -114,9 +115,9 @@ class ProductQueryTest {
         val result = productQuery.product(ID("test1"))
 
         // Then
-        assertEquals("Test Product 1", result.name)
-        assertEquals(BigDecimal("19.99"), result.price)
-        assertEquals(ID("test1"), result.id)
+        assertEquals("Test Product 1", result?.name)
+        assertEquals(BigDecimal("19.99"), result?.price)
+        assertEquals(ID("test1"), result?.id)
     }
 
     @Test
@@ -129,12 +130,14 @@ class ProductQueryTest {
 
 
         // When/Then
-        val thrownException = assertFailsWith<ProductNotFoundException> {
-            productQuery.product(ID("nonexistent"))
-        }
+//        val thrownException = assertFailsWith<ProductNotFoundException> {
+//            productQuery.product(ID("nonexistent"))
+//        }
+        val result = productQuery.product(ID("nonexistent"))
 
         // Then
-        assertEquals(exception, thrownException)
+//        assertEquals(exception, thrownException)
+        assertNull(result)
     }
 
     @Test

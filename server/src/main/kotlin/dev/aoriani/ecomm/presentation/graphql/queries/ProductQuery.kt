@@ -54,24 +54,24 @@ class ProductQuery(
     /**
      * Fetches a single product by its unique identifier.
      *
-     * This method retrieves a product using the given ID. If the product does not exist,
-     * a `ProductNotFoundException` is thrown. Additionally, if the ID is blank, an
-     * `IllegalArgumentException` is thrown.
+     * Looks up a product using the provided ID. If no product exists for the
+     * given ID, this method returns null. If the provided ID is blank, a
+     * [BlankProductIdException] is thrown. Any other unexpected errors are
+     * wrapped and rethrown as [GraphQLInternalException].
      *
      * @param id The unique ID of the product to retrieve. Must not be blank.
-     * @return The product corresponding to the provided ID.
-     * @throws ProductNotFoundException If no product is found for the given ID.
-     * @throws IllegalArgumentException If the provided ID is blank.
+     * @return The product for the provided ID, or null if not found.
+     * @throws BlankProductIdException If the provided ID is blank.
      */
-    @GraphQLDescription("Fetch a single product by its unique identifier. Throws ProductNotFoundException if not found.")
+    @GraphQLDescription("Fetch a single product by ID. Returns null when not found.")
     suspend fun product(
-        @GraphQLDescription("The unique ID of the product to retrieve. Cannot be blank.")
+        @GraphQLDescription("Product ID to retrieve. Must be non-empty.")
         id: ID
-    ): Product {
+    ): Product? {
         val result = getProductById(ProductId(id.value))
-        if (result.isFailure) {
+        return if (result.isFailure) {
             when (val exception = result.exceptionOrNull()) {
-                is ProductNotFoundException -> throw exception
+                is ProductNotFoundException -> null
                 is BlankProductIdException -> throw exception
                 else -> {
                     logger.error("Failed to get product by id: ${id.value}", exception)
@@ -79,7 +79,7 @@ class ProductQuery(
                 }
             }
         } else {
-            return result.getOrThrow().toGraphQlProduct()
+            result.getOrThrow().toGraphQlProduct()
         }
     }
 }
