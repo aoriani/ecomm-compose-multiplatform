@@ -215,11 +215,11 @@ class GraphQlProductDataSourceTest {
     fun `When GraphQL returns data then getProduct succeeds`() = runTest {
         val product = createDetailedProduct(
             "elon_musk_plush", "Elon Musk", 34.99,
-            "This chibi-style plush of Elon Musk captures his visionary spirit with a mini SpaceX jacket and embroidered \
-Tesla T-shirt details. Crafted from an ultra-soft microfiber blend reminiscent of aerospace materials, it \
-features an oversized head, gentle pastel hues, and a tiny rocket accessory at his side. Perfect for fans \
-of innovation, each stitch celebrates Musk's journey from South Africa to the stars. A fun collector's item \
-and conversation starter for any tech enthusiast.",
+            """This chibi-style plush of Elon Musk captures his visionary spirit with a mini SpaceX jacket and embroidered 
+Tesla T-shirt details. Crafted from an ultra-soft microfiber blend reminiscent of aerospace materials, it 
+features an oversized head, gentle pastel hues, and a tiny rocket accessory at his side. Perfect for fans 
+of innovation, each stitch celebrates Musk's journey from South Africa to the stars. A fun collector's item 
+and conversation starter for any tech enthusiast.""".trimIndent(),
             "Aerospace-grade microfiber blend", "South Africa", true,
             "https://api.aoriani.dev/static/images/elon_musk_plush.png"
         )
