@@ -215,7 +215,11 @@ class GraphQlProductDataSourceTest {
     fun `When GraphQL returns data then getProduct succeeds`() = runTest {
         val product = createDetailedProduct(
             "elon_musk_plush", "Elon Musk", 34.99,
-            "This chibi-style plush of Elon Musk captures his visionary spirit with a mini SpaceX jacket and embroidered \\nTesla T-shirt details. Crafted from an ultra-soft microfiber blend reminiscent of aerospace materials, it \\nfeatures an oversized head, gentle pastel hues, and a tiny rocket accessory at his side. Perfect for fans \\nof innovation, each stitch celebrates Musk's journey from South Africa to the stars. A fun collector's item \\nand conversation starter for any tech enthusiast.",
+            "This chibi-style plush of Elon Musk captures his visionary spirit with a mini SpaceX jacket and embroidered \
+Tesla T-shirt details. Crafted from an ultra-soft microfiber blend reminiscent of aerospace materials, it \
+features an oversized head, gentle pastel hues, and a tiny rocket accessory at his side. Perfect for fans \
+of innovation, each stitch celebrates Musk's journey from South Africa to the stars. A fun collector's item \
+and conversation starter for any tech enthusiast.",
             "Aerospace-grade microfiber blend", "South Africa", true,
             "https://api.aoriani.dev/static/images/elon_musk_plush.png"
         )
@@ -243,21 +247,22 @@ class GraphQlProductDataSourceTest {
     }
 
     @Test
-    fun `When GraphQL returns null product then getProduct fails with product not found error`() =
+    fun `When GraphQL returns null product then getProduct succeeds with null`() =
         runTest {
             val dataSource =
                 createDataSourceWithResponse(createJsonResponse(createSingleProductResponse("null")))
             val result = dataSource.getProduct("non-existent-id")
-            assertFailureWithApolloException(result)
+            assertTrue(result.isSuccess)
+            assertNull(result.getOrNull())
         }
 
     @Test
-    fun `When GraphQL returns null data for getProduct then fails with product not found error`() =
+    fun `When GraphQL returns null data for getProduct then succeeds with null`() =
         runTest {
             val dataSource = createDataSourceWithResponse(createJsonResponse("""{"data": null}"""))
             val result = dataSource.getProduct("non-existent-id")
-            assertFailureWithoutCause(result)
-            assertTrue(result.exceptionOrNull()?.message?.contains("Product not found") ?: false)
+            assertTrue(result.isSuccess)
+            assertNull(result.getOrNull())
         }
 
     @Test
