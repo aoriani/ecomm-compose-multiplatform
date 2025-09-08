@@ -211,6 +211,275 @@ class GraphQlProductDataSourceTest {
         assertTrue(result.isSuccess)
         assertNotNull(result.getOrNull())
     }
+
+    @Test
+    fun `When GraphQL returns empty products list then fetchProducts succeeds with empty list`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{
+                              "data": {
+                                "products": []
+                              }
+                            }""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.fetchProducts()
+        assertTrue(result.isSuccess)
+        assertNotNull(result.getOrNull())
+        val products = result.getOrNull()
+        assertNotNull(products)
+        assertEquals(0, products.size)
+    }
+
+    @Test
+    fun `When GraphQL returns null data for fetchProducts then returns empty list`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{"data": null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.fetchProducts()
+        assertTrue(result.isSuccess)
+        assertNotNull(result.getOrNull())
+        val products = result.getOrNull()
+        assertNotNull(products)
+        assertEquals(0, products.size)
+    }
+
+    @Test
+    fun `When GraphQL returns null product then getProduct fails with product not found error`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{
+                              "data": {
+                                "product": null
+                              }
+                            }""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.getProduct("non-existent-id")
+        assertTrue(result.isFailure)
+        assertNotNull(result.exceptionOrNull())
+        assertIs<ProductRepository.ProductException>(result.exceptionOrNull())
+        assertTrue(result.exceptionOrNull()?.message?.contains("Error while reading JSON response") ?: false)
+        assertNotNull(result.exceptionOrNull()?.cause)
+        assertIs<ApolloException>(result.exceptionOrNull()?.cause)
+    }
+
+    @Test
+    fun `When GraphQL returns null data for getProduct then fails with product not found error`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{"data": null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.getProduct("non-existent-id")
+        assertTrue(result.isFailure)
+        assertNotNull(result.exceptionOrNull())
+        assertIs<ProductRepository.ProductException>(result.exceptionOrNull())
+        assertTrue(result.exceptionOrNull()?.message?.contains("Product not found") ?: false)
+        assertNull(result.exceptionOrNull()?.cause)
+    }
+
+    @Test
+    fun `When GraphQL returns multiple errors then fetchProducts fails with combined error messages`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{"data": null, "errors":[{"message":"Error 1"}, {"message":"Error 2"}]}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.fetchProducts()
+        assertTrue(result.isFailure)
+        assertNotNull(result.exceptionOrNull())
+        assertIs<ProductRepository.ProductException>(result.exceptionOrNull())
+        val errorMessage = result.exceptionOrNull()?.message ?: ""
+        assertTrue(errorMessage.contains("Error 1"))
+        assertTrue(errorMessage.contains("Error 2"))
+        assertNull(result.exceptionOrNull()?.cause)
+    }
+
+    @Test
+    fun `When GraphQL returns multiple errors then getProduct fails with combined error messages`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{"data": null, "errors":[{"message":"Error 1"}, {"message":"Error 2"}]}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.getProduct("id")
+        assertTrue(result.isFailure)
+        assertNotNull(result.exceptionOrNull())
+        assertIs<ProductRepository.ProductException>(result.exceptionOrNull())
+        val errorMessage = result.exceptionOrNull()?.message ?: ""
+        assertTrue(errorMessage.contains("Error 1"))
+        assertTrue(errorMessage.contains("Error 2"))
+        assertNull(result.exceptionOrNull()?.cause)
+    }
+
+    @Test
+    fun `When fetchProducts succeeds then validates product data mapping`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{
+                              "data": {
+                                "products": [
+                                  {
+                                   "__typename": "Product",
+                                    "id": "test_product",
+                                    "name": "Test Product Name",
+                                    "price": 29.99,
+                                    "images": [
+                                      "https://example.com/image1.png",
+                                      "https://example.com/image2.png"
+                                    ]
+                                  }
+                                ]
+                              }
+                            }""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.fetchProducts()
+        assertTrue(result.isSuccess)
+        val products = result.getOrNull()
+        assertNotNull(products)
+        assertEquals(1, products.size)
+        val product = products.first()
+        assertEquals("test_product", product.id.value)
+        assertEquals("Test Product Name", product.name)
+        assertEquals("29.99", product.price.toString())
+        assertEquals("https://example.com/image1.png", product.thumbnailUrl)
+    }
+
+    @Test
+    fun `When getProduct succeeds then validates product data mapping`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{
+                              "data": {
+                                "product": {
+                                  "__typename": "Product",
+                                  "id": "detailed_product",
+                                  "name": "Detailed Product",
+                                  "price": 49.99,
+                                  "images": [
+                                    "https://example.com/detailed1.png",
+                                    "https://example.com/detailed2.png"
+                                  ],
+                                  "description": "A detailed product description",
+                                  "material": "Premium material",
+                                  "countryOfOrigin": "USA",
+                                  "inStock": false
+                                }
+                              }
+                            }""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.getProduct("detailed_product")
+        assertTrue(result.isSuccess)
+        val product = result.getOrNull()
+        assertNotNull(product)
+        assertEquals("detailed_product", product.id.value)
+        assertEquals("Detailed Product", product.name)
+        assertEquals("49.99", product.price.toString())
+        assertEquals("A detailed product description", product.description)
+        assertEquals("Premium material", product.material)
+        assertEquals("USA", product.countryOfOrigin)
+        assertEquals(false, product.inStock)
+        assertEquals(2, product.images.size)
+        assertTrue(product.images.contains("https://example.com/detailed1.png"))
+        assertTrue(product.images.contains("https://example.com/detailed2.png"))
+    }
+
+    @Test
+    fun `When fetchProducts receives product with no images then handles empty images gracefully`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{
+                              "data": {
+                                "products": [
+                                  {
+                                   "__typename": "Product",
+                                    "id": "no_image_product",
+                                    "name": "No Image Product",
+                                    "price": 19.99,
+                                    "images": []
+                                  }
+                                ]
+                              }
+                            }""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.fetchProducts()
+        assertTrue(result.isSuccess)
+        val products = result.getOrNull()
+        assertNotNull(products)
+        assertEquals(1, products.size)
+        val product = products.first()
+        assertEquals("no_image_product", product.id.value)
+        assertNull(product.thumbnailUrl)
+    }
+
+    @Test
+    fun `When GraphQL returns malformed JSON then fetchProducts fails`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{"data": {"products": [malformed json""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.fetchProducts()
+        assertTrue(result.isFailure)
+        assertNotNull(result.exceptionOrNull())
+        assertIs<ProductRepository.ProductException>(result.exceptionOrNull())
+        assertNotNull(result.exceptionOrNull()?.cause)
+        assertIs<ApolloException>(result.exceptionOrNull()?.cause)
+    }
+
+    @Test
+    fun `When GraphQL returns malformed JSON then getProduct fails`() = runTest {
+        val client = mockApolloClient {
+            respond(
+                content = """{"data": {"product": malformed json""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val dataSource = GraphQlProductDataSource(client)
+        val result = dataSource.getProduct("id")
+        assertTrue(result.isFailure)
+        assertNotNull(result.exceptionOrNull())
+        assertIs<ProductRepository.ProductException>(result.exceptionOrNull())
+        assertNotNull(result.exceptionOrNull()?.cause)
+        assertIs<ApolloException>(result.exceptionOrNull()?.cause)
+    }
 }
 
 
