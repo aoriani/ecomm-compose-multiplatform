@@ -2,6 +2,7 @@ package io.aoriani.ecomm.data.repositories.products.datasources.graphql
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.exception.ApolloException
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
@@ -31,18 +32,11 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
 
             when {
                 response.exception != null -> {
-                    Result.failure(
-                        ProductRepository.ProductException(
-                            response.exception?.message.orEmpty(), response.exception
-                        )
-                    )
+                    handleNetworkError(response.exception)
                 }
 
                 response.hasErrors() -> {
-                    val errorMessages =
-                        response.errors?.joinToString(separator = "\n") { it.message }
-                            ?: "Unknown GraphQL error"
-                    Result.failure(ProductRepository.ProductException(errorMessages))
+                    handleGraphQlError(response)
                 }
 
                 else -> {
@@ -54,12 +48,23 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
                 }
             }
         } catch (apolloException: ApolloException) {
-            Result.failure(
-                ProductRepository.ProductException(
-                    apolloException.message.orEmpty(), apolloException
-                )
-            )
+            handleNetworkError(apolloException)
         }
+    }
+
+    private inline fun <reified T, E : ApolloException?> handleNetworkError(exception: E): Result<T> {
+        return Result.failure(
+            ProductRepository.ProductException(
+                exception?.message.orEmpty(), exception
+            )
+        )
+    }
+
+    private inline fun <reified D : Operation.Data, T> handleGraphQlError(response: ApolloResponse<D>): Result<T> {
+        val errorMessages =
+            response.errors?.joinToString(separator = "\n") { it.message }
+                ?: "Unknown GraphQL error"
+        return Result.failure(ProductRepository.ProductException(errorMessages))
     }
 
     /**
@@ -75,18 +80,11 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
 
             when {
                 response.exception != null -> {
-                    Result.failure(
-                        ProductRepository.ProductException(
-                            response.exception?.message.orEmpty(), response.exception
-                        )
-                    )
+                    handleNetworkError(response.exception)
                 }
 
                 response.hasErrors() -> {
-                    val errorMessages =
-                        response.errors?.joinToString(separator = "\n") { it.message }
-                            ?: "Unknown GraphQL error"
-                    Result.failure(ProductRepository.ProductException(errorMessages))
+                    handleGraphQlError(response)
                 }
 
                 else -> {
@@ -96,11 +94,7 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
                 }
             }
         } catch (apolloException: ApolloException) {
-            Result.failure(
-                ProductRepository.ProductException(
-                    apolloException.message.orEmpty(), apolloException
-                )
-            )
+            handleNetworkError(apolloException)
         }
     }
 }

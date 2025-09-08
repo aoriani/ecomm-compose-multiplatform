@@ -127,16 +127,9 @@ class ProductQueryTest {
         val exception = ProductNotFoundException(productId)
         val repository = FakeProductRepository(_getById = { Result.failure(exception) })
         val productQuery = ProductQuery(GetAllProductsUseCase(repository), GetProductByIdUseCase(repository))
-
-
-        // When/Then
-//        val thrownException = assertFailsWith<ProductNotFoundException> {
-//            productQuery.product(ID("nonexistent"))
-//        }
         val result = productQuery.product(ID("nonexistent"))
 
         // Then
-//        assertEquals(exception, thrownException)
         assertNull(result)
     }
 
