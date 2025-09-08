@@ -29,16 +29,29 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
             val response: ApolloResponse<ListProductsQuery.Data> =
                 apolloClient.query(ListProductsQuery()).execute()
 
-            if (response.hasErrors()) {
-                val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
-                    ?: "Unknown GraphQL error"
-                Result.failure(ProductRepository.ProductException(errorMessages))
-            } else {
-                val products: ImmutableList<ProductPreview> =
-                    response.data?.products?.map { product ->
-                        product.toProductPreviewModel()
-                    }?.toImmutableList() ?: persistentListOf()
-                Result.success(products)
+            when {
+                response.exception != null -> {
+                    Result.failure(
+                        ProductRepository.ProductException(
+                            response.exception?.message.orEmpty(), response.exception
+                        )
+                    )
+                }
+
+                response.hasErrors() -> {
+                    val errorMessages =
+                        response.errors?.joinToString(separator = "\n") { it.message }
+                            ?: "Unknown GraphQL error"
+                    Result.failure(ProductRepository.ProductException(errorMessages))
+                }
+
+                else -> {
+                    val products: ImmutableList<ProductPreview> =
+                        response.data?.products?.map { product ->
+                            product.toProductPreviewModel()
+                        }?.toImmutableList() ?: persistentListOf()
+                    Result.success(products)
+                }
             }
         } catch (apolloException: ApolloException) {
             Result.failure(
@@ -60,20 +73,33 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
             val response: ApolloResponse<FetchProductQuery.Data> =
                 apolloClient.query(FetchProductQuery(id)).execute()
 
-            if (response.hasErrors()) {
-                val errorMessages = response.errors?.joinToString(separator = "\n") { it.message }
-                    ?: "Unknown GraphQL error"
-                Result.failure(ProductRepository.ProductException(errorMessages))
-            } else {
-                val product = response.data?.product?.toProductModel()
-                if (product != null) {
-                    Result.success(product)
-                } else {
+            when {
+                response.exception != null -> {
                     Result.failure(
                         ProductRepository.ProductException(
-                            "Product not found or missing data for id: $id"
+                            response.exception?.message.orEmpty(), response.exception
                         )
                     )
+                }
+
+                response.hasErrors() -> {
+                    val errorMessages =
+                        response.errors?.joinToString(separator = "\n") { it.message }
+                            ?: "Unknown GraphQL error"
+                    Result.failure(ProductRepository.ProductException(errorMessages))
+                }
+
+                else -> {
+                    val product = response.data?.product?.toProductModel()
+                    if (product != null) {
+                        Result.success(product)
+                    } else {
+                        Result.failure(
+                            ProductRepository.ProductException(
+                                "Product not found or missing data for id: $id"
+                            )
+                        )
+                    }
                 }
             }
         } catch (apolloException: ApolloException) {
