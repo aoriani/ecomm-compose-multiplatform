@@ -25,12 +25,16 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
      * Executes a GraphQL query and processes its response.
      * This function wraps the Apollo Client query execution in a try-catch block to handle [ApolloException].
      * If an exception occurs during the query execution, it returns a [Result.failure] with a [ProductRepository.ProductException].
-     * Otherwise, it processes the response using the same logic as [processResponse].
+     * Otherwise, it processes the response:
+     * - If `response.exception` is not null, it indicates a transport layer error or other issue before the server could process the request.
+     * - If `response.hasErrors()` is true, it means the server processed the request but returned GraphQL errors (e.g., validation errors, internal server errors).
+     * - Otherwise, the request was successful, and the `dataMapper` is used to transform the GraphQL response data.
+     *
      * @param R The type of the data to be returned in the [Result].
-     * @param D The type of the GraphQL query data.
+     * @param D The type of the GraphQL query data, which must extend [Query.Data].
      * @param query The GraphQL [Query] to execute.
-     * @param dataMapper A lambda function that takes the GraphQL data of type [D] (or null) and returns a [Result] of type [R].
-     * @return A [Result] of type [R], which can be a success with the mapped data or a failure with an exception.
+     * @param dataMapper A lambda function that takes the GraphQL data of type [D] (or null if the response data is null) and returns a [Result] of type [R].
+     * @return A [Result] of type [R]. On success, it contains the data mapped by [dataMapper]. On failure, it contains a [ProductRepository.ProductException] detailing the error.
      */
     private suspend inline fun <reified R, D : Query.Data> processQuery(
         query: Query<D>,
