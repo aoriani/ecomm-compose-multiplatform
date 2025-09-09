@@ -3,7 +3,6 @@ package io.aoriani.ecomm.data.repositories.products.datasources.graphql
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.exception.ApolloException
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductBasic
@@ -20,51 +19,62 @@ import kotlinx.collections.immutable.toImmutableList
  * @param apolloClient The ApolloClient instance used for GraphQL operations.
  */
 class GraphQlProductDataSource(private val apolloClient: ApolloClient) : ProductDataSource {
+
+    /**
+     * Processes the Apollo GraphQL response, handling errors and mapping data.
+     * This function checks for exceptions and GraphQL errors in the response.
+     * If errors are present, it returns a [Result.failure] with a [ProductRepository.ProductException].
+     * Otherwise, it invokes the provided [dataMapper] with the response data to produce a [Result.success].
+     * @param R The type of the data to be returned in the [Result].
+     * @param D The type of the GraphQL operation data.
+     * @param response The [ApolloResponse] to process.
+     * @param dataMapper A lambda function that takes the GraphQL data of type [D] (or null) and returns a [Result] of type [R].
+     * @return A [Result] of type [R], which can be a success with the mapped data or a failure with an exception.
+     */
+    private inline fun <reified R, D : Operation.Data> processResponse(
+        response: ApolloResponse<D>,
+        dataMapper: (D?) -> Result<R>
+    ): Result<R> {
+        return when {
+            response.exception != null -> {
+                Result.failure(
+                    ProductRepository.ProductException(
+                        response.exception?.message.orEmpty(), response.exception
+                    )
+                )
+            }
+
+            response.hasErrors() -> {
+                val errorMessages =
+                    response.errors?.joinToString(separator = "\n") { it.message }
+                        ?: "Unknown GraphQL error"
+                Result.failure(ProductRepository.ProductException(errorMessages))
+            }
+
+            else -> {
+                val data = response.data
+                dataMapper(data)
+            }
+        }
+    }
+
     /**
      * Fetches a list of all product previews from the GraphQL API.
      * Handles Apollo GraphQL responses, including errors, and maps the data to [ProductPreview] models.
      * @return A [Result] containing an [ImmutableList] of [ProductPreview] on success, or a [ProductRepository.ProductException] on failure.
      */
     override suspend fun fetchProducts(): Result<ImmutableList<ProductPreview>> {
-        return try {
-            val response: ApolloResponse<ListProductsQuery.Data> =
-                apolloClient.query(ListProductsQuery()).execute()
+        val response: ApolloResponse<ListProductsQuery.Data> =
+            apolloClient.query(ListProductsQuery()).execute()
 
-            when {
-                response.exception != null -> {
-                    handleNetworkError(response.exception)
-                }
-
-                response.hasErrors() -> {
-                    handleGraphQlError(response)
-                }
-
-                else -> {
-                    val products: ImmutableList<ProductPreview> =
-                        response.data?.products?.map { product ->
-                            product.toProductPreviewModel()
-                        }?.toImmutableList() ?: persistentListOf()
-                    Result.success(products)
-                }
-            }
-        } catch (apolloException: ApolloException) {
-            handleNetworkError(apolloException)
+        return processResponse(response) { data ->
+            val products: ImmutableList<ProductPreview> =
+                data?.products?.map { product ->
+                    product.toProductPreviewModel()
+                }?.toImmutableList() ?: persistentListOf()
+            Result.success(products)
         }
-    }
 
-    private inline fun <reified T, E : ApolloException?> handleNetworkError(exception: E): Result<T> {
-        return Result.failure(
-            ProductRepository.ProductException(
-                exception?.message.orEmpty(), exception
-            )
-        )
-    }
-
-    private inline fun <reified D : Operation.Data, T> handleGraphQlError(response: ApolloResponse<D>): Result<T> {
-        val errorMessages =
-            response.errors?.joinToString(separator = "\n") { it.message }
-                ?: "Unknown GraphQL error"
-        return Result.failure(ProductRepository.ProductException(errorMessages))
     }
 
     /**
@@ -74,27 +84,12 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
      * @return A [Result] containing the [Product] if found, or `null` when not found. On failures, returns a [ProductRepository.ProductException].
      */
     override suspend fun getProduct(id: String): Result<Product?> {
-        return try {
-            val response: ApolloResponse<FetchProductQuery.Data> =
-                apolloClient.query(FetchProductQuery(id)).execute()
+        val response: ApolloResponse<FetchProductQuery.Data> =
+            apolloClient.query(FetchProductQuery(id)).execute()
 
-            when {
-                response.exception != null -> {
-                    handleNetworkError(response.exception)
-                }
-
-                response.hasErrors() -> {
-                    handleGraphQlError(response)
-                }
-
-                else -> {
-                    val product = response.data?.product?.toProductModel()
-                    // Align with repository contract: not-found is success(null)
-                    Result.success(product)
-                }
-            }
-        } catch (apolloException: ApolloException) {
-            handleNetworkError(apolloException)
+        return processResponse(response) { data ->
+            val product: Product? = data?.product?.toProductModel()
+            Result.success(product)
         }
     }
 }
