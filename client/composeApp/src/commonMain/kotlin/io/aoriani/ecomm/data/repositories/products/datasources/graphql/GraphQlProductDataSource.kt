@@ -2,7 +2,8 @@ package io.aoriani.ecomm.data.repositories.products.datasources.graphql
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
-import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.exception.ApolloException
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductBasic
@@ -21,20 +22,31 @@ import kotlinx.collections.immutable.toImmutableList
 class GraphQlProductDataSource(private val apolloClient: ApolloClient) : ProductDataSource {
 
     /**
-     * Processes the Apollo GraphQL response, handling errors and mapping data.
-     * This function checks for exceptions and GraphQL errors in the response.
-     * If errors are present, it returns a [Result.failure] with a [ProductRepository.ProductException].
-     * Otherwise, it invokes the provided [dataMapper] with the response data to produce a [Result.success].
+     * Executes a GraphQL query and processes its response.
+     * This function wraps the Apollo Client query execution in a try-catch block to handle [ApolloException].
+     * If an exception occurs during the query execution, it returns a [Result.failure] with a [ProductRepository.ProductException].
+     * Otherwise, it processes the response using the same logic as [processResponse].
      * @param R The type of the data to be returned in the [Result].
-     * @param D The type of the GraphQL operation data.
-     * @param response The [ApolloResponse] to process.
+     * @param D The type of the GraphQL query data.
+     * @param query The GraphQL [Query] to execute.
      * @param dataMapper A lambda function that takes the GraphQL data of type [D] (or null) and returns a [Result] of type [R].
      * @return A [Result] of type [R], which can be a success with the mapped data or a failure with an exception.
      */
-    private inline fun <reified R, D : Operation.Data> processResponse(
-        response: ApolloResponse<D>,
+    private suspend inline fun <reified R, D : Query.Data> processQuery(
+        query: Query<D>,
         dataMapper: (D?) -> Result<R>
     ): Result<R> {
+        val response: ApolloResponse<D>
+        try {
+            response = apolloClient.query(query).execute()
+        } catch (exception: ApolloException) {
+            return Result.failure(
+                ProductRepository.ProductException(
+                    exception.message.orEmpty(), exception
+                )
+            )
+        }
+
         return when {
             response.exception != null -> {
                 Result.failure(
@@ -64,17 +76,13 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
      * @return A [Result] containing an [ImmutableList] of [ProductPreview] on success, or a [ProductRepository.ProductException] on failure.
      */
     override suspend fun fetchProducts(): Result<ImmutableList<ProductPreview>> {
-        val response: ApolloResponse<ListProductsQuery.Data> =
-            apolloClient.query(ListProductsQuery()).execute()
-
-        return processResponse(response) { data ->
+        return processQuery(ListProductsQuery()) { data ->
             val products: ImmutableList<ProductPreview> =
                 data?.products?.map { product ->
                     product.toProductPreviewModel()
                 }?.toImmutableList() ?: persistentListOf()
             Result.success(products)
         }
-
     }
 
     /**
@@ -84,38 +92,35 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
      * @return A [Result] containing the [Product] if found, or `null` when not found. On failures, returns a [ProductRepository.ProductException].
      */
     override suspend fun getProduct(id: String): Result<Product?> {
-        val response: ApolloResponse<FetchProductQuery.Data> =
-            apolloClient.query(FetchProductQuery(id)).execute()
-
-        return processResponse(response) { data ->
+        return processQuery(FetchProductQuery(id)) { data ->
             val product: Product? = data?.product?.toProductModel()
             Result.success(product)
         }
     }
+
+    /**
+     * Converts a [ListProductsQuery.Product] GraphQL object to a [ProductPreview] domain model.
+     * @return A [ProductPreview] object containing the mapped data.
+     */
+    private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = ProductPreview(
+        id = ProductBasic.Id(productBasic.id),
+        name = productBasic.name,
+        price = DollarAmount(productBasic.price.toString()),
+        thumbnailUrl = productBasic.images.firstOrNull(),
+    )
+
+    /**
+     * Converts a [FetchProductQuery.Product] GraphQL object to a [Product] domain model.
+     * @return A [Product] object containing the mapped data.
+     */
+    private fun FetchProductQuery.Product.toProductModel(): Product = Product(
+        id = ProductBasic.Id(productBasic.id),
+        name = productBasic.name,
+        price = DollarAmount(productBasic.price.toString()),
+        description = description,
+        images = productBasic.images.toImmutableList(),
+        material = material,
+        countryOfOrigin = countryOfOrigin,
+        inStock = inStock
+    )
 }
-
-/**
- * Converts a [ListProductsQuery.Product] GraphQL object to a [ProductPreview] domain model.
- * @return A [ProductPreview] object containing the mapped data.
- */
-private fun ListProductsQuery.Product.toProductPreviewModel(): ProductPreview = ProductPreview(
-    id = ProductBasic.Id(productBasic.id),
-    name = productBasic.name,
-    price = DollarAmount(productBasic.price.toString()),
-    thumbnailUrl = productBasic.images.firstOrNull(),
-)
-
-/**
- * Converts a [FetchProductQuery.Product] GraphQL object to a [Product] domain model.
- * @return A [Product] object containing the mapped data.
- */
-private fun FetchProductQuery.Product.toProductModel(): Product = Product(
-    id = ProductBasic.Id(productBasic.id),
-    name = productBasic.name,
-    price = DollarAmount(productBasic.price.toString()),
-    description = description,
-    images = productBasic.images.toImmutableList(),
-    material = material,
-    countryOfOrigin = countryOfOrigin,
-    inStock = inStock
-)

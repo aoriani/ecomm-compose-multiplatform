@@ -2,7 +2,7 @@ package io.aoriani.ecomm.data.repositories.products.datasources.graphql
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.exception.ApolloException
-import io.aoriani.ecomm.data.network.ApolloClient as ApoloClientFactory
+import io.aoriani.ecomm.data.network.ApolloClient as ApolloClientFactory
 import io.aoriani.ecomm.data.repositories.products.ProductRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -29,7 +29,7 @@ class GraphQlProductDataSourceTest {
             responseHandler(request)
         }
         val ktorClient = HttpClient(mockEngine)
-        return ApoloClientFactory("https://example.com", ktorClient)
+        return ApolloClientFactory("https://example.com", ktorClient)
     }
 
     private fun createDataSourceWithResponse(responseHandler: MockRequestHandler): GraphQlProductDataSource {
