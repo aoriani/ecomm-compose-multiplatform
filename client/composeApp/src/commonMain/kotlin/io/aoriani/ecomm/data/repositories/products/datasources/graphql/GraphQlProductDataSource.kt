@@ -42,7 +42,8 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
         } catch (exception: ApolloException) {
             return Result.failure(
                 ProductRepository.ProductException(
-                    exception.message.orEmpty(), exception
+                    exception.message?.takeIf { it.isNotBlank() } ?: "GraphQL request failed",
+                    exception
                 )
             )
         }
@@ -51,7 +52,8 @@ class GraphQlProductDataSource(private val apolloClient: ApolloClient) : Product
             response.exception != null -> {
                 Result.failure(
                     ProductRepository.ProductException(
-                        response.exception?.message.orEmpty(), response.exception
+                        response.exception?.message?.takeIf { it.isNotBlank() }
+                            ?: "GraphQL request failed", response.exception
                     )
                 )
             }
