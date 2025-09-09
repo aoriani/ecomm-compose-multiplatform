@@ -5,7 +5,6 @@ android-minSdk = "24"
 android-targetSdk = "36"
 androidx-activityCompose = "1.10.1"
 androidx-appcompat = "1.7.1"
-androidx-constraintlayout = "2.2.1"
 androidx-core-ktx = "1.17.0"
 androidx-espresso-core = "3.7.0"
 androidx-lifecycle = "2.10.0-alpha01"
@@ -39,8 +38,7 @@ sqldelight = "2.1.0"
 # AndroidX
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
+androidx-core-ktx = {    group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }

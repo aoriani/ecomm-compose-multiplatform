@@ -1,4 +1,4 @@
-const CACHE = 'eCommerceApp-cache-v2';
+const CACHE = 'eCommerceApp-cache-v3';
 const PRECACHE = [
   '.',
   'index.html',
