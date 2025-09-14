@@ -18,11 +18,11 @@ class ProductDetailsViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val route: Routes.ProductDetails = savedStateHandle.toRoute()
+    private val productDetailsRoute: Routes.ProductDetails = savedStateHandle.toRoute()
     val state: StateFlow<ProductDetailsUiState>
         field = MutableStateFlow<ProductDetailsUiState>(
             ProductDetailsUiState.Loading(
-                title = route.name, imageUrl = route.imageUrl
+                title = productDetailsRoute.name, imageUrl = productDetailsRoute.imageUrl
             )
         )
 
@@ -30,30 +30,52 @@ class ProductDetailsViewModel(
         fetchProductDetails()
     }
 
-    private fun fetchProductDetails() {
+    fun fetchProductDetails() {
+        state.update {
+            ProductDetailsUiState.Loading(
+                title = productDetailsRoute.name, imageUrl = productDetailsRoute.imageUrl
+            )
+        }
         viewModelScope.launch {
-            productRepository.getProduct(route.id)
+            productRepository.getProduct(productDetailsRoute.id)
                 .onSuccess { product -> // product is of type Product?
                     if (product == null) {
                         state.update {
                             ProductDetailsUiState.Error(
-                                title = route.name,
-                                imageUrl = route.imageUrl
+                                title = productDetailsRoute.name,
+                                imageUrl = productDetailsRoute.imageUrl,
+                                _retry = ::fetchProductDetails
                             )
                         }
                     } else {
-                        state.update { ProductDetailsUiState.Loaded(product) }
+                        state.update {
+                            ProductDetailsUiState.Loaded(
+                                product = product,
+                                _addToCart = ::addToCart
+                            )
+                        }
                     }
                 }
                 .onFailure {
                     // Optionally, log the error 'it' using a Logger
                     state.update {
                         ProductDetailsUiState.Error(
-                            title = route.name,
-                            imageUrl = route.imageUrl
+                            title = productDetailsRoute.name,
+                            imageUrl = productDetailsRoute.imageUrl,
+                            _retry = ::fetchProductDetails
                         )
                     }
                 }
+        }
+    }
+
+    fun addToCart() {
+        val currentUiState = state.value
+        check(currentUiState is ProductDetailsUiState.Loaded) {
+            "Cannot add to cart from state $currentUiState"
+        }
+        viewModelScope.launch {
+            addToCartUseCase(currentUiState.product)
         }
     }
 }

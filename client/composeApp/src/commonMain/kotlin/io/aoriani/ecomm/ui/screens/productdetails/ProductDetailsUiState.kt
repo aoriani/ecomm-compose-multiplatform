@@ -33,11 +33,13 @@ sealed interface ProductDetailsUiState {
     ) : ProductDetailsUiState
 
     /**
-     * Represents the success state of the Product Details screen, where the product data has been successfully loaded.
+     * Represents the loaded state of the Product Details screen, where product information is successfully retrieved and displayed.
      *
-     * @property product The fully loaded [Product] object to be displayed.
+     * @property product The [Product] object containing all details to be displayed.
+     * @property _addToCart A private lambda function that handles the action of adding the product to the cart. This is an implementation detail and not directly exposed.
      */
-    data class Loaded(val product: Product) : ProductDetailsUiState {
+    data class Loaded(val product: Product, private val _addToCart: () -> Unit = {}) :
+        ProductDetailsUiState {
         /**
          * The title of the screen, derived from the product's name.
          */
@@ -48,17 +50,38 @@ sealed interface ProductDetailsUiState {
          * Returns an empty string if the product has no images.
          */
         override val imageUrl: String get() = product.images.firstOrNull().orEmpty()
+
+        /**
+         * Triggers the action to add the current product to the shopping cart.
+         * This function invokes the private [_addToCart] lambda, which encapsulates the actual
+         * logic for adding the product to the cart. This design allows the UI to call a simple,
+         * named function while keeping the implementation details (like ViewModel interactions)
+         * encapsulated within the state object.
+         */
+        fun addToCart() = _addToCart()
     }
 
     /**
      * Represents the error state of the Product Details screen.
      * This state is triggered if fetching the product data fails.
+     * It provides a mechanism to retry the data fetching operation.
      *
      * @property title The title to be displayed in case of an error, typically "Error".
      * @property imageUrl An optional image URL to display, which could be a placeholder error image.
+     * @property _retry A private lambda function that handles the retry action. This is an implementation detail.
      */
     data class Error(
         override val title: String,
-        override val imageUrl: String?
-    ) : ProductDetailsUiState
+        override val imageUrl: String?,
+        private val _retry: () -> Unit = {}
+    ) : ProductDetailsUiState {
+        /**
+         * Triggers the action to retry fetching the product details.
+         * This function invokes the private [_retry] lambda, which encapsulates the actual
+         * logic for retrying the data fetch operation. This allows the UI to call a simple,
+         * named function while keeping the implementation details (like ViewModel interactions)
+         * encapsulated within the state object.
+         */
+        fun retry() = _retry()
+    }
 }
