@@ -4,7 +4,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import io.aoriani.ecomm.di.appModule
+import io.aoriani.ecomm.di.applicationModule
 import io.aoriani.ecomm.ui.navigation.Navigation
 import org.koin.compose.KoinMultiplatformApplication
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -19,7 +19,7 @@ fun App(
     MaterialExpressiveTheme {
         KoinMultiplatformApplication(
             config = koinConfiguration {
-                modules(appModule)
+                modules(applicationModule)
             },
             logLevel = Level.DEBUG
         ) {

@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+/**
+ * Implementation of [CartRepository] that manages the cart state in memory.
+ * It uses an [ObservableLinkedHashMap] to store cart items, which automatically
+ * updates the [state] flow whenever the cart items change.
+ */
 class CartRepositoryImpl : CartRepository {
     private val _state = MutableStateFlow(
         CartRepository.State(
@@ -64,4 +69,10 @@ class CartRepositoryImpl : CartRepository {
     }
 }
 
+/**
+ * Converts a [ProductBasic] object to a [CartItem] object.
+ *
+ * @param quantity The quantity of the product to add to the cart. Defaults to 1.
+ * @return A [CartItem] object representing the product in the cart.
+ */
 private fun ProductBasic.toCartItem(quantity: Int = 1) = CartItem(id, name, price, quantity)

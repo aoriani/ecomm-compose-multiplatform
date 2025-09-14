@@ -85,6 +85,12 @@ sealed interface ProductListUiState {
          */
         fun addToCart(product: ProductBasic) = _addToCart(product)
 
+        /**
+         * Creates a new instance of the `Loading` state with an updated `cartItemCount`.
+         *
+         * @param newItemCount The new number of items in the cart.
+         * @return A new `Loading` instance with the updated `cartItemCount`.
+         */
         override fun copyWithNewCartItemCount(newItemCount: Int): ProductListUiState {
             return copy(cartItemCount = newItemCount)
         }

@@ -23,10 +23,25 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/**
+ * The key for the named dependency that provides the base URL for the backend.
+ */
 private const val BACKEND_BASE_URL = "backendBaseUrl"
 
+/**
+ * Platform-specific module for SQL database dependencies.
+ * This module is expected to be implemented by each platform (Android, iOS)
+ * and provide the necessary dependencies for SQL database operations,
+ * such as the [SqlDriverFactory].
+ */
 expect val sqlPlatformModule: Module
 
+/**
+ * Koin module for common SQLDelight dependencies.
+ * This module provides the necessary dependencies for interacting with the SQLDelight database,
+ * including the database driver, the database instance, and any custom column adapters.
+ * It includes platform-specific SQL driver configurations via `sqlPlatformModule`.
+ */
 val sqlCommonModule = module {
     includes(sqlPlatformModule)
     factoryOf(::DollarAmountAdapter)
@@ -34,7 +49,11 @@ val sqlCommonModule = module {
     single { ProductDatabase(driver = get(), product_basicAdapter = get()) }
 }
 
-val appModule = module {
+/**
+ * Koin module for application-level dependencies.
+ * This module includes dependencies related to networking, data sources, repositories, use cases, and view models.
+ */
+val applicationModule = module {
     includes(sqlCommonModule)
     singleOf(::KtorClient)
     single(named(BACKEND_BASE_URL)) { "https://api.aoriani.dev/graphql" }

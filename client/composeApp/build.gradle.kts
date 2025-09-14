@@ -32,6 +32,13 @@ kotlin {
             "-Xcontext-parameters",
             "-Xnested-type-aliases",
             "-Xcontext-sensitive-resolution",
+            "-Xdata-flow-based-exhaustiveness",
+            "-Xallow-reified-type-in-catch",
+            "-Xallow-contracts-on-more-functions",
+            "-Xallow-condition-implies-returns-contracts",
+            "-Xallow-holdsin-contract",
+            "-Xcontext-sensitive-resolution",
+            "-Xannotation-target-all",
         )
     }
 

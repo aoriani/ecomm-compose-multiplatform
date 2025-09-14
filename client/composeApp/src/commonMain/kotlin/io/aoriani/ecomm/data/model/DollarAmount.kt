@@ -102,6 +102,14 @@ fun requireValidDollarAmount(value: String) {
     }
 }
 
+/**
+ * Exception thrown when a string cannot be parsed into a valid [DollarAmount].
+ *
+ * This typically occurs if the input string does not conform to the expected format
+ * for a dollar amount (e.g., "10.00", "1234.56").
+ *
+ * @param message A descriptive message indicating the reason for the format exception.
+ */
 class DollarAmountFormatException(message: String) : RuntimeException(message)
 
 /**
@@ -117,6 +125,17 @@ object DollarAmountAsStringSerializer : KSerializer<DollarAmount> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("io.aoriani.ecomm.data.model.DollarAmount", PrimitiveKind.STRING)
 
+    /**
+     * Serializes a [DollarAmount] object into its string representation.
+     *
+     * This method is called by the kotlinx.serialization framework when an object
+     * containing a [DollarAmount] needs to be converted into a serialized format (e.g., JSON).
+     * It uses the [DollarAmount.toString] method to get the canonical string representation
+     * of the dollar amount and encodes that string.
+     *
+     * @param encoder The [Encoder] to write the serialized data to.
+     * @param value The [DollarAmount] instance to serialize.
+     */
     override fun serialize(
         encoder: Encoder,
         value: DollarAmount
@@ -124,6 +143,20 @@ object DollarAmountAsStringSerializer : KSerializer<DollarAmount> {
         encoder.encodeString(value.toString())
     }
 
+    /**
+     * Deserializes a [DollarAmount] from its string representation.
+     *
+     * This method is called by the kotlinx.serialization framework when
+     * converting a JSON string (or other serialized format) back into a
+     * [DollarAmount] object. It expects the input string to be a valid
+     * representation of a dollar amount, as defined by the [DollarAmount]
+     * constructor.
+     *
+     * @param decoder The decoder instance from which to read the string.
+     * @return A [DollarAmount] instance created from the decoded string.
+     * @throws DollarAmountFormatException if the decoded string is not a valid
+     *         representation of a dollar amount.
+     */
     override fun deserialize(decoder: Decoder): DollarAmount {
         return DollarAmount(decoder.decodeString())
     }

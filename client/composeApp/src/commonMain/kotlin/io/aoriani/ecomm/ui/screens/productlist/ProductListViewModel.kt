@@ -16,6 +16,18 @@ import kotlinx.coroutines.launch
 
 private const val LOGTAG = "ProductListViewModel"
 
+/**
+ * ViewModel for the Product List screen.
+ *
+ * This ViewModel is responsible for fetching the list of products, managing the UI state,
+ * and handling user interactions such as adding a product to the cart.
+ *
+ * @property productRepository The repository for fetching product data.
+ * @property cartRepository The repository for managing the shopping cart.
+ * @property addToCartUseCase The use case for adding a product to the cart.
+ * @property logger The logger for logging events.
+ * @property dispatcher The coroutine dispatcher for executing background tasks.
+ */
 class ProductListViewModel(
     private val productRepository: ProductRepository,
     private val cartRepository: CartRepository,
@@ -23,6 +35,9 @@ class ProductListViewModel(
     private val logger: Logger = Logger,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
+    /**
+     * The state of the Product List screen.
+     */
     val state: StateFlow<ProductListUiState>
         field = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading())
 
@@ -35,6 +50,9 @@ class ProductListViewModel(
         }
     }
 
+    /**
+     * Fetches the list of products from the repository and updates the UI state.
+     */
     fun fetchProducts() {
         viewModelScope.launch(dispatcher) {
             state.update { currentState -> ProductListUiState.Loading(cartItemCount = currentState.cartItemCount) }
@@ -61,6 +79,11 @@ class ProductListViewModel(
         }
     }
 
+    /**
+     * Adds a product to the cart.
+     *
+     * @param product The product to add to the cart.
+     */
     fun addToCart(product: ProductBasic) {
         viewModelScope.launch(dispatcher) {
             logger.i(tag = LOGTAG) { "Adding to cart: $product" }

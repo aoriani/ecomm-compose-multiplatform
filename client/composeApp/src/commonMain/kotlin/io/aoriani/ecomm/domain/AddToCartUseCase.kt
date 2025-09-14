@@ -33,7 +33,7 @@ class AddToCartUseCaseImpl(
     /**
      * Adds the given product to the shopping cart.
      *
-     * @param product The product to add.
+     * @param input The product to add.
      */
     override suspend operator fun invoke(input: ProductBasic) {
         cartRepository.add(input)
