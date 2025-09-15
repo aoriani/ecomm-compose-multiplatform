@@ -9,8 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialExpressiveTheme
@@ -21,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ecommerceapp.composeapp.generated.resources.Res
 import ecommerceapp.composeapp.generated.resources.content_description_back
+import ecommerceapp.composeapp.generated.resources.product_detail_add_to_cart_fab_content_description
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductBasic
@@ -51,6 +54,18 @@ fun ProductDetailsScreen(
                     }
                 },
             )
+        },
+        floatingActionButton = {
+            if (state is ProductDetailsUiState.Loaded) {
+                FloatingActionButton(onClick = { state.addToCart() }) {
+                    Icon(
+                        Icons.Default.AddShoppingCart,
+                        contentDescription = stringResource(
+                            Res.string.product_detail_add_to_cart_fab_content_description
+                        )
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
