@@ -8,7 +8,7 @@ logback-version         = "1.5.18"
 mockk                   = "1.14.5"
 sqlite                  = "3.50.2.0"
 h2                      = "2.3.232"
-mcp                     = "0.7.0"
+mcp                     = "0.7.1"
 json-schema             = "1.1.2"
 
 [libraries]

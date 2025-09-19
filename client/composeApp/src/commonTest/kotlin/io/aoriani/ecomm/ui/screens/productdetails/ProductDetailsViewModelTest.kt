@@ -61,7 +61,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given ViewModel initialization, When created, Then state should be Loading with route data`() = runTest {
+    fun `Given ViewModel initialization when created then state should be Loading with route data`() = runTest {
         // Arrange
         val fakeProductRepository = FakeProductRepository()
         val addToCartUseCase = AddToCartUseCase { _ -> }
@@ -81,7 +81,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given fetchProductDetails called, When product is successfully loaded, Then state should be Loaded`() = runTest {
+    fun `Given fetchProductDetails called when product is successfully loaded then state should be Loaded`() = runTest {
         // Arrange
         val fakeProductRepository = FakeProductRepository(
             getProductLambda = { id ->
@@ -111,7 +111,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given fetchProductDetails called, When product is null, Then state should be Error`() = runTest {
+    fun `Given fetchProductDetails called when product is null then state should be Error`() = runTest {
         // Arrange
         val fakeProductRepository = FakeProductRepository(
             getProductLambda = { Result.success(null) }
@@ -134,7 +134,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given fetchProductDetails called, When repository throws exception, Then state should be Error`() = runTest {
+    fun `Given fetchProductDetails called when repository throws exception then state should be Error`() = runTest {
         // Arrange
         val expectedException = ProductRepository.ProductException("Network error")
         val fakeProductRepository = FakeProductRepository(
@@ -158,7 +158,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given Error state with retry, When retry is called, Then fetchProductDetails should be called again`() = runTest {
+    fun `Given Error state with retry when retry is called then fetchProductDetails should be called again`() = runTest {
         // Arrange
         var fetchCallCount = 0
         val fakeProductRepository = FakeProductRepository(
@@ -195,7 +195,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given manual fetchProductDetails call, When state is already loaded, Then state should transition to Loading first`() = runTest {
+    fun `Given manual fetchProductDetails call when state is already loaded then state should transition to Loading first`() = runTest {
         // Arrange
         val fakeProductRepository = FakeProductRepository(
             getProductLambda = { Result.success(testProduct) }
@@ -226,7 +226,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given Loaded state, When addToCart is called, Then addToCartUseCase should be invoked with product`() = runTest {
+    fun `Given Loaded state when addToCart is called then addToCartUseCase should be invoked with product`() = runTest {
         // Arrange
         var addToCartCallCount = 0
         var capturedProduct: ProductBasic? = null
@@ -258,7 +258,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given Loaded state, When addToCart is called via UI state, Then addToCartUseCase should be invoked`() = runTest {
+    fun `Given Loaded state when addToCart is called via UI state then addToCartUseCase should be invoked`() = runTest {
         // Arrange
         var addToCartCallCount = 0
         val addToCartUseCase = AddToCartUseCase { addToCartCallCount++ }
@@ -285,7 +285,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given Loading state, When addToCart is called, Then it should throw IllegalStateException`() = runTest {
+    fun `Given Loading state when addToCart is called then it should throw IllegalStateException`() = runTest {
         // Arrange
         val fakeProductRepository = FakeProductRepository(
             getProductLambda = { 
@@ -311,7 +311,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given Error state, When addToCart is called, Then it should throw IllegalStateException`() = runTest {
+    fun `Given Error state when addToCart is called then it should throw IllegalStateException`() = runTest {
         // Arrange
         val fakeProductRepository = FakeProductRepository(
             getProductLambda = { Result.failure(ProductRepository.ProductException("Error")) }
@@ -335,7 +335,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given product with multiple images, When loaded, Then imageUrl should be first image`() = runTest {
+    fun `Given product with multiple images when loaded then imageUrl should be first image`() = runTest {
         // Arrange
         val productWithMultipleImages = testProduct.copy(
             images = persistentListOf(
@@ -364,7 +364,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given product with no images, When loaded, Then imageUrl should be empty string`() = runTest {
+    fun `Given product with no images when loaded then imageUrl should be empty string`() = runTest {
         // Arrange
         val productWithNoImages = testProduct.copy(images = persistentListOf())
         val fakeProductRepository = FakeProductRepository(
@@ -387,7 +387,7 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `Given route with null imageUrl, When error occurs, Then error state should have null imageUrl`() = runTest {
+    fun `Given route with null imageUrl when error occurs then error state should have null imageUrl`() = runTest {
         // Arrange
         savedStateHandle["imageUrl"] = null
         val fakeProductRepository = FakeProductRepository(

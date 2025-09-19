@@ -13,7 +13,7 @@ import kotlin.test.assertTrue
 class ProductDetailsUiStateTest {
 
     @Test
-    fun `Given Loading state, When initialized, then it should hold the correct title and imageUrl`() {
+    fun `When Loading state is initialized then it should hold the correct title and imageUrl`() {
         // Arrange
         val title = "Loading..."
         val imageUrl = "http://example.com/placeholder.png"
@@ -27,7 +27,7 @@ class ProductDetailsUiStateTest {
     }
 
     @Test
-    fun `Given Loading state, When initialized with null imageUrl, then it should hold the null value`() {
+    fun `When Loading state is initialized with null imageUrl then it should hold the null value`() {
         // Arrange
         val title = "Loading..."
 
@@ -40,7 +40,7 @@ class ProductDetailsUiStateTest {
     }
 
     @Test
-    fun `Given Loaded state, When initialized with a product, then title should be the product name`() {
+    fun `When Loaded state is initialized with a product then title should be the product name`() {
         // Arrange
         val product = Product(
             id = ProductBasic.Id("1"),
@@ -61,7 +61,7 @@ class ProductDetailsUiStateTest {
     }
 
     @Test
-    fun `Given Loaded state, When product has images, then imageUrl should be the first image`() {
+    fun `When Loaded state and product has images then imageUrl should be the first image`() {
         // Arrange
         val imageUrl = "http://example.com/product.png"
         val product = Product(
@@ -83,7 +83,7 @@ class ProductDetailsUiStateTest {
     }
 
     @Test
-    fun `Given Loaded state, When product has no images, then imageUrl should be an empty string`() {
+    fun `When Loaded state and product has no images then imageUrl should be an empty string`() {
         // Arrange
         val product = Product(
             id = ProductBasic.Id("1"),
@@ -104,7 +104,7 @@ class ProductDetailsUiStateTest {
     }
 
     @Test
-    fun `Given Loaded state, When addToCart is called, then the provided lambda should be invoked`() {
+    fun `When Loaded state and addToCart is called then the provided lambda should be invoked`() {
         // Arrange
         var wasAddToCartCalled = false
         val product = Product(
@@ -128,7 +128,7 @@ class ProductDetailsUiStateTest {
     }
 
     @Test
-    fun `Given Error state, When initialized, then it should hold the correct title and imageUrl`() {
+    fun `When Error state is initialized then it should hold the correct title and imageUrl`() {
         // Arrange
         val title = "Error"
         val imageUrl = "http://example.com/error.png"
@@ -142,7 +142,7 @@ class ProductDetailsUiStateTest {
     }
 
     @Test
-    fun `Given Error state, When retry is called, then the provided lambda should be invoked`() {
+    fun `When Error state and retry is called then the provided lambda should be invoked`() {
         // Arrange
         var wasRetryCalled = false
         val state = ProductDetailsUiState.Error(
