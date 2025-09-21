@@ -1,6 +1,7 @@
 package io.aoriani.ecomm.ui.screens.productdetails
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import io.aoriani.ecomm.data.model.DollarAmount
 import io.aoriani.ecomm.data.model.Product
 import io.aoriani.ecomm.data.model.ProductBasic
