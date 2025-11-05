@@ -90,7 +90,7 @@ kotlin {
             implementation(libs.sqldelight.android.driver)
         }
         androidUnitTest.dependencies {
-            implementation(compose.uiTestJUnit4)
+            //implementation(compose.uiTestJUnit4)
             //implementation(libs.androidx.ui.test.manifest)
             implementation(libs.roboeletric)
         }
