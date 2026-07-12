@@ -7,8 +7,8 @@ import dev.aoriani.ecomm.presentation.mcp.tools.GetProductByIdTool
 import dev.aoriani.ecomm.presentation.mcp.tools.addTool
 import io.ktor.server.application.Application
 import io.ktor.server.plugins.di.dependencies
-import io.modelcontextprotocol.kotlin.sdk.Implementation
-import io.modelcontextprotocol.kotlin.sdk.ServerCapabilities
+import io.modelcontextprotocol.kotlin.sdk.types.ServerInfo
+import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import io.modelcontextprotocol.kotlin.sdk.server.ServerOptions
 import io.modelcontextprotocol.kotlin.sdk.server.mcp
@@ -32,7 +32,7 @@ internal fun Application.configureMcp() {
     val serverVersion = environment.config.property("ecomm.mcp.server-version").getString()
     mcp {
         Server(
-            serverInfo = Implementation(serverName, serverVersion),
+            serverInfo = ServerInfo(name = serverName, version = serverVersion),
             options = ServerOptions(
                 capabilities = ServerCapabilities(
                     tools = ServerCapabilities.Tools(listChanged = null)

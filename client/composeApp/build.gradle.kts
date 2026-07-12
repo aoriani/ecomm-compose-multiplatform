@@ -92,7 +92,7 @@ kotlin {
         androidUnitTest.dependencies {
             //implementation(compose.uiTestJUnit4)
             //implementation(libs.androidx.ui.test.manifest)
-            implementation(libs.roboeletric)
+            implementation(libs.robolectric)
         }
         commonMain.dependencies {
             implementation(libs.kermit.koin)

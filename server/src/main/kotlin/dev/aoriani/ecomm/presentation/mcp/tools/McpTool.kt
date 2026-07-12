@@ -1,12 +1,11 @@
 package dev.aoriani.ecomm.presentation.mcp.tools
 
 import com.xemantic.ai.tool.schema.generator.generateSchema
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
-import io.modelcontextprotocol.kotlin.sdk.Tool
 import io.modelcontextprotocol.kotlin.sdk.server.Server
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
+import io.modelcontextprotocol.kotlin.sdk.types.ToolSchema
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -61,20 +60,12 @@ internal fun Server.addTool(tool: McpTool) {
     addTool(
         name = tool.name,
         description = tool.description,
-        inputSchema = toolInputSchema?.let { Tool.Input(it.properties, it.required) } ?: Tool.Input(),
-        outputSchema = toolOutputSchema?.let { Tool.Output(it.properties, it.required) },
-        handler = tool::execute,
+        inputSchema = toolInputSchema?.let { ToolSchema(it.properties, it.required) } ?: ToolSchema(),
+        outputSchema = toolOutputSchema?.let { ToolSchema(it.properties, it.required) },
+        handler = { request -> tool.execute(request) },
     )
 }
 
-/**
- * Holds the subset of a JSON Schema required by the MCP SDK to describe a tool's
- * input or output payload.
- *
- * @property properties The JSON object containing property schemas.
- * @property required The list of required property names, if any.
- */
-internal class ToolSchema(val properties: JsonObject, val required: List<String>? = null)
 
 /**
  * Builds a [ToolSchema] for this class using kotlinx.serialization and a JSON Schema generator.

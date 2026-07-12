@@ -14,9 +14,9 @@ import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import dev.aoriani.ecomm.presentation.mcp.models.GetProductByIdRequest
 import dev.aoriani.ecomm.presentation.mcp.models.Product
 import dev.aoriani.ecomm.presentation.mcp.models.toMcpProduct
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
-import io.modelcontextprotocol.kotlin.sdk.TextContent
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
+import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
@@ -48,14 +48,14 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
      * - Returns a generic error result if the domain use case fails.
      */
     override suspend fun execute(request: CallToolRequest): CallToolResult {
-        val args = runCatching { Json.decodeFromJsonElement<GetProductByIdRequest>(request.arguments) }.getOrNull()
+        val args = request.arguments?.let { Json.decodeFromJsonElement<GetProductByIdRequest>(it) }
         val id = args?.id
         if (id.isNullOrBlank()) return CallToolResult(
             content = listOf(TextContent("Product ID must not be blank")),
             isError = true
         )
 
-        val result = getProductById(ProductId(id))
+        val result = getProductById(ProductId(id!!))
         return if (result.isSuccess) {
             val product = result.map { it.toMcpProduct() }.getOrThrow()
             CallToolResult(
