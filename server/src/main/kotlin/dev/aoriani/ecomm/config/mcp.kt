@@ -7,11 +7,11 @@ import dev.aoriani.ecomm.presentation.mcp.tools.GetProductByIdTool
 import dev.aoriani.ecomm.presentation.mcp.tools.addTool
 import io.ktor.server.application.Application
 import io.ktor.server.plugins.di.dependencies
-import io.modelcontextprotocol.kotlin.sdk.Implementation
-import io.modelcontextprotocol.kotlin.sdk.ServerCapabilities
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import io.modelcontextprotocol.kotlin.sdk.server.ServerOptions
-import io.modelcontextprotocol.kotlin.sdk.server.mcp
+import io.modelcontextprotocol.kotlin.sdk.server.mcpStreamableHttp
+import io.modelcontextprotocol.kotlin.sdk.types.Implementation
+import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
 
 /**
  * Configures and initializes the MCP (Message Communication Protocol) server within the application.
@@ -30,7 +30,7 @@ import io.modelcontextprotocol.kotlin.sdk.server.mcp
 internal fun Application.configureMcp() {
     val serverName = environment.config.property("ecomm.mcp.server-name").getString()
     val serverVersion = environment.config.property("ecomm.mcp.server-version").getString()
-    mcp {
+    mcpStreamableHttp(path = "/mcp") {
         Server(
             serverInfo = Implementation(serverName, serverVersion),
             options = ServerOptions(

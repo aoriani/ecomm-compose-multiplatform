@@ -14,9 +14,10 @@ import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import dev.aoriani.ecomm.presentation.mcp.models.GetProductByIdRequest
 import dev.aoriani.ecomm.presentation.mcp.models.Product
 import dev.aoriani.ecomm.presentation.mcp.models.toMcpProduct
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
-import io.modelcontextprotocol.kotlin.sdk.TextContent
+import io.modelcontextprotocol.kotlin.sdk.server.ClientConnection
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
+import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
@@ -47,8 +48,9 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
      * - Returns an error result if the "id" is missing or blank.
      * - Returns a generic error result if the domain use case fails.
      */
-    override suspend fun execute(request: CallToolRequest): CallToolResult {
-        val args = runCatching { Json.decodeFromJsonElement<GetProductByIdRequest>(request.arguments) }.getOrNull()
+    override suspend fun execute(connection: ClientConnection, request: CallToolRequest): CallToolResult {
+        val args =
+            runCatching { request.arguments?.let { Json.decodeFromJsonElement<GetProductByIdRequest>(it) } }.getOrNull()
         val id = args?.id
         if (id.isNullOrBlank()) return CallToolResult(
             content = listOf(TextContent("Product ID must not be blank")),
@@ -65,13 +67,22 @@ class GetProductByIdTool(private val getProductById: GetProductByIdUseCase) : Mc
         } else {
             val exception = result.exceptionOrNull()
             when (exception) {
-                is ProductNotFoundException -> CallToolResult(content = listOf(TextContent("Product not found: $id")),
-                    isError = true)
-                is BlankProductIdException -> CallToolResult(content = listOf(TextContent(exception.message)), isError = true)
+                is ProductNotFoundException -> CallToolResult(
+                    content = listOf(TextContent("Product not found: $id")),
+                    isError = true
+                )
+
+                is BlankProductIdException -> CallToolResult(
+                    content = listOf(TextContent(exception.message.orEmpty())),
+                    isError = true
+                )
+
                 else -> {
                     logger.error("Failed to get product by id: $id", exception)
-                    CallToolResult(content = listOf(TextContent("Failed to retrieve product with id: $id")),
-                        isError = true)
+                    CallToolResult(
+                        content = listOf(TextContent("Failed to retrieve product with id: $id")),
+                        isError = true
+                    )
                 }
             }
         }

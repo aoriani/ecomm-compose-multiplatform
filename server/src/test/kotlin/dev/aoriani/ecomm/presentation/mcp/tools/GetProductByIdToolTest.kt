@@ -10,8 +10,9 @@ import dev.aoriani.ecomm.presentation.mcp.models.GetProductByIdRequest
 import dev.aoriani.ecomm.presentation.mcp.models.Product as McpProduct
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.TextContent
+import io.modelcontextprotocol.kotlin.sdk.server.ClientConnection
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -23,6 +24,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class GetProductByIdToolTest {
@@ -52,12 +54,13 @@ class GetProductByIdToolTest {
         val requestArgs = GetProductByIdRequest("test1")
         val jsonArgs = Json.encodeToJsonElement(requestArgs).jsonObject
         coEvery { request.arguments } returns jsonArgs
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
-        assertEquals(false, result.isError)
+        assertNull(result.isError)
         assertEquals(1, result.content.size)
         assertNotNull(result.structuredContent)
 
@@ -81,9 +84,10 @@ class GetProductByIdToolTest {
         val requestArgs = GetProductByIdRequest("")
         val jsonArgs = Json.encodeToJsonElement(requestArgs).jsonObject
         coEvery { request.arguments } returns jsonArgs
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
         assertEquals(true, result.isError)
@@ -104,9 +108,10 @@ class GetProductByIdToolTest {
         // Create request with invalid arguments
         val request = mockk<CallToolRequest>()
         coEvery { request.arguments } returns JsonObject(emptyMap())
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
         assertEquals(true, result.isError)
@@ -133,9 +138,10 @@ class GetProductByIdToolTest {
         val requestArgs = GetProductByIdRequest("nonexistent")
         val jsonArgs = Json.encodeToJsonElement(requestArgs).jsonObject
         coEvery { request.arguments } returns jsonArgs
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
         assertEquals(true, result.isError)
@@ -167,9 +173,10 @@ class GetProductByIdToolTest {
         val requestArgs = GetProductByIdRequest("test")
         val jsonArgs = Json.encodeToJsonElement(requestArgs).jsonObject
         coEvery { request.arguments } returns jsonArgs
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
         assertEquals(true, result.isError)
@@ -193,9 +200,10 @@ class GetProductByIdToolTest {
         val requestArgs = GetProductByIdRequest("test")
         val jsonArgs = Json.encodeToJsonElement(requestArgs).jsonObject
         coEvery { request.arguments } returns jsonArgs
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
         assertEquals(true, result.isError)

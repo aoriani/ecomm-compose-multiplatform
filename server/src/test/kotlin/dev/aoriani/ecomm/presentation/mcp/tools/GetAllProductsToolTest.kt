@@ -6,14 +6,16 @@ import dev.aoriani.ecomm.domain.models.ProductId
 import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
 import dev.aoriani.ecomm.presentation.mcp.models.Products
 import io.mockk.mockk
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.TextContent
+import io.modelcontextprotocol.kotlin.sdk.server.ClientConnection
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import kotlinx.coroutines.test.runTest
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class GetAllProductsToolTest {
@@ -50,13 +52,14 @@ class GetAllProductsToolTest {
         // Mock the logger field using reflection to avoid log messages during tests
         // Create a mock request
         val request = mockk<CallToolRequest>()
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
         // Use direct property access instead of casting
-        assertEquals(false, result.isError)
+        assertNull(result.isError)
         assertEquals(2, result.content.size)
         assertNotNull(result.structuredContent)
 
@@ -76,12 +79,13 @@ class GetAllProductsToolTest {
 
         // Create a mock request
         val request = mockk<CallToolRequest>()
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
-        assertEquals(false, result.isError)
+        assertNull(result.isError)
         assertEquals(0, result.content.size)
         assertNotNull(result.structuredContent)
 
@@ -102,9 +106,10 @@ class GetAllProductsToolTest {
 
         // Create a mock request
         val request = mockk<CallToolRequest>()
+        val connection = mockk<ClientConnection>(relaxed = true)
 
         // When
-        val result = tool.execute(request)
+        val result = tool.execute(connection, request)
 
         // Then
         assertEquals(true, result.isError)

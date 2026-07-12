@@ -2,9 +2,10 @@ package dev.aoriani.ecomm.presentation.mcp.tools
 
 import io.mockk.mockk
 import io.mockk.verify
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
+import io.modelcontextprotocol.kotlin.sdk.server.ClientConnection
 import io.modelcontextprotocol.kotlin.sdk.server.Server
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -73,7 +74,7 @@ class McpToolTest {
             server.addTool(
                 name = "test_tool",
                 description = "Test tool",
-                inputSchema = match { it.properties == JsonObject(emptyMap()) && it.required == null },
+                inputSchema = match { it.properties == null && it.required == null },
                 outputSchema = any(),
                 handler = any()
             )
@@ -141,7 +142,7 @@ class McpToolTest {
         val required = listOf("test")
 
         // When
-        val schema = ToolSchema(properties, required)
+        val schema = ToolSchemaLocal(properties, required)
 
         // Then
         assertEquals(properties, schema.properties)
@@ -161,7 +162,7 @@ class McpToolTest {
             override val input: KClass<out Any>? = input
             override val output: KClass<out Any>? = output
 
-            override suspend fun execute(request: CallToolRequest): CallToolResult {
+            override suspend fun execute(connection: ClientConnection, request: CallToolRequest): CallToolResult {
                 return CallToolResult(emptyList())
             }
         }

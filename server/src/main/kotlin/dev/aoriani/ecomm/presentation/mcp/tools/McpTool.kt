@@ -1,10 +1,11 @@
 package dev.aoriani.ecomm.presentation.mcp.tools
 
 import com.xemantic.ai.tool.schema.generator.generateSchema
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
-import io.modelcontextprotocol.kotlin.sdk.Tool
+import io.modelcontextprotocol.kotlin.sdk.server.ClientConnection
 import io.modelcontextprotocol.kotlin.sdk.server.Server
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
+import io.modelcontextprotocol.kotlin.sdk.types.ToolSchema
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
@@ -42,7 +43,7 @@ interface McpTool {
      * @param request The invocation context and payload from the MCP server.
      * @return The result to be sent back to the caller.
      */
-    suspend fun execute(request: CallToolRequest): CallToolResult
+    suspend fun execute(connection: ClientConnection, request: CallToolRequest): CallToolResult
 }
 
 /**
@@ -61,8 +62,8 @@ internal fun Server.addTool(tool: McpTool) {
     addTool(
         name = tool.name,
         description = tool.description,
-        inputSchema = toolInputSchema?.let { Tool.Input(it.properties, it.required) } ?: Tool.Input(),
-        outputSchema = toolOutputSchema?.let { Tool.Output(it.properties, it.required) },
+        inputSchema = toolInputSchema?.let { ToolSchema(properties = it.properties, required = it.required) } ?: ToolSchema(),
+        outputSchema = toolOutputSchema?.let { ToolSchema(properties = it.properties, required = it.required) },
         handler = tool::execute,
     )
 }
@@ -74,18 +75,18 @@ internal fun Server.addTool(tool: McpTool) {
  * @property properties The JSON object containing property schemas.
  * @property required The list of required property names, if any.
  */
-internal class ToolSchema(val properties: JsonObject, val required: List<String>? = null)
+internal class ToolSchemaLocal(val properties: JsonObject, val required: List<String>? = null)
 
 /**
- * Builds a [ToolSchema] for this class using kotlinx.serialization and a JSON Schema generator.
+ * Builds a [ToolSchemaLocal] for this class using kotlinx.serialization and a JSON Schema generator.
  *
  * The function creates a serializer for the class' [kotlin.reflect.KType], generates a JSON Schema,
  * and extracts the "properties" and "required" sections used by the MCP SDK.
  *
- * @return A [ToolSchema] with the extracted properties and required fields.
+ * @return A [ToolSchemaLocal] with the extracted properties and required fields.
  * @throws IllegalArgumentException if the generated schema does not contain a "properties" object.
  */
-internal fun KClass<out Any>.toToolSchema(): ToolSchema {
+internal fun KClass<out Any>.toToolSchema(): ToolSchemaLocal {
     // Build a serializer for the KType, mirroring jsonSchemaOf’s internals
     val ktype = this.createType()
     val kserializer = serializer(ktype)
@@ -96,5 +97,5 @@ internal fun KClass<out Any>.toToolSchema(): ToolSchema {
     val jsonObjectSchema = Json.encodeToJsonElement(jsonSchema).jsonObject
     val schema = requireNotNull(jsonObjectSchema["properties"]?.jsonObject) { "schema does not contain properties" }
     val required = jsonObjectSchema["required"]?.jsonArray?.map { it.jsonPrimitive.content }
-    return ToolSchema(schema, required)
+    return ToolSchemaLocal(schema, required)
 }

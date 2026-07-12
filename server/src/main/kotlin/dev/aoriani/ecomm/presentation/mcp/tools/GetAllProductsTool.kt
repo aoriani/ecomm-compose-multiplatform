@@ -11,9 +11,10 @@ import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
 import dev.aoriani.ecomm.domain.usecases.invoke
 import dev.aoriani.ecomm.presentation.mcp.models.Products
 import dev.aoriani.ecomm.presentation.mcp.models.toMcpProduct
-import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
-import io.modelcontextprotocol.kotlin.sdk.CallToolResult
-import io.modelcontextprotocol.kotlin.sdk.TextContent
+import io.modelcontextprotocol.kotlin.sdk.server.ClientConnection
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
+import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
+import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
@@ -42,7 +43,7 @@ class GetAllProductsTool(private val getAllProducts: GetAllProductsUseCase) : Mc
      * - On success, returns one text entry per product and a structured payload containing the products list.
      * - On failure, returns an error result with a generic message.
      */
-    override suspend fun execute(request: CallToolRequest): CallToolResult {
+    override suspend fun execute(connection: ClientConnection, request: CallToolRequest): CallToolResult {
         val result = getAllProducts()
         if (result.isFailure) {
             val exception = result.exceptionOrNull()
