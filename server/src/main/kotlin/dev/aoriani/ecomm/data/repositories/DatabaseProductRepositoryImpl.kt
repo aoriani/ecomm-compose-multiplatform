@@ -27,7 +27,7 @@ internal class DatabaseProductRepositoryImpl(
      */
     override suspend fun getAll(): Result<List<Product>> = runCatching {
         withContext(ioDispatcher) {
-            suspendTransaction(db = database) {
+            suspendTransaction(db = database, readOnly = true) {
                 ProductEntity.all().map(ProductEntity::toProduct)
             }
         }
@@ -45,7 +45,7 @@ internal class DatabaseProductRepositoryImpl(
      */
     override suspend fun getById(id: ProductId): Result<Product> = runCatching {
         withContext(ioDispatcher) {
-            suspendTransaction(db = database) {
+            suspendTransaction(db = database, readOnly = true) {
                 // Optional input guard:
                 val entity = ProductEntity.findById(id.id)
                     ?: throw ProductNotFoundException(id)

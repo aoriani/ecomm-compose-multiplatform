@@ -117,7 +117,7 @@ class McpToolTest {
         assertTrue(schema.properties.containsKey("name"))
         assertTrue(schema.properties.containsKey("value"))
         assertNotNull(schema.required)
-        assertTrue(schema.required!!.contains("name"))
+        assertTrue(schema.required.contains("name"))
     }
 
     @Test

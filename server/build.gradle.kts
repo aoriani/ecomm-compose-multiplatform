@@ -8,6 +8,10 @@ plugins {
 group = "dev.aoriani"
 version = "0.0.1"
 
+kotlin {
+    jvmToolchain(17)
+}
+
 application {
     mainClass = "io.ktor.server.netty.EngineMain"
 
