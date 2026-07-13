@@ -6,7 +6,8 @@ import dev.aoriani.ecomm.domain.models.ProductId
 import dev.aoriani.ecomm.domain.models.exceptions.ProductNotFoundException
 import dev.aoriani.ecomm.domain.repositories.ProductRepository
 import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
+import kotlinx.coroutines.withContext
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 
 /**
  * Exposed-based implementation of the [ProductRepository].
@@ -15,12 +16,14 @@ import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTrans
 object DatabaseProductRepositoryImpl : ProductRepository {
     /**
      * Retrieves all products from the database.
-     * Operations are performed within a new suspended transaction on [Dispatchers.IO].
+     * Operations run in an Exposed suspend transaction on [Dispatchers.IO].
      * @return A [Result] wrapping a list of all [Product]s. Success case contains the list
      * of products, failure case contains any database exceptions that occurred.
      */
-    override suspend fun getAll(): Result<List<Product>> = newSuspendedTransaction(Dispatchers.IO) {
-        runCatching { ProductEntity.all().map(ProductEntity::toProduct) }
+    override suspend fun getAll(): Result<List<Product>> = runCatching {
+        withContext(Dispatchers.IO) {
+            suspendTransaction { ProductEntity.all().map(ProductEntity::toProduct) }
+        }
     }
 
     /**
@@ -33,11 +36,14 @@ object DatabaseProductRepositoryImpl : ProductRepository {
      * @return A [Result] containing the retrieved [Product] if successful, or an exception if not.
      * The result captures any errors that occur during the process, including validation or database-related issues.
      */
-    override suspend fun getById(id: ProductId): Result<Product> = newSuspendedTransaction(Dispatchers.IO) {
-        runCatching { // Optional input guard:
-            val entity = ProductEntity.findById(id.id)
-                ?: throw ProductNotFoundException(id)
-            entity.toProduct()
+    override suspend fun getById(id: ProductId): Result<Product> = runCatching {
+        withContext(Dispatchers.IO) {
+            suspendTransaction {
+                // Optional input guard:
+                val entity = ProductEntity.findById(id.id)
+                    ?: throw ProductNotFoundException(id)
+                entity.toProduct()
+            }
         }
     }
 }
