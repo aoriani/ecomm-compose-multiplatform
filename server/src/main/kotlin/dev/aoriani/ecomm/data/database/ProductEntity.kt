@@ -18,7 +18,7 @@ import org.jetbrains.exposed.v1.dao.ImmutableEntityClass
  * @property inStock Whether the product is currently in stock.
  * @property countryOfOrigin The country where the product originates.
  */
-class ProductEntity(id: EntityID<String>) : Entity<String>(id) {
+internal class ProductEntity(id: EntityID<String>) : Entity<String>(id) {
     companion object : ImmutableEntityClass<String, ProductEntity>(ProductTable)
 
     val name by ProductTable.name
