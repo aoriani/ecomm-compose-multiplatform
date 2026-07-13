@@ -14,5 +14,14 @@ ecomm:
   mcp:
     server-name: "ecomm-mcp-server"
     server-version: "0.0.1"
+    allowed-hosts:
+      - "localhost"
+      - "127.0.0.1"
+      - "[::1]"
+      - "api.aoriani.dev"
+
+    allowed-origins:
+      - "http://localhost"
+      - "https://api.aoriani.dev"
   images:
     base-url: "https://api.aoriani.dev/static/images"

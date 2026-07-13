@@ -30,7 +30,13 @@ import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
 internal fun Application.configureMcp() {
     val serverName = environment.config.property("ecomm.mcp.server-name").getString()
     val serverVersion = environment.config.property("ecomm.mcp.server-version").getString()
-    mcpStreamableHttp(path = "/mcp") {
+    val allowedHosts = environment.config.property("ecomm.mcp.allowed-hosts").getList()
+    val allowedOrigins = environment.config.property("ecomm.mcp.allowed-origins").getList()
+    mcpStreamableHttp(
+        path = "/mcp",
+        allowedHosts = allowedHosts,
+        allowedOrigins = allowedOrigins,
+    ) {
         Server(
             serverInfo = Implementation(serverName, serverVersion),
             options = ServerOptions(

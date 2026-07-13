@@ -23,7 +23,18 @@ class RoutingConfigTest {
                 "ecomm.images.base-url" to "http://localhost:8080/static/images",
                 "ecomm.mcp.server-name" to "mcp-server",
                 "ecomm.mcp.server-version" to "1.0.0",
-            )
+            ).apply {
+                put("ecomm.mcp.allowed-hosts", listOf(
+                    "localhost",
+                    "127.0.0.1",
+                    "[::1]",
+                ))
+                put("ecomm.mcp.allowed-origins", listOf(
+                    "http://localhost",
+                    "http://127.0.0.1",
+                    "http://[::1]",
+                ))
+            }
         }
         application { module() }
 
@@ -35,4 +46,3 @@ class RoutingConfigTest {
         assert(response.bodyAsText().contains("GraphiQL"))
     }
 }
-
