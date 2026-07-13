@@ -7,16 +7,24 @@ import dev.aoriani.ecomm.domain.usecases.GetAllProductsUseCase
 import dev.aoriani.ecomm.domain.usecases.GetProductByIdUseCase
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.ktor.server.application.Application
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.testing.testApplication
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class McpConfigTest {
@@ -77,5 +85,67 @@ class McpConfigTest {
 
         assertEquals(HttpStatusCode.Forbidden, response.status)
         assertTrue(response.bodyAsText().contains("Invalid Host"))
+    }
+
+    @Test
+    fun `MCP completes the initialization handshake`() = testApplication {
+        environment { config = mcpConfig() }
+        application { installMcpForTest() }
+
+        val initializeResponse = client.post("/mcp") {
+            header(HttpHeaders.Host, "localhost")
+            header(HttpHeaders.Origin, "http://localhost")
+            header(HttpHeaders.Accept, "application/json, text/event-stream")
+            contentType(ContentType.Application.Json)
+            setBody(
+                """
+                {
+                  "jsonrpc": "2.0",
+                  "id": 1,
+                  "method": "initialize",
+                  "params": {
+                    "protocolVersion": "2025-11-25",
+                    "capabilities": {},
+                    "clientInfo": {
+                      "name": "integration-test-client",
+                      "version": "1.0.0"
+                    }
+                  }
+                }
+                """.trimIndent()
+            )
+        }
+
+        assertEquals(HttpStatusCode.OK, initializeResponse.status)
+        val sessionId = assertNotNull(initializeResponse.headers["mcp-session-id"])
+        val responseJson = Json.parseToJsonElement(initializeResponse.bodyAsText()).jsonObject
+        assertEquals("2.0", responseJson.getValue("jsonrpc").jsonPrimitive.content)
+        assertEquals("1", responseJson.getValue("id").jsonPrimitive.content)
+
+        val result = responseJson.getValue("result").jsonObject
+        assertEquals("2025-11-25", result.getValue("protocolVersion").jsonPrimitive.content)
+        val serverInfo = result.getValue("serverInfo").jsonObject
+        assertEquals("test-mcp", serverInfo.getValue("name").jsonPrimitive.content)
+        assertEquals("0.0.0", serverInfo.getValue("version").jsonPrimitive.content)
+        assertTrue(result.getValue("capabilities").jsonObject.containsKey("tools"))
+
+        val initializedResponse = client.post("/mcp") {
+            header(HttpHeaders.Host, "localhost")
+            header(HttpHeaders.Origin, "http://localhost")
+            header(HttpHeaders.Accept, "application/json, text/event-stream")
+            header("mcp-session-id", sessionId)
+            header("mcp-protocol-version", "2025-11-25")
+            contentType(ContentType.Application.Json)
+            setBody(
+                """
+                {
+                  "jsonrpc": "2.0",
+                  "method": "notifications/initialized"
+                }
+                """.trimIndent()
+            )
+        }
+
+        assertEquals(HttpStatusCode.Accepted, initializedResponse.status)
     }
 }
