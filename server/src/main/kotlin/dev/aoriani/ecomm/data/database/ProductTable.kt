@@ -8,6 +8,7 @@ import org.jetbrains.exposed.v1.core.Slf4jSqlDebugLogger
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.upsert
 import org.jetbrains.exposed.v1.json.json
@@ -55,8 +56,8 @@ internal object ProductTable : IdTable<String>("products") {
  * Initializes the database schema for products.
  * Creates the [ProductTable] if it doesn't already exist.
  */
-internal fun ProductTable.initializeSchema() {
-    transaction {
+internal fun ProductTable.initializeSchema(database: Database) {
+    transaction(db = database) {
         addLogger(Slf4jSqlDebugLogger)
         SchemaUtils.create(this@initializeSchema)
     }
@@ -336,10 +337,10 @@ private fun doSeedData(imageUrlBase: String) {
  * Initializes the database by creating the schema and seeding it with sample data if the product table is currently empty.
  * This is the primary function called during application startup to set up the database.
  */
-internal fun initializeDatabaseAndSeedIfEmpty(imageUrlBase: String) {
-    ProductTable.initializeSchema() // Creates schema if it doesn't exist
+internal fun initializeDatabaseAndSeedIfEmpty(database: Database, imageUrlBase: String) {
+    ProductTable.initializeSchema(database) // Creates schema if it doesn't exist
 
-    transaction {
+    transaction(db = database) {
         addLogger(Slf4jSqlDebugLogger)
         val isProductTableEmpty = ProductEntity.all().empty()
         if (isProductTableEmpty) {
