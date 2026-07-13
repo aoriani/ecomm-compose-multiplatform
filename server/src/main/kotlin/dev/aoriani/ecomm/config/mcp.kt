@@ -6,6 +6,7 @@ import dev.aoriani.ecomm.presentation.mcp.tools.GetAllProductsTool
 import dev.aoriani.ecomm.presentation.mcp.tools.GetProductByIdTool
 import dev.aoriani.ecomm.presentation.mcp.tools.addTool
 import io.ktor.server.application.Application
+import io.ktor.server.config.getAs
 import io.ktor.server.plugins.di.dependencies
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import io.modelcontextprotocol.kotlin.sdk.server.ServerOptions
@@ -17,8 +18,7 @@ import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
  * Configures and initializes the MCP (Message Communication Protocol) server within the application.
  *
  * This setup includes:
- * - Retrieving the server name and version from the configuration properties `ecomm.mcp.server-name`
- *   and `ecomm.mcp.server-version`.
+ * - Deserializing the `ecomm.mcp` configuration section into typed settings.
  * - Setting up the server with the provided name, version, and capabilities.
  * - Registering the available tools (`GetAllProductsTool` and `GetProductByIdTool`) with the server,
  *   enabling handling of respective MCP requests.
@@ -28,17 +28,14 @@ import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
  * - `GetProductByIdUseCase`: Retrieves details of a specific product by its unique identifier.
  */
 internal fun Application.configureMcp() {
-    val serverName = environment.config.property("ecomm.mcp.server-name").getString()
-    val serverVersion = environment.config.property("ecomm.mcp.server-version").getString()
-    val allowedHosts = environment.config.property("ecomm.mcp.allowed-hosts").getList()
-    val allowedOrigins = environment.config.property("ecomm.mcp.allowed-origins").getList()
+    val settings = environment.config.property("ecomm.mcp").getAs<McpSettings>()
     mcpStreamableHttp(
         path = "/mcp",
-        allowedHosts = allowedHosts,
-        allowedOrigins = allowedOrigins,
+        allowedHosts = settings.allowedHosts,
+        allowedOrigins = settings.allowedOrigins,
     ) {
         Server(
-            serverInfo = Implementation(serverName, serverVersion),
+            serverInfo = Implementation(settings.serverName, settings.serverVersion),
             options = ServerOptions(
                 capabilities = ServerCapabilities(
                     tools = ServerCapabilities.Tools(listChanged = null)
@@ -52,4 +49,3 @@ internal fun Application.configureMcp() {
         }
     }
 }
-

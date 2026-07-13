@@ -334,17 +334,16 @@ private fun doSeedData(imageUrlBase: String) {
 }
 
 /**
- * Initializes the database by creating the schema and seeding it with sample data if the product table is currently empty.
- * This is the primary function called during application startup to set up the database.
+ * Initializes the database schema and idempotently upserts the sample catalog.
+ *
+ * Each seed row has a stable primary key, so repeating this bootstrap repairs a partially seeded catalog without the
+ * check-then-insert race caused by testing whether the whole table is empty first.
  */
-internal fun initializeDatabaseAndSeedIfEmpty(database: Database, imageUrlBase: String) {
-    ProductTable.initializeSchema(database) // Creates schema if it doesn't exist
+internal fun initializeDatabaseAndSeed(database: Database, imageUrlBase: String) {
+    ProductTable.initializeSchema(database)
 
     transaction(db = database) {
         addLogger(Slf4jSqlDebugLogger)
-        val isProductTableEmpty = ProductEntity.all().empty()
-        if (isProductTableEmpty) {
-            doSeedData(imageUrlBase)
-        }
+        doSeedData(imageUrlBase)
     }
 }

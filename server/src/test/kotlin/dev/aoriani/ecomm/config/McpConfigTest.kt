@@ -19,6 +19,7 @@ import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.testing.testApplication
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.test.Test
@@ -88,7 +89,21 @@ class McpConfigTest {
     }
 
     @Test
-    fun `MCP completes the initialization handshake`() = testApplication {
+    fun `MCP rejects an unconfigured origin`() = testApplication {
+        environment { config = mcpConfig() }
+        application { installMcpForTest() }
+
+        val response = client.get("/mcp") {
+            header(HttpHeaders.Host, "localhost")
+            header(HttpHeaders.Origin, "https://malicious.example")
+        }
+
+        assertEquals(HttpStatusCode.Forbidden, response.status)
+        assertTrue(response.bodyAsText().contains("Invalid Origin"))
+    }
+
+    @Test
+    fun `MCP completes the initialization handshake and lists tools`() = testApplication {
         environment { config = mcpConfig() }
         application { installMcpForTest() }
 
@@ -147,5 +162,36 @@ class McpConfigTest {
         }
 
         assertEquals(HttpStatusCode.Accepted, initializedResponse.status)
+
+        val listToolsResponse = client.post("/mcp") {
+            header(HttpHeaders.Host, "localhost")
+            header(HttpHeaders.Origin, "http://localhost")
+            header(HttpHeaders.Accept, "application/json, text/event-stream")
+            header("mcp-session-id", sessionId)
+            header("mcp-protocol-version", "2025-11-25")
+            contentType(ContentType.Application.Json)
+            setBody(
+                """
+                {
+                  "jsonrpc": "2.0",
+                  "id": 2,
+                  "method": "tools/list",
+                  "params": {}
+                }
+                """.trimIndent()
+            )
+        }
+
+        assertEquals(HttpStatusCode.OK, listToolsResponse.status)
+        val listToolsJson = Json.parseToJsonElement(listToolsResponse.bodyAsText()).jsonObject
+        assertEquals("2", listToolsJson.getValue("id").jsonPrimitive.content)
+        val toolNames = listToolsJson
+            .getValue("result")
+            .jsonObject
+            .getValue("tools")
+            .jsonArray
+            .map { it.jsonObject.getValue("name").jsonPrimitive.content }
+            .toSet()
+        assertEquals(setOf("get_products_list", "get_product_by_id"), toolNames)
     }
 }
